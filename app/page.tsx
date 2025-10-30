@@ -10,6 +10,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-gray-800">
+      <h1 className="text-4xl font-bold text-blue-600">Hello Tailwind!</h1>
       <h1 className="text-3xl font-bold mb-4">Latest Immigration Draw</h1>
       <div className="bg-white p-6 rounded-lg shadow-md">
         <p>
