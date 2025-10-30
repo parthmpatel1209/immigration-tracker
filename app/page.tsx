@@ -11,32 +11,61 @@ type DrawData = {
 };
 
 export default function Home() {
-  const [data, setData] = useState<DrawData | null>(null);
+  const [draws, setDraws] = useState<DrawData[]>([]);
+  const [filter, setFilter] = useState<string>("All");
 
   useEffect(() => {
     fetch("/api/draws")
       .then((res) => res.json())
-      .then(setData);
+      .then(setDraws);
   }, []);
 
-  if (!data) return <p className="text-center mt-10">Loading...</p>;
+  const filteredDraws =
+    filter === "All" ? draws : draws.filter((draw) => draw.program === filter);
+
+  if (draws.length === 0)
+    return <p className="text-center mt-10">Loading...</p>;
+
+  // Get unique programs for the dropdown
+  const programs = Array.from(new Set(draws.map((d) => d.program)));
+  programs.unshift("All"); // add "All" at the start
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gray-50 text-gray-800">
-      <h1 className="text-3xl font-bold mb-6">Latest Immigration Draw</h1>
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <p>
-          <strong>Program:</strong> {data.program}
-        </p>
-        <p>
-          <strong>CRS Cutoff:</strong> {data.crs_cutoff}
-        </p>
-        <p>
-          <strong>Invitations:</strong> {data.invitations}
-        </p>
-        <p>
-          <strong>Date:</strong> {data.draw_date}
-        </p>
+    <main className="min-h-screen flex flex-col items-center justify-start bg-gray-50 text-gray-800 pt-10">
+      <h1 className="text-3xl font-bold mb-6">Immigration Draws</h1>
+
+      <div className="mb-6">
+        <label className="mr-2 font-semibold">Filter by Program:</label>
+        <select
+          className="border rounded px-2 py-1"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          {programs.map((program) => (
+            <option key={program} value={program}>
+              {program}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="grid gap-4 w-full max-w-3xl px-4">
+        {filteredDraws.map((draw) => (
+          <div key={draw.round} className="bg-white p-6 rounded-lg shadow-md">
+            <p>
+              <strong>Program:</strong> {draw.program}
+            </p>
+            <p>
+              <strong>CRS Cutoff:</strong> {draw.crs_cutoff}
+            </p>
+            <p>
+              <strong>Invitations:</strong> {draw.invitations}
+            </p>
+            <p>
+              <strong>Date:</strong> {draw.draw_date}
+            </p>
+          </div>
+        ))}
       </div>
     </main>
   );
