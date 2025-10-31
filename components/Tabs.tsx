@@ -2,6 +2,7 @@
 
 import { useState, ReactNode, useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
+import TabButton from "./TabButton";
 
 interface Tab {
   label: string;
@@ -16,51 +17,44 @@ export default function Tabs({ tabs }: TabsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDark, setIsDark] = useState(false);
 
-  // Apply dark class to html element
+  // Handle dark mode toggle
   useEffect(() => {
     const html = document.documentElement;
-    if (isDark) {
-      html.classList.add("dark");
-    } else {
-      html.classList.remove("dark");
-    }
+    html.classList.toggle("dark", isDark);
   }, [isDark]);
 
   return (
     <div className="w-full">
-      <div className="flex items-center justify-between border-b mb-4">
-        {/* Tabs */}
-        <div className="flex flex-wrap">
+      {/* Tabs header */}
+      <div className="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-3 mb-4">
+        {/* Tab Buttons */}
+        <div className="flex flex-wrap gap-2">
           {tabs.map((tab, index) => (
-            <button
+            <TabButton
               key={index}
+              label={tab.label}
+              isActive={activeIndex === index}
               onClick={() => setActiveIndex(index)}
-              className={`px-4 py-2 font-medium transition-colors duration-200 ${
-                index === activeIndex
-                  ? "border-b-2 border-blue-600 text-blue-600"
-                  : "text-gray-600 hover:text-blue-500"
-              }`}
-            >
-              {tab.label}
-            </button>
+            />
           ))}
-        </div>
+          {/* Dark Mode Toggle */}
 
-        {/* Dark Mode Toggle */}
-        <button
-          onClick={() => setIsDark(!isDark)}
-          className="ml-4 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-        >
-          {isDark ? (
-            <Sun className="w-5 h-5 text-yellow-400" />
-          ) : (
-            <Moon className="w-5 h-5 text-gray-800 dark:text-gray-200" />
-          )}
-        </button>
+          <button
+            onClick={() => setIsDark(!isDark)}
+            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            title="Toggle Dark Mode"
+          >
+            {isDark ? (
+              <Sun className="w-5 h-5 text-yellow-400" />
+            ) : (
+              <Moon className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Active Tab Content */}
-      <div>{tabs[activeIndex].content}</div>
+      {/* Tab content */}
+      <div className="animate-fadeIn">{tabs[activeIndex].content}</div>
     </div>
   );
 }

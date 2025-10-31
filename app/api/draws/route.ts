@@ -5,22 +5,16 @@ const supabaseKey = process.env.SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function GET() {
-  try {
-    const { data, error } = await supabase
-      .from("draws")
-      .select("*")
-      .order("draw_date", { ascending: false });
+  const { data, error } = await supabase.from("draws").select("*");
 
-    if (error) throw error;
-
-    return new Response(JSON.stringify(data), {
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (err: any) {
-    console.error("Supabase fetch error:", err.message);
-    return new Response(JSON.stringify({ error: err.message }), {
+  if (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
+
+  return new Response(JSON.stringify(data), {
+    headers: { "Content-Type": "application/json" },
+  });
 }
