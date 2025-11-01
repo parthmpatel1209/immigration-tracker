@@ -1,0 +1,420 @@
+/* Existing styles from previous response */
+.container {
+  font-family: system-ui, sans-serif;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.headerTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.filterIcon {
+  width: 14px;
+  height: 14px;
+  color: #6366f1;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+.labelDark {
+  color: #d1d5db;
+}
+
+.labelLight {
+  color: #374151;
+}
+
+.select {
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 12px;
+  padding-right: 2rem;
+}
+
+.selectDark {
+  border: 1px solid #4b5563;
+  background-color: #1f2937;
+  color: #f3f4f6;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+.selectLight {
+  border: 1px solid #d1d5db;
+  background-color: white;
+  color: #111827;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+}
+
+.selectOptionDark {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+.selectOptionLight {
+  background-color: white;
+  color: #111827;
+}
+
+.sortButtons {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.sortButton {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sortButtonDark {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+.sortButtonDark:hover {
+  background-color: #4b5563;
+}
+
+.sortButtonLight {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.sortButtonLight:hover {
+  background-color: #e5e7eb;
+}
+
+.sortIcon {
+  width: 14px;
+  height: 14px;
+}
+
+.arrowIcon {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.2s;
+}
+
+.arrowIconAsc {
+  transform: rotate(180deg);
+}
+
+.mobileSort {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tableContainer {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.tableContainerDark {
+  border: 1px solid #374151;
+  background-color: #111827;
+}
+
+.tableContainerLight {
+  border: 1px solid #e5e7eb;
+  background-color: white;
+}
+
+.table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.thead {
+  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.th {
+  padding: 1rem 2rem;
+  text-align: left;
+}
+
+.thSortable {
+  cursor: pointer;
+}
+
+.thContent {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.row {
+  border-bottom: 1px solid;
+  transition: background-color 0.2s;
+}
+
+.rowDark {
+  border-bottom-color: #374151;
+  background-color: #111827;
+}
+
+.rowDark:hover {
+  background-color: #1f2937;
+}
+
+.rowLight {
+  border-bottom-color: #e5e7eb;
+  background-color: white;
+}
+
+.rowLight:hover {
+  background-color: #f9fafb;
+}
+
+.cell {
+  padding: 1rem 2rem;
+  font-size: 0.75rem;
+}
+
+.round {
+  font-weight: 600;
+  color: #4f46e5;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+}
+
+.badgeDark {
+  background-color: #312e81;
+  color: #c7d2fe;
+}
+
+.badgeLight {
+  background-color: #eef2ff;
+  color: #4f46e5;
+}
+
+.province {
+  color: #9ca3af;
+}
+
+.provinceLight {
+  color: #6b7280;
+}
+
+.crs {
+  font-weight: bold;
+  color: #7c3aed;
+}
+
+.invitations {
+  color: #f3f4f6;
+}
+
+.invitationsLight {
+  color: #111827;
+}
+
+.date {
+  font-weight: 500;
+}
+
+.dateDark {
+  color: #f3f4f6;
+}
+
+.dateLight {
+  color: #111827;
+}
+
+.dateRelative {
+  font-size: 0.7rem;
+}
+
+.dateRelativeDark {
+  color: #9ca3af;
+}
+
+.dateRelativeLight {
+  color: #6b7280;
+}
+
+.emptyCell {
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.emptyCellDark {
+  color: #9ca3af;
+}
+
+.emptyCellLight {
+  color: #6b7280;
+}
+
+.emptyContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emptySvg {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 0.5rem;
+}
+
+.emptySvgDark {
+  color: #4b5563;
+}
+
+.emptySvgLight {
+  color: #d1d5db;
+}
+
+.emptyText {
+  font-weight: 500;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+}
+
+.footerDark {
+  color: #9ca3af;
+}
+
+.footerLight {
+  color: #6b7280;
+}
+
+/* Pagination styles */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.paginationButton {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.paginationButtonDark {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+.paginationButtonDark:hover:not(:disabled) {
+  background-color: #4b5563;
+}
+
+.paginationButtonLight {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.paginationButtonLight:hover:not(:disabled) {
+  background-color: #e5e7eb;
+}
+
+.paginationButtonDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pageNumber {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.pageNumberDark {
+  background-color: #374151;
+  color: #d1d5db;
+}
+
+.pageNumberDark:hover {
+  background-color: #4b5563;
+}
+
+.pageNumberLight {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.pageNumberLight:hover {
+  background-color: #e5e7eb;
+}
+
+.pageNumberActiveDark {
+  background-color: #4f46e5;
+  color: white;
+}
+
+.pageNumberActiveLight {
+  background-color: #4f46e5;
+  color: white;
+}

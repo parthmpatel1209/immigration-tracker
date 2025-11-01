@@ -196,7 +196,13 @@ export default function PRPathways() {
       </div>
 
       {/* Pathways List */}
-      <div style={{ display: "grid", gap: "1rem" }}>
+      <div
+        style={{
+          display: "grid",
+          gap: "1rem",
+          gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
+        }}
+      >
         {filtered.map((p) => (
           <div
             key={p.id}
@@ -205,16 +211,26 @@ export default function PRPathways() {
               borderRadius: "0.5rem",
               padding: "1.5rem",
               backgroundColor: darkMode ? "#1f2937" : "white",
-              transition: "all 0.2s",
+              transition: "all 0.3s ease",
               boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+              transform: "translateY(0)",
+              position: "relative",
+              overflow: "hidden",
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.boxShadow =
-                "0 4px 6px -1px rgba(0,0,0,0.1)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)")
-            }
+            onMouseEnter={(e) => {
+              const el = e.currentTarget;
+              const color = PROGRAM_COLORS[p.program] || PROGRAM_COLORS.default;
+              const glow = darkMode ? color.darkBg : color.lightBg;
+
+              // pop-up + soft colored glow
+              el.style.transform = "translateY(-4px)";
+              el.style.boxShadow = `0 12px 25px -8px ${glow}60, 0 4px 6px -2px rgba(1,1,1,1.1)`;
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget;
+              el.style.transform = "translateY(0)";
+              el.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+            }}
           >
             {/* Province + Program */}
             <div style={{ marginBottom: "0.5rem" }}>

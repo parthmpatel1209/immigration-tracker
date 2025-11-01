@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
 import { Calendar, Users, Hash, MapPin } from "lucide-react";
+import styles from "./DrawCardsGrid.module.css";
+import CanadaPNPMap from "./CanadaPNPMap";
 
 interface Draw {
   id: number;
@@ -69,7 +71,7 @@ function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ scale: 1.04 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      className="__drawcard__card"
+      className={styles.card}
       style={
         {
           "--badge-bg": colors.bg,
@@ -77,37 +79,37 @@ function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
         } as React.CSSProperties
       }
     >
-      <div className="__drawcard__glass">
-        <div className="__drawcard__glow" />
+      <div className={styles.glass}>
+        <div className={styles.glow} />
 
-        <header className="__drawcard__header">
-          <h3 className="__drawcard__title">{rankText} Draw</h3>
-          <span className="__drawcard__badge">{draw.program}</span>
+        <header className={styles.header}>
+          <h3 className={styles.title}>{rankText} Draw</h3>
+          <span className={styles.badge}>{draw.program}</span>
         </header>
 
-        <div className="__drawcard__crs">
-          <Hash className="__drawcard__icon" />
-          <span className="__drawcard__crsvalue">{draw.crs_cutoff}</span>
+        <div className={styles.crs}>
+          <Hash className={styles.icon} />
+          <span className={styles.crsValue}>{draw.crs_cutoff}</span>
         </div>
 
-        <div className="__drawcard__stats">
-          <div className="__drawcard__stat">
-            <Users className="__drawcard__iconsm" />
+        <div className={styles.stats}>
+          <div className={styles.stat}>
+            <Users className={styles.iconSm} />
             <span>{draw.invitations.toLocaleString()}</span>
           </div>
-          <div className="__drawcard__stat">
-            <Calendar className="__drawcard__iconsm" />
+          <div className={styles.stat}>
+            <Calendar className={styles.iconSm} />
             <span>{date}</span>
           </div>
         </div>
 
-        <footer className="__drawcard__footer">
+        <footer className={styles.footer}>
           <span>Round #{draw.round}</span>
           {draw.province && (
             <>
-              <span className="__drawcard__sep"> • </span>
-              <span className="__drawcard__province">
-                <MapPin className="__drawcard__provicon" />
+              <span className={styles.sep}> • </span>
+              <span className={styles.province}>
+                <MapPin className={styles.provIcon} />
                 {draw.province}
               </span>
             </>
@@ -120,28 +122,31 @@ function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
 
 function SkeletonCard() {
   return (
-    <div className="__drawcard__card">
-      <div className="__drawcard__glass">
-        <header className="__drawcard__header">
-          <div className="skeleton __drawcard__skeleton_title" />
-          <div className="skeleton __drawcard__skeleton_badge" />
+    <div className={styles.card}>
+      <div className={styles.glass}>
+        <header className={styles.header}>
+          <div className={`${styles.skeleton} ${styles.skelTitle}`} />
+          <div className={`${styles.skeleton} ${styles.skelBadge}`} />
         </header>
-        <div className="__drawcard__crs">
-          <div className="skeleton __drawcard__skeleton_icon" />
-          <div className="skeleton __drawcard__skeleton_crs" />
+
+        <div className={styles.crs}>
+          <div className={`${styles.skeleton} ${styles.skelIcon}`} />
+          <div className={`${styles.skeleton} ${styles.skelCrs}`} />
         </div>
-        <div className="__drawcard__stats">
-          <div className="__drawcard__stat">
-            <div className="skeleton __drawcard__skeleton_iconsm" />
-            <div className="skeleton __drawcard__skeleton_value" />
+
+        <div className={styles.stats}>
+          <div className={styles.stat}>
+            <div className={`${styles.skeleton} ${styles.skelIconSm}`} />
+            <div className={`${styles.skeleton} ${styles.skelValue}`} />
           </div>
-          <div className="__drawcard__stat">
-            <div className="skeleton __drawcard__skeleton_iconsm" />
-            <div className="skeleton __drawcard__skeleton_value" />
+          <div className={styles.stat}>
+            <div className={`${styles.skeleton} ${styles.skelIconSm}`} />
+            <div className={`${styles.skeleton} ${styles.skelValue}`} />
           </div>
         </div>
-        <footer className="__drawcard__footer">
-          <div className="skeleton __drawcard__skeleton_footer" />
+
+        <footer className={styles.footer}>
+          <div className={`${styles.skeleton} ${styles.skelFooter}`} />
         </footer>
       </div>
     </div>
@@ -177,273 +182,45 @@ export default function DrawCardsGrid() {
   }, []);
 
   return (
-    <div className="__drawcard__root">
-      <div className="__drawcard__grid">
-        {loading ? (
-          <>
-            <SkeletonCard />
-            <SkeletonCard />
-            <SkeletonCard />
-          </>
-        ) : draws.length === 0 ? (
-          <p className="__drawcard__empty">No draw data available.</p>
-        ) : (
-          draws.map((draw, i) => (
-            <DrawCard key={draw.id} draw={draw} rank={(i + 1) as 1 | 2 | 3} />
-          ))
-        )}
+    <div>
+      <div className={styles.root}>
+        {/* Cards Grid */}
+        <div className={styles.grid}>
+          {loading ? (
+            <>
+              <SkeletonCard />
+              <SkeletonCard />
+              <SkeletonCard />
+            </>
+          ) : draws.length === 0 ? (
+            <p className={styles.empty}>No draw data available.</p>
+          ) : (
+            draws.map((draw, i) => (
+              <DrawCard key={draw.id} draw={draw} rank={(i + 1) as 1 | 2 | 3} />
+            ))
+          )}
+        </div>
       </div>
-
-      {/* 100% ISOLATED CSS - NO CONFLICTS */}
-      <style jsx global>{`
-        /* Root */
-        .__drawcard__root {
-          display: flex;
-          justify-content: center;
-          width: 100%;
-          padding: 2rem 1rem;
-          box-sizing: border-box;
-        }
-
-        /* Grid */
-        .__drawcard__grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr));
-          gap: 2rem;
-          max-width: 82rem;
-          width: 100%;
-          margin: 0 auto;
-        }
-
-        /* Card */
-        .__drawcard__card {
-          --radius: 1.5rem;
-          --gap: 1.5rem;
-          --blur: 14px;
-          max-width: 23rem;
-          width: 100%;
-          margin: 0 auto;
-        }
-
-        .__drawcard__glass {
-          position: relative;
-          padding: var(--gap);
-          border-radius: var(--radius);
-          background: rgba(255, 255, 255, 0.25);
-          backdrop-filter: blur(var(--blur));
-          -webkit-backdrop-filter: blur(var(--blur));
-          border: 1px solid rgba(255, 255, 255, 0.32);
-          box-shadow: 0 12px 36px rgba(0, 0, 0, 0.11);
-          transition: all 0.3s ease;
-          overflow: hidden;
-        }
-
-        [data-theme="dark"] .__drawcard__glass {
-          background: rgba(15, 23, 42, 0.5);
-          border-color: rgba(255, 255, 255, 0.18);
-          box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
-        }
-
-        .__drawcard__glow {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-          opacity: 0;
-          filter: blur(22px);
-          transition: opacity 0.4s ease;
-          pointer-events: none;
-        }
-        .__drawcard__card:hover .__drawcard__glow {
-          opacity: 0.3;
-        }
-
-        /* Header */
-        .__drawcard__header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 1rem;
-        }
-        .__drawcard__title {
-          font-size: 1.15rem;
-          font-weight: 700;
-          background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-        .__drawcard__badge {
-          padding: 0.28rem 0.7rem;
-          font-size: 0.72rem;
-          font-weight: 600;
-          border-radius: 9999px;
-          background: var(--badge-bg);
-          color: var(--badge-text);
-          text-transform: uppercase;
-          letter-spacing: 0.06em;
-        }
-
-        /* CRS */
-        .__drawcard__crs {
-          display: flex;
-          align-items: center;
-          gap: 0.7rem;
-          padding: 0.8rem 1.1rem;
-          background: rgba(59, 130, 246, 0.18);
-          border-radius: 1.1rem;
-          border: 1px solid rgba(59, 130, 246, 0.32);
-          margin-bottom: 1.1rem;
-        }
-        [data-theme="dark"] .__drawcard__crs {
-          background: rgba(139, 92, 246, 0.24);
-          border-color: rgba(139, 92, 246, 0.38);
-        }
-        .__drawcard__icon {
-          width: 1.3rem;
-          height: 1.3rem;
-          color: #3b82f6;
-        }
-        [data-theme="dark"] .__drawcard__icon {
-          color: #93c5fd;
-        }
-        .__drawcard__crsvalue {
-          font-size: 2.1rem;
-          font-weight: 800;
-          background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        /* Stats */
-        .__drawcard__stats {
-          display: flex;
-          justify-content: space-between;
-          gap: 1.1rem;
-          margin-bottom: 1.1rem;
-        }
-        .__drawcard__stat {
-          display: flex;
-          align-items: center;
-          gap: 0.55rem;
-          font-size: 0.9rem;
-          font-weight: 500;
-          color: #4b5563;
-        }
-        [data-theme="dark"] .__drawcard__stat {
-          color: #e5e7eb;
-        }
-        .__drawcard__iconsm {
-          width: 1.15rem;
-          height: 1.15rem;
-          color: #6b7280;
-        }
-        [data-theme="dark"] .__drawcard__iconsm {
-          color: #9ca3af;
-        }
-
-        /* Footer */
-        .__drawcard__footer {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: 0.55rem;
-          font-size: 0.78rem;
-          color: #6b7280;
-          font-weight: 500;
-        }
-        [data-theme="dark"] .__drawcard__footer {
-          color: #9ca3af;
-        }
-        .__drawcard__sep {
-          opacity: 0.65;
-        }
-        .__drawcard__province {
-          display: flex;
-          align-items: center;
-          gap: 0.35rem;
-          padding: 0.16rem 0.55rem;
-          background: #8b5cf6;
-          color: white;
-          border-radius: 9999px;
-          font-size: 0.72rem;
-          font-weight: 600;
-        }
-        .__drawcard__provicon {
-          width: 0.85rem;
-          height: 0.85rem;
-        }
-
-        /* Empty */
-        .__drawcard__empty {
-          grid-column: 1 / -1;
-          text-align: center;
-          color: #6b7280;
-          font-size: 1.1rem;
-          margin-top: 1rem;
-        }
-        [data-theme="dark"] .__drawcard__empty {
-          color: #9ca3af;
-        }
-
-        /* Skeleton */
-        .skeleton {
-          background: linear-gradient(
-            90deg,
-            #f0f0f0 25%,
-            #e5e7eb 50%,
-            #f0f0f0 75%
-          );
-          background-size: 200% 100%;
-          animation: __drawcard_pulse 1.6s ease-in-out infinite;
-          border-radius: 0.5rem;
-        }
-        [data-theme="dark"] .skeleton {
-          background: linear-gradient(
-            90deg,
-            #1f2937 25%,
-            #374151 50%,
-            #1f2937 75%
-          );
-        }
-        @keyframes __drawcard_pulse {
-          0% {
-            background-position: 200% 0;
-          }
-          100% {
-            background-position: -200% 0;
-          }
-        }
-
-        .__drawcard__skeleton_title {
-          height: 1.3rem;
-          width: 52%;
-        }
-        .__drawcard__skeleton_badge {
-          height: 1.3rem;
-          width: 4.8rem;
-          border-radius: 9999px;
-        }
-        .__drawcard__skeleton_icon {
-          width: 1.3rem;
-          height: 1.3rem;
-        }
-        .__drawcard__skeleton_crs {
-          height: 2.3rem;
-          flex: 1;
-        }
-        .__drawcard__skeleton_iconsm {
-          width: 1.15rem;
-          height: 1.15rem;
-        }
-        .__drawcard__skeleton_value {
-          height: 1.05rem;
-          flex: 1;
-        }
-        .__drawcard__skeleton_footer {
-          height: 0.95rem;
-          width: 65%;
-          margin: 0 auto;
-        }
-      `}</style>
+      <section className={styles.mapSection}>
+        <h2
+          style={{
+            textAlign: "center",
+            fontSize: "1.5rem",
+            fontWeight: "700",
+            margin: "0.75rem 0 0.5rem",
+            background: "linear-gradient(135deg, #3b82f6, #8b5cf6)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+            letterSpacing: "0.5px",
+          }}
+        >
+          2025 PNP Quotas by Province
+        </h2>
+        <div className={styles.mapWrapper}>
+          <CanadaPNPMap />
+        </div>
+      </section>
     </div>
   );
 }

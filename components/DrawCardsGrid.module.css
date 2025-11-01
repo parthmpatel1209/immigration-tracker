@@ -1,0 +1,184 @@
+/* ──────────────────────────────────────────────────────────────
+   DrawCardsGrid – 100 % isolated, no Tailwind conflicts
+   ────────────────────────────────────────────────────────────── */
+.root {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(21rem, 1fr));
+  gap: 2rem;
+  max-width: 82rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ───── Card ───── */
+.card {
+  --radius: 1.5rem;
+  --gap: 1.5rem;
+  --blur: 14px;
+  max-width: 23rem;
+  width: 100%;
+  margin: 0 auto;
+}
+.glass {
+  position: relative;
+  padding: var(--gap);
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, .25);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid rgba(255, 255, 255, .32);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, .11);
+  transition: all .3s ease;
+  overflow: hidden;
+}
+[data-theme="dark"] .glass {
+  background: rgba(15, 23, 42, .5);
+  border-color: rgba(255, 255, 255, .18);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, .45);
+}
+.glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  opacity: 0;
+  filter: blur(22px);
+  transition: opacity .4s ease;
+  pointer-events: none;
+}
+.card:hover .glow { opacity: .3; }
+
+/* ───── Header ───── */
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.badge {
+  padding: .28rem .7rem;
+  font-size: .72rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+/* ───── CRS ───── */
+.crs {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  padding: .8rem 1.1rem;
+  background: rgba(59, 130, 246, .18);
+  border-radius: 1.1rem;
+  border: 1px solid rgba(59, 130, 246, .32);
+  margin-bottom: 1.1rem;
+}
+[data-theme="dark"] .crs {
+  background: rgba(139, 92, 246, .24);
+  border-color: rgba(139, 92, 246, .38);
+}
+.icon { width: 1.3rem; height: 1.3rem; color: #3b82f6; }
+[data-theme="dark"] .icon { color: #93c5fd; }
+.crsValue {
+  font-size: 2.1rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ───── Stats ───── */
+.stats { display: flex; justify-content: space-between; gap: 1.1rem; margin-bottom: 1.1rem; }
+.stat {
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  font-size: .9rem;
+  font-weight: 500;
+  color: #4b5563;
+}
+[data-theme="dark"] .stat { color: #e5e7eb; }
+.iconSm { width: 1.15rem; height: 1.15rem; color: #6b7280; }
+[data-theme="dark"] .iconSm { color: #9ca3af; }
+
+/* ───── Footer ───── */
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .55rem;
+  font-size: .78rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+[data-theme="dark"] .footer { color: #9ca3af; }
+.sep { opacity: .65; }
+.province {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .16rem .55rem;
+  background: #8b5cf6;
+  color: #fff;
+  border-radius: 9999px;
+  font-size: .72rem;
+  font-weight: 600;
+}
+.provIcon { width: .85rem; height: .85rem; }
+
+/* ───── Empty ───── */
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #6b7280;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+}
+[data-theme="dark"] .empty { color: #9ca3af; }
+
+/* ───── Skeleton ───── */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e5e7eb 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: pulse 1.6s ease-in-out infinite;
+  border-radius: .5rem;
+}
+[data-theme="dark"] .skeleton {
+  background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+}
+@keyframes pulse {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Skeleton sizes */
+.skelTitle   { height: 1.3rem; width: 52%; }
+.skelBadge   { height: 1.3rem; width: 4.8rem; border-radius: 9999px; }
+.skelIcon    { width: 1.3rem; height: 1.3rem; }
+.skelCrs     { height: 2.3rem; flex: 1; }
+.skelIconSm  { width: 1.15rem; height: 1.15rem; }
+.skelValue   { height: 1.05rem; flex: 1; }
+.skelFooter  { height: .95rem; width: 65%; margin: 0 auto; }
+
+/* Add only these rules – rest of your CSS stays unchanged */
+.mapSection {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.mapWrapper {
+  width: 100%;
+  /* No padding/margin that affects map – all handled inside CanadaPNPMap */
+}

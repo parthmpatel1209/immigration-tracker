@@ -1,10 +1,19 @@
 "use client";
 
+import styles from "./DrawsTable.module.css"; // Import the same CSS module
+
 interface CRSFilterProps {
   onRangeChange: (range: [number, number] | null) => void;
+  styles: {
+    select: string;
+    selectOption: string;
+  };
 }
 
-export default function CRSFilter({ onRangeChange }: CRSFilterProps) {
+export default function CRSFilter({
+  onRangeChange,
+  styles: themeStyles,
+}: CRSFilterProps) {
   const ranges = [
     { label: "All", value: null },
     { label: "200 - 400", value: [200, 400] },
@@ -15,7 +24,7 @@ export default function CRSFilter({ onRangeChange }: CRSFilterProps) {
 
   return (
     <select
-      className="border p-2 rounded"
+      className={`${styles.select} ${themeStyles.select}`}
       onChange={(e) => {
         const val = e.target.value;
         const selected =
@@ -27,6 +36,7 @@ export default function CRSFilter({ onRangeChange }: CRSFilterProps) {
         <option
           key={r.label}
           value={r.value ? JSON.stringify(r.value) : "null"}
+          className={themeStyles.selectOption}
         >
           {r.label}
         </option>

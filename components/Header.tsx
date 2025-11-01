@@ -13,6 +13,9 @@ import FlagIcon from "@/icons/flag.png";
 import IcehockeyIcon from "@/icons/icehockey.png";
 import MapleIcon from "@/icons/maple.png";
 import BeaverIcon from "@/icons/beaver.png";
+import AeroplanIcon from "@/icons/aeroplane.png";
+import ImmigrationIcon from "@/icons/immigrationofficer.png";
+import PassportIcon from "@/icons/passport.png";
 
 const ICONS = [
   { src: BearIcon, alt: "Bear" },
@@ -23,6 +26,9 @@ const ICONS = [
   { src: IcehockeyIcon, alt: "Ice Hockey" },
   { src: MapleIcon, alt: "Maple" },
   { src: BeaverIcon, alt: "Beaver" },
+  { src: AeroplanIcon, alt: "Aeroplan" },
+  { src: ImmigrationIcon, alt: "Immigration Officer" },
+  { src: PassportIcon, alt: "Passport" },
 ] as const;
 
 /* -------------------------------------------------
@@ -37,7 +43,7 @@ function generatePositions(count: number) {
     if (attempts > 1000) return; // safety
 
     const top = Math.random() * 80 + 10; // 10% → 90%
-    const left = Math.random() * 80 + 10;
+    const left = Math.random() * 100;
 
     const tooClose = positions.some((p) => {
       const dx = left - parseFloat(p.left);
@@ -85,30 +91,35 @@ export default function Header() {
     <header className="__header__root">
       {/* ---------- FLOATING ICONS ---------- */}
       <div className="__header__floaters">
-        {ICONS.map((icon, i) => (
-          <div
-            key={i}
-            className="__header__floater"
-            style={
-              {
-                top: positions[i]?.top || "50%",
-                left: positions[i]?.left || "50%",
-                "--i": i,
-              } as React.CSSProperties
-            }
-          >
-            <Image
-              src={icon.src}
-              alt={icon.alt}
-              width={32}
-              height={32}
-              className="__header__icon"
-              unoptimized
-            />
-          </div>
-        ))}
-      </div>
+        {ICONS.map((icon, i) => {
+          const pos = positions[i];
+          const startOffset = Math.random() * 100; // Random starting point below screen
 
+          return (
+            <div
+              key={i}
+              className="__header__floater"
+              style={
+                {
+                  top: pos?.top ?? "50%",
+                  left: pos?.left ?? "50%",
+                  "--duration": `${25 + i * 1.5}s`, // 25–40s cycle
+                  "--start-y": `${startOffset}vh`, // Random entry point
+                } as React.CSSProperties
+              }
+            >
+              <Image
+                src={icon.src}
+                alt={icon.alt}
+                width={32}
+                height={32}
+                className="__header__icon"
+                unoptimized
+              />
+            </div>
+          );
+        })}
+      </div>
       {/* ---------- GLASS CARD ---------- */}
       <div className="__header__glass">
         <div className="__header__glow" />
@@ -122,7 +133,6 @@ export default function Header() {
           Live updates on CRS scores and immigration draws
         </p>
       </div>
-
       {/* ---------- SCOPED GLOBAL CSS ---------- */}
       <style jsx global>{`
         .__header__root {
@@ -140,26 +150,26 @@ export default function Header() {
           inset: 0;
           pointer-events: none;
           z-index: 0;
+          overflow: hidden;
         }
 
         .__header__floater {
           position: absolute;
-          display: flex;
-          align-items: center;
-          justify-content: center;
           width: 2rem;
           height: 2rem;
-          animation: float 3.5s ease-in-out infinite;
-          animation-delay: calc(var(--i, 0) * 0.3s);
+          animation: floatUp var(--duration, 20s) linear infinite;
+          animation-delay: calc(
+            -1 * var(--start-y, 0) / 100 * var(--duration, 20s)
+          );
+          transform: translateY(var(--start-y, 100vh));
         }
 
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0);
+        @keyframes floatUp {
+          from {
+            transform: translateY(var(--start-y, 100vh));
           }
-          50% {
-            transform: translateY(-6px);
+          to {
+            transform: translateY(-100px); /* Exit just above top */
           }
         }
 
