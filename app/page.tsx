@@ -6,12 +6,12 @@ import CRSFilter from "@/components/CRSFilter";
 import ImmigrationNews from "@/components/ImmigrationNews";
 import PRPathways from "@/components/PRPathways";
 import Header from "@/components/Header";
-//import DarkModeToggle from "@/components/DarkModeToggle";
+import DrawCardsGrid from "@/components/DrawCardsGrid";
 
 export default function HomePage() {
   const tabs = [
-    { label: "Latest Draws", content: <DrawsTable /> },
-    { label: "CRS Scores", content: <CRSFilter /> },
+    { label: "Latest Draw", content: <DrawCardsGrid /> },
+    { label: "CRS Scores", content: <DrawsTable /> },
     { label: "Immigration News", content: <ImmigrationNews /> },
     { label: "PR Pathways by Province", content: <PRPathways /> },
   ];
@@ -27,6 +27,7 @@ export default function HomePage() {
           <Tabs tabs={tabs} />
         </div>
       </div>
+      <div></div>
 
       {/* Footer */}
       <footer className="text-center text-sm text-gray-500 dark:text-gray-400 py-6 border-t border-gray-200 dark:border-gray-700">

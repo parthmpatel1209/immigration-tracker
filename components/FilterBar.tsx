@@ -34,6 +34,7 @@ export default function FilterBar({
   return (
     <div className="flex flex-wrap gap-3 items-center justify-center my-6 px-4">
       {/* Program Filter */}
+
       <select
         value={program}
         onChange={(e) => setProgram(e.target.value)}
@@ -45,6 +46,9 @@ export default function FilterBar({
       </select>
 
       {/* CRS Range Filter */}
+      <label className="block text-sm font-medium text-gray-700">
+        CRS Range &nbsp;
+      </label>
       <select
         value={crsRange}
         onChange={(e) => setCrsRange(e.target.value)}

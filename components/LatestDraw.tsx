@@ -43,7 +43,7 @@ export default function LatestDraw() {
 
   return (
     <div className="border rounded-lg p-6 shadow-sm space-y-2">
-      <h2 className="text-xl font-bold">Latest Immigration Draw</h2>
+      <h2 className="text-xl font-bold">CRS Scores</h2>
       <p>
         <strong>Program:</strong> {draw.program}
       </p>
