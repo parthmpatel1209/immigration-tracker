@@ -111,17 +111,20 @@ export default function CanadaPNPMap() {
   const [hovered, setHovered] = useState<Provinces | null>(null);
   const mapRef = useRef<HTMLDivElement>(null);
 
-  // Adapted from library's click handler logic to detect province on hover
-  const detectProvince = (event: React.MouseEvent) => {
-    const target = event.target as SVGPathElement;
-    let current = target;
-    while (current && current.tagName !== "path") {
-      current = current.parentElement as SVGPathElement;
+  const detectProvince = (event: React.MouseEvent): Provinces | null => {
+    let current: HTMLElement | null = event.target as HTMLElement;
+
+    // Walk up until we find a <path> element
+    while (current && current.tagName.toLowerCase() !== "path") {
+      current = current.parentElement;
     }
-    if (current && current.id) {
+
+    // Safely check: is it really an SVG <path> with an ID?
+    if (current instanceof SVGPathElement && current.id) {
       const code = current.id.toUpperCase() as Provinces;
       return PROVINCE_DATA[code] ? code : null;
     }
+
     return null;
   };
 
