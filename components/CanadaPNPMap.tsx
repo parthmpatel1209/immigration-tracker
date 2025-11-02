@@ -1,248 +1,285 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import CanadaMap, { Provinces } from "react-canada-map";
+import { Search, ExternalLink, Sparkles, AlertCircle } from "lucide-react";
+import styles from "./CanadaPNPMap.module.css";
 
-const PROVINCE_DATA: Record<
-  Provinces,
-  {
-    name: string;
-    total: number;
-    filled: number;
-    remaining: number;
-    note?: string;
-  }
-> = {
-  AB: {
-    name: "Alberta",
-    total: 2400,
-    filled: 2100,
-    remaining: 300,
-    note: "Boosted for energy/healthcare",
-  },
-  BC: {
-    name: "British Columbia",
-    total: 4000,
-    filled: 3600,
-    remaining: 400,
-    note: "Tech/health focus",
-  },
-  MB: {
-    name: "Manitoba",
-    total: 4750,
-    filled: 4300,
-    remaining: 450,
-    note: "Skilled trades priority",
-  },
-  NB: {
-    name: "New Brunswick",
-    total: 3000,
-    filled: 2700,
-    remaining: 300,
-    note: "French speakers targeted",
-  },
-  NL: {
-    name: "Newfoundland and Labrador",
-    total: 1300,
-    filled: 1100,
-    remaining: 200,
-    note: "EOI for AIP",
-  },
-  NS: {
-    name: "Nova Scotia",
-    total: 3709,
-    filled: 3300,
-    remaining: 409,
-    note: "Healthcare boost",
-  },
-  NT: {
-    name: "Northwest Territories",
-    total: 150,
-    filled: 100,
-    remaining: 50,
-    note: "Critical workers",
-  },
-  NU: {
-    name: "Nunavut",
-    total: 0,
-    filled: 0,
-    remaining: 0,
-    note: "No PNP program",
-  },
-  ON: {
-    name: "Ontario",
-    total: 10750,
-    filled: 9800,
-    remaining: 950,
-    note: "High-CRS Express Entry",
-  },
-  PE: {
-    name: "Prince Edward Island",
-    total: 400,
-    filled: 320,
-    remaining: 80,
-    note: "Entrepreneurs prioritized",
-  },
-  QC: {
-    name: "Quebec",
-    total: 0,
-    filled: 0,
-    remaining: 0,
-    note: "Independent CAQ system (~50,000 separate)",
-  },
-  SK: {
-    name: "Saskatchewan",
-    total: 4761,
-    filled: 4200,
-    remaining: 561,
-    note: "Uncapped health/ag",
-  },
-  YT: {
-    name: "Yukon",
-    total: 250,
-    filled: 200,
-    remaining: 50,
-    note: "Mining/demand focus",
-  },
+type Province = {
+  id: string;
+  code: string;
+  name: string;
+  total: number;
+  filled: number;
+  remaining: number;
+  bonus_points: number;
+  bonus_note: string | null;
+  note: string | null;
+  source_url: string | null;
+  updated_at: string;
 };
 
 export default function CanadaPNPMap() {
-  const [hovered, setHovered] = useState<Provinces | null>(null);
-  const mapRef = useRef<HTMLDivElement>(null);
+  const [search, setSearch] = useState("");
+  const [provinces, setProvinces] = useState<Province[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [lastUpdated, setLastUpdated] = useState("");
 
-  const detectProvince = (event: React.MouseEvent): Provinces | null => {
-    let current: HTMLElement | null = event.target as HTMLElement;
+  /* ------------------- FETCH ------------------- */
+  useEffect(() => {
+    fetch("/api/pnpdata")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load data");
+        return res.json();
+      })
+      .then((data) => {
+        setProvinces(data);
+        const latest = data.reduce((a: any, b: any) =>
+          new Date(a.updated_at) > new Date(b.updated_at) ? a : b
+        );
+        setLastUpdated(new Date(latest.updated_at).toLocaleString("en-CA"));
+        setLoading(false);
+      })
+      .catch((err) => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
 
-    // Walk up until we find a <path> element
-    while (current && current.tagName.toLowerCase() !== "path") {
-      current = current.parentElement;
-    }
+  const filtered = provinces.filter(
+    (p) =>
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.code.toLowerCase().includes(search.toLowerCase())
+  );
 
-    // Safely check: is it really an SVG <path> with an ID?
-    if (current instanceof SVGPathElement && current.id) {
-      const code = current.id.toUpperCase() as Provinces;
-      return PROVINCE_DATA[code] ? code : null;
-    }
-
-    return null;
+  const getProgressColor = (ratio: number) => {
+    if (ratio >= 0.9) return "bg-red-500";
+    if (ratio >= 0.7) return "bg-orange-500";
+    if (ratio >= 0.5) return "bg-yellow-500";
+    return "bg-green-500";
   };
 
-  const handleMouseEnter = (event: React.MouseEvent) => {
-    const code = detectProvince(event);
-    if (code) setHovered(code);
-  };
-
-  const handleMouseLeave = () => setHovered(null);
-
-  const getFillColor = (code: Provinces) => {
-    return "rgba(123, 123, 255, 0.9)"; // All same
-  };
-
-  return (
-    <div
-      style={{
-        maxWidth: "1100px",
-        margin: "0 auto",
-        padding: "2rem 0",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          position: "relative",
-          background:
-            "linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15))",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          borderRadius: "1.5rem",
-          border: "1px solid rgba(255, 255, 255, 0.2)",
-          boxShadow: `
-            0 8px 32px rgba(0, 0, 0, 0.12),
-            0 0 40px rgba(139, 92, 246, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.25)
-          `,
-          overflow: "visible",
-        }}
-      >
-        {/* Province label */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: hovered ? 1 : 0.45, y: 0 }}
-          transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          style={{
-            textAlign: "center",
-            padding: "1rem 0 0.5rem",
-            fontSize: "1.25rem",
-            fontWeight: "600",
-            color: hovered ? "#e2e8f0" : "#94a3b8",
-            letterSpacing: "0.5px",
-          }}
-        >
-          {hovered
-            ? (() => {
-                const data = PROVINCE_DATA[hovered];
-                return data.total === 0
-                  ? `${data.name}: No PNP Quota`
-                  : `${data.name}: 2025 PNP Quota (Filled: ${
-                      data.filled
-                    }, Remaining: ${data.remaining}, Total: ${data.total}) ${
-                      data.note ? `| ${data.note}` : ""
-                    }`;
-              })()
-            : "2025 PNP Quotas by Province (Filled, remaining, and total)"}
-        </motion.div>
-
-        {/* Map container with overlay for hover detection */}
-        <div
-          ref={mapRef}
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            padding: "0 1rem 1rem",
-            position: "relative",
-          }}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onMouseMove={handleMouseEnter} // Re-detect on move for accuracy
-        >
-          {/* Map container */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              padding: "1rem 1rem",
-              position: "relative",
-            }}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onMouseMove={handleMouseEnter}
-          >
-            <div
-              style={{
-                width: "100%",
-                maxWidth: "1000px",
-                margin: "0 auto",
-              }}
-            >
-              <CanadaMap
-                customize={Object.fromEntries(
-                  (Object.keys(PROVINCE_DATA) as Provinces[]).map((code) => [
-                    code,
-                    {
-                      fillColor: getFillColor(code),
-                      hoverColor: "rgba(255, 255, 255, 0.35)",
-                      strokeColor: "rgba(255, 255, 255, 0.6)",
-                      strokeWidth: 1.6,
-                    },
-                  ])
-                )}
-                // ← NO style prop here!
-              />
-            </div>
-          </div>
+  /* ------------------- LOADING ------------------- */
+  if (loading) {
+    return (
+      <div className={styles.loadingWrapper}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+            Loading 2025 PNP Quotas...
+          </p>
         </div>
       </div>
+    );
+  }
+
+  /* ------------------- ERROR ------------------- */
+  if (error) {
+    return (
+      <div className={styles.errorWrapper}>
+        <div className={styles.errorBox}>
+          <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
+            <AlertCircle size={32} />
+            <h3 className="text-xl font-bold">Error</h3>
+          </div>
+          <p className="mt-4 text-gray-700 dark:text-gray-300">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  /* ------------------- MAIN UI ------------------- */
+  return (
+    <div className={styles.container}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-7xl mx-auto"
+      >
+        {/* Header */}
+        <header className="text-center mb-10">
+          <h1 className={styles.headerTitle}>Canada PNP Quotas 2025</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
+            Real-time Provincial Nominee Program allocations
+          </p>
+        </header>
+
+        {/* Search */}
+        <div className={styles.searchWrapper}>
+          <Search className={styles.searchIcon} size={20} />
+          <input
+            type="text"
+            placeholder="Search by province or code..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={styles.searchInput}
+          />
+        </div>
+
+        {/* Stats Summary */}
+        <div className={styles.statsGrid}>
+          {[
+            {
+              label: "Total Nominations",
+              value: provinces
+                .reduce((a, p) => a + p.total, 0)
+                .toLocaleString(),
+            },
+            {
+              label: "Filled",
+              value: provinces
+                .reduce((a, p) => a + p.filled, 0)
+                .toLocaleString(),
+            },
+            {
+              label: "Remaining",
+              value: provinces
+                .reduce((a, p) => a + p.remaining, 0)
+                .toLocaleString(),
+              extraCls: styles.statRemaining,
+            },
+            {
+              label: "Bonus Points",
+              value: provinces.reduce((a, p) => a + p.bonus_points, 0),
+              icon: Sparkles,
+            },
+          ].map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.1 }}
+              className={styles.statCard}
+            >
+              <div className={`${styles.statValue} ${stat.extraCls || ""}`}>
+                {stat.icon && (
+                  <stat.icon
+                    className="inline-block mr-2 text-yellow-500"
+                    size={28}
+                  />
+                )}
+                {stat.value}
+              </div>
+              <div className={styles.statLabel}>{stat.label}</div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Province Cards */}
+        <div className={styles.cardsGrid}>
+          {filtered.map((p, idx) => {
+            const filledRatio = p.total > 0 ? p.filled / p.total : 0;
+            const isFull = p.remaining === 0 && p.total > 0;
+
+            return (
+              <motion.article
+                key={p.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+                className={styles.card}
+              >
+                {/* Bonus badge */}
+                {p.bonus_points > 0 && (
+                  <div className={styles.bonusBadge}>
+                    <Sparkles size={14} />+{p.bonus_points} pts
+                  </div>
+                )}
+
+                <div className={styles.cardBody}>
+                  <div className={styles.cardTitle}>
+                    <div>
+                      <h3>{p.name}</h3>
+                      <span className={styles.cardCode}>{p.code}</span>
+                    </div>
+                    {isFull && <span className={styles.fullBadge}>FULL</span>}
+                  </div>
+
+                  {p.total === 0 ? (
+                    <div className={styles.noPnp}>
+                      {p.note || "No PNP Program"}
+                    </div>
+                  ) : (
+                    <>
+                      {/* Progress */}
+                      <div className={styles.progressWrapper}>
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${filledRatio * 100}%` }}
+                          transition={{ duration: 1.2, ease: "easeOut" }}
+                          className={`${styles.progressFill} ${getProgressColor(
+                            filledRatio
+                          )}`}
+                        />
+                        <div className={styles.progressPercent}>
+                          {Math.round(filledRatio * 100)}%
+                        </div>
+                      </div>
+
+                      {/* Stats */}
+                      <div className={styles.cardStats}>
+                        <div>
+                          <div className={styles.statNumber}>
+                            {p.filled.toLocaleString()}
+                          </div>
+                          <div className={styles.statLabel}>Filled</div>
+                        </div>
+                        <div>
+                          <div
+                            className={`${styles.statNumber} ${styles.remainingNumber}`}
+                          >
+                            {p.remaining.toLocaleString()}
+                          </div>
+                          <div className={styles.statLabel}>Remaining</div>
+                        </div>
+                      </div>
+
+                      <div className={styles.totalLine}>
+                        Total:{" "}
+                        <strong className={styles.totalNumber}>
+                          {p.total.toLocaleString()}
+                        </strong>
+                      </div>
+
+                      {/* Bonus note */}
+                      {p.bonus_note && (
+                        <div className={styles.bonusNote}>
+                          ✨ {p.bonus_note}
+                        </div>
+                      )}
+
+                      {/* General note */}
+                      {p.note && <p className={styles.note}>{p.note}</p>}
+
+                      {/* Source */}
+                      {p.source_url && (
+                        <a
+                          href={p.source_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.sourceLink}
+                        >
+                          Official Source <ExternalLink size={14} />
+                        </a>
+                      )}
+                    </>
+                  )}
+                </div>
+              </motion.article>
+            );
+          })}
+        </div>
+
+        {/* Footer */}
+        <footer className={styles.footer}>
+          <p>
+            Last updated: <strong>{lastUpdated}</strong> • Data from official
+            provincial sources
+          </p>
+          <p className="mt-2">Built with ❤️ for Canadian immigrants</p>
+        </footer>
+      </motion.div>
     </div>
   );
 }

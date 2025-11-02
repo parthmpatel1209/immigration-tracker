@@ -202,22 +202,7 @@ export default function DrawCardsGrid() {
         </div>
       </div>
       <section className={styles.mapSection}>
-        <h2
-          style={{
-            textAlign: "center",
-            fontSize: "1.5rem",
-            fontWeight: "700",
-            margin: "0.75rem 0 0.5rem",
-            background: "linear-gradient(135deg, #3b82f6, #8b5cf6)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-            letterSpacing: "0.5px",
-          }}
-        >
-          2025 PNP Quotas by Province
-        </h2>
-        <div className={styles.mapWrapper}>
+        <div>
           <CanadaPNPMap />
         </div>
       </section>
