@@ -142,7 +142,7 @@ export default function CanadaPNPMap() {
   return (
     <div
       style={{
-        maxWidth: "900px",
+        maxWidth: "1100px",
         margin: "0 auto",
         padding: "2rem 0",
         fontFamily: "system-ui, sans-serif",
@@ -162,7 +162,7 @@ export default function CanadaPNPMap() {
             0 0 40px rgba(139, 92, 246, 0.1),
             inset 0 1px 0 rgba(255, 255, 255, 0.25)
           `,
-          overflow: "hidden",
+          overflow: "visible",
         }}
       >
         {/* Province label */}
@@ -206,29 +206,41 @@ export default function CanadaPNPMap() {
           onMouseLeave={handleMouseLeave}
           onMouseMove={handleMouseEnter} // Re-detect on move for accuracy
         >
-          <CanadaMap
-            // Built-in hover styling (visual feedback)
-            defaultFillColor="transparent"
-            hoverColor="rgba(255, 255, 255, 0.35)"
-            strokeColor="rgba(255, 255, 255, 0.6)"
-            strokeWidth={1.6}
-            // Per-province base colors (hover overrides)
-            customize={Object.fromEntries(
-              (Object.keys(PROVINCE_DATA) as Provinces[]).map((code) => [
-                code,
-                {
-                  fillColor: getFillColor(code),
-                },
-              ])
-            )}
+          {/* Map container */}
+          <div
             style={{
-              width: "680px",
-              maxWidth: "100%",
-              height: "auto",
-              display: "block",
-              pointerEvents: "none", // Allow events to bubble to overlay
+              display: "flex",
+              justifyContent: "center",
+              padding: "1rem 1rem",
+              position: "relative",
             }}
-          />
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onMouseMove={handleMouseEnter}
+          >
+            <div
+              style={{
+                width: "100%",
+                maxWidth: "1000px",
+                margin: "0 auto",
+              }}
+            >
+              <CanadaMap
+                customize={Object.fromEntries(
+                  (Object.keys(PROVINCE_DATA) as Provinces[]).map((code) => [
+                    code,
+                    {
+                      fillColor: getFillColor(code),
+                      hoverColor: "rgba(255, 255, 255, 0.35)",
+                      strokeColor: "rgba(255, 255, 255, 0.6)",
+                      strokeWidth: 1.6,
+                    },
+                  ])
+                )}
+                // ← NO style prop here!
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
