@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { policies, Policy } from "@/app/api/policy/policyData";
+import { policies, type Policy } from "@/app/api/policy/policyData";
 
 export default function Policy() {
   return (
