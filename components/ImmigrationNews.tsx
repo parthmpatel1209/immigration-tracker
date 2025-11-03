@@ -6,7 +6,7 @@ import { Calendar, ExternalLink, Filter, X } from "lucide-react";
 interface NewsItem {
   id: number;
   title: string;
-  summart: string;
+  summary: string;
   source?: string;
   published_at?: string;
   url?: string;
