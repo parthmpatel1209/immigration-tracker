@@ -6,6 +6,7 @@ import { Calendar, ExternalLink, Filter, X } from "lucide-react";
 interface NewsItem {
   id: number;
   title: string;
+  summart: string;
   source?: string;
   published_at?: string;
   url?: string;
@@ -349,6 +350,18 @@ export default function ImmigrationNewsPage() {
                 }}
               >
                 {item.title}
+              </h3>
+
+              {/* Summary */}
+              <h3
+                style={{
+                  fontSize: "1.125rem",
+                  fontWeight: "600",
+                  color: darkMode ? "#f3f4f6" : "#111827",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                {item.summary}
               </h3>
 
               {/* Meta */}
