@@ -72,7 +72,7 @@ export default function FAQs() {
       >
         <div className={styles["faq-wrapper"]}>
           <header className={styles["faq-header"]}>
-            <h1 className={styles["faq-title"]}>F&Qs</h1>
+            <h1 className={styles["faq-title"]}>FAQs</h1>
             <p
               className={`${styles["faq-subtitle"]} ${
                 isDark ? styles.dark : ""
@@ -132,7 +132,7 @@ export default function FAQs() {
     >
       <div className={styles["faq-wrapper"]}>
         <header className={styles["faq-header"]}>
-          <h1 className={styles["faq-title"]}>F&Qs</h1>
+          <h1 className={styles["faq-title"]}>FAQs</h1>
           <p
             className={`${styles["faq-subtitle"]} ${isDark ? styles.dark : ""}`}
           >
