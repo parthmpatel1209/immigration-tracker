@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Search, ExternalLink, Sparkles, AlertCircle } from "lucide-react";
+import { Search, ExternalLink, Rocket, AlertCircle } from "lucide-react";
 import styles from "./CanadaPNPMap.module.css";
 
 type Province = {
@@ -142,7 +142,7 @@ export default function CanadaPNPMap() {
             {
               label: "Bonus Points",
               value: provinces.reduce((a, p) => a + p.bonus_points, 0),
-              icon: Sparkles,
+              icon: Rocket,
             },
           ].map((stat, i) => (
             <motion.div
@@ -183,7 +183,7 @@ export default function CanadaPNPMap() {
                 {/* Bonus badge */}
                 {p.bonus_points > 0 && (
                   <div className={styles.bonusBadge}>
-                    <Sparkles size={14} />+{p.bonus_points} pts
+                    <Rocket size={14} />+{p.bonus_points}
                   </div>
                 )}
 
@@ -245,12 +245,9 @@ export default function CanadaPNPMap() {
                       {/* Bonus note */}
                       {p.bonus_note && (
                         <div className={styles.bonusNote}>
-                          ✨ {p.bonus_note}
+                          {p.bonus_note} + {p.note}
                         </div>
                       )}
-
-                      {/* General note */}
-                      {p.note && <p className={styles.note}>{p.note}</p>}
 
                       {/* Source */}
                       {p.source_url && (
@@ -277,7 +274,6 @@ export default function CanadaPNPMap() {
             Last updated: <strong>{lastUpdated}</strong> • Data from official
             provincial sources
           </p>
-          <p className="mt-2">Built with ❤️ for Canadian immigrants</p>
         </footer>
       </motion.div>
     </div>

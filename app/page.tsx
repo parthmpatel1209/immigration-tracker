@@ -6,7 +6,9 @@ import CRSFilter from "@/components/CRSFilter";
 import ImmigrationNews from "@/components/ImmigrationNews";
 import PRPathways from "@/components/PRPathways";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import DrawCardsGrid from "@/components/DrawCardsGrid";
+import FAQs from "@/components/FAQs";
 
 export default function HomePage() {
   const tabs = [
@@ -14,6 +16,7 @@ export default function HomePage() {
     { label: "CRS Scores", content: <DrawsTable /> },
     { label: "Immigration News", content: <ImmigrationNews /> },
     { label: "PR Pathways by Province", content: <PRPathways /> },
+    { label: "FAQs", content: <FAQs /> },
   ];
 
   return (
@@ -27,12 +30,9 @@ export default function HomePage() {
           <Tabs tabs={tabs} />
         </div>
       </div>
-      <div></div>
 
       {/* Footer */}
-      <footer className="text-center text-sm text-gray-500 dark:text-gray-400 py-6 border-t border-gray-200 dark:border-gray-700">
-        © {new Date().getFullYear()} Canadian Immigration Tracker
-      </footer>
+      <Footer />
     </main>
   );
 }
