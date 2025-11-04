@@ -1,0 +1,135 @@
+/* ShareSupportCard.module.css */
+.card {
+  margin: 2rem auto 0;
+  max-width: 48rem;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 1.25rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  padding: 1.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+:global(.dark) .card {
+  background: rgba(30, 41, 59, 0.85);
+  border-color: rgba(51, 65, 85, 0.5);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.15);
+}
+
+.title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+:global(.dark) .title {
+  background: linear-gradient(to right, #60a5fa, #a78bfa);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.text {
+  color: #374151;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+:global(.dark) .text {
+  color: #cbd5e1;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+@media (min-width: 640px) {
+  .buttonGroup {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+/* BUTTONS – FULLY INLINE, NO COMPOSES */
+.shareButton,
+.copyButton {
+  min-width: 11rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.shareButton {
+  background: linear-gradient(to right, #2563eb, #4f46e5);
+  color: white;
+}
+
+.shareButton:hover {
+  background: linear-gradient(to right, #1d4ed8, #4338ca);
+  transform: translateY(-2px);
+}
+
+.copyButton {
+  background: #f3f4f6;
+  color: #1f2937;
+  border: 2px solid #d1d5db;
+}
+
+:global(.dark) .copyButton {
+  background: #374151;
+  color: #e5e7eb;
+  border-color: #475569;
+}
+
+.copyButton:hover {
+  background: #e5e7eb;
+}
+
+:global(.dark) .copyButton:hover {
+  background: #4b5563;
+}
+
+.copied {
+  background: #16a34a !important;
+  color: white !important;
+  border-color: #16a34a !important;
+}
+
+.copied:hover {
+  background: #15803d !important;
+}
+
+@media (max-width: 480px) {
+  .card { padding: 1.5rem; }
+  .shareButton,
+  .copyButton {
+    width: 100%;
+  }
+}

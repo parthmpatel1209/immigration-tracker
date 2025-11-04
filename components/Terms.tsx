@@ -5,23 +5,6 @@ import { termsList, Terms as TermsType } from "@/app/api/policy/termsData";
 export default function Terms() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 text-gray-800">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Terms for Immigration Tracker
-      </h1>
-
-      {/* Navigation */}
-      <nav className="flex justify-center gap-4 mb-8 flex-wrap">
-        {termsList.map((term) => (
-          <a
-            key={term.id}
-            href={`#${term.id}`}
-            className="text-blue-600 hover:underline"
-          >
-            {term.title}
-          </a>
-        ))}
-      </nav>
-
       {/* Render each term */}
       {termsList.map((term: TermsType) => (
         <section key={term.id} id={term.id} className="mb-12">

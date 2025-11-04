@@ -4,23 +4,6 @@ import { policies, type Policy } from "@/app/api/policy/policyData";
 export default function Policy() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 text-gray-800">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Policies for Immigration Tracker
-      </h1>
-
-      {/* Navigation Links */}
-      <nav className="flex justify-center gap-4 mb-8">
-        {policies.map((policy) => (
-          <a
-            key={policy.id}
-            href={`#${policy.id}`}
-            className="text-blue-600 hover:underline"
-          >
-            {policy.title}
-          </a>
-        ))}
-      </nav>
-
       {/* Policy Sections */}
       {policies.map((policy: Policy) => (
         <section key={policy.id} id={policy.id} className="mb-12">

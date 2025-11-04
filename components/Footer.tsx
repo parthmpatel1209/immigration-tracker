@@ -69,7 +69,6 @@ export default function Footer() {
             <button
               onClick={() => setModal("policy")}
               className={styles.linkButton} // ← use the new class
-              aria-label="View Privacy Policy"
             >
               Privacy Policy
             </button>
@@ -77,7 +76,6 @@ export default function Footer() {
             <button
               onClick={() => setModal("terms")}
               className={styles.linkButton} // ← same class
-              aria-label="View Terms of Use"
             >
               Terms of Use
             </button>
