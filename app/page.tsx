@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 import DrawCardsGrid from "@/components/DrawCardsGrid";
 import FAQs from "@/components/FAQs";
 import Donate from "@/components/Donate";
+import ContactForm from "@/components/ContactForm";
 
 export default function HomePage() {
   const tabs = [
@@ -19,6 +20,7 @@ export default function HomePage() {
     { label: "PR Pathways by Province", content: <PRPathways /> },
     { label: "FAQs", content: <FAQs /> },
     { label: "Support", content: <Donate /> },
+    { label: "Contact Us", content: <ContactForm /> },
   ];
 
   return (

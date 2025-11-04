@@ -2,7 +2,7 @@
 .container {
   min-height: 100vh;
   background: linear-gradient(to bottom right, #eff6ff, #ffffff, #eef2ff);
-  padding: 1rem 1rem;
+  padding: 0 1rem;
   font-family: system-ui, -apple-system, sans-serif;
   border-radius: 20px;
 }

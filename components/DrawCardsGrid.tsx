@@ -88,7 +88,11 @@ function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
         </header>
 
         <div className={styles.crs}>
-          <Hash className={styles.icon} />
+          <Hash
+            style={{
+              color: isDark ? "#93c5fd" : "#3b82f6",
+            }}
+          />
           <span className={styles.crsValue}>{draw.crs_cutoff}</span>
         </div>
 

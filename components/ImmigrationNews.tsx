@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { Calendar, ExternalLink, Filter, X } from "lucide-react";
+import styles from "./ImmigrationNews.module.css";
 
 interface NewsItem {
   id: number;
@@ -13,44 +14,47 @@ interface NewsItem {
   program?: string;
 }
 
-// ───── Color Map for Programs ─────
-const PROGRAM_COLORS: Record<
-  string,
-  { lightBg: string; lightText: string; darkBg: string; darkText: string }
-> = {
-  "Express Entry": {
-    lightBg: "#e0e7ff",
-    lightText: "#4338ca",
-    darkBg: "#312e81",
-    darkText: "#c7d2fe",
-  },
-  PNP: {
-    lightBg: "#d1fae5",
-    lightText: "#065f46",
-    darkBg: "#064e3b",
-    darkText: "#a7f3d0",
-  },
-  CEC: {
-    lightBg: "#e9d5ff",
-    lightText: "#6b21a8",
-    darkBg: "#4c1d95",
-    darkText: "#e9d5ff",
-  },
-  FSW: {
-    lightBg: "#fef3c7",
-    lightText: "#92400e",
-    darkBg: "#78350f",
-    darkText: "#fde68a",
-  },
-  default: {
-    lightBg: "#e5e7eb",
-    lightText: "#374151",
-    darkBg: "#374151",
-    darkText: "#d1d5db",
-  },
+/* ------------------------------------------------------------------ */
+/* Badge colour map – light / dark values (used only in JSX)          */
+/* ------------------------------------------------------------------ */
+const PROGRAM_COLORS: Record<string, { light: string; dark: string }> = {
+  "Express Entry": { light: "#4338ca", dark: "#c7d2fe" },
+  PNP: { light: "#065f46", dark: "#a7f3d0" },
+  CEC: { light: "#6b21a8", dark: "#e9d5ff" },
+  FSW: { light: "#92400e", dark: "#fde68a" },
+  default: { light: "#374151", dark: "#d1d5db" },
 };
 
-export default function ImmigrationNewsPage() {
+/* ------------------------------------------------------------------ */
+/* Theme colour palette – defined once, reused everywhere            */
+/* ------------------------------------------------------------------ */
+const LIGHT = {
+  bgPrimary: "#ffffff",
+  bgSecondary: "#ffffff",
+  bgCard: "#ffffff",
+  bgTertiary: "#e5e7eb",
+  bgTertiaryHover: "#d1d5db",
+  textPrimary: "#111827",
+  textSecondary: "#374151",
+  textMuted: "#6b7280",
+  border: "#e5e7eb",
+  borderHover: "#d1d5db",
+};
+
+const DARK = {
+  bgPrimary: "#0f172a",
+  bgSecondary: "#1e293b",
+  bgCard: "#1e293b",
+  bgTertiary: "#374151",
+  bgTertiaryHover: "#475569",
+  textPrimary: "#f8fafc",
+  textSecondary: "#e2e8f0",
+  textMuted: "#94a3b8",
+  border: "#334155",
+  borderHover: "#475569",
+};
+
+export default function ImmigrationNews() {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [filtered, setFiltered] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -58,26 +62,29 @@ export default function ImmigrationNewsPage() {
   const [year, setYear] = useState("");
   const [darkMode, setDarkMode] = useState(false);
 
-  // ───── Detect dark mode from <html class="dark"> ─────
+  const theme = darkMode ? DARK : LIGHT;
+
+  /* ------------------------------------------------- */
+  /* Detect dark mode from <html class="dark">         */
+  /* ------------------------------------------------- */
   useEffect(() => {
-    const checkDarkMode = () => {
+    const check = () =>
       setDarkMode(document.documentElement.classList.contains("dark"));
-    };
-
-    checkDarkMode(); // Initial check
-
-    const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, {
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["class"],
     });
-
-    return () => observer.disconnect();
+    return () => obs.disconnect();
   }, []);
 
-  // ───── Fetch News ─────
+  /* ------------------------------------------------- */
+  /* Fetch news                                        */
+  /* ------------------------------------------------- */
   useEffect(() => {
     let mounted = true;
+
     const fetchNews = async () => {
       try {
         const res = await fetch("/api/news");
@@ -86,167 +93,120 @@ export default function ImmigrationNewsPage() {
           setNews(data);
           setFiltered(data);
         }
-      } catch (err) {
-        console.error("Failed to fetch news:", err);
+      } catch (e) {
+        console.error(e);
       } finally {
         if (mounted) setLoading(false);
       }
     };
+
     fetchNews();
+
     return () => {
       mounted = false;
     };
   }, []);
 
-  // ───── Filter News by Month & Year ─────
+  /* ------------------------------------------------- */
+  /* Filter by month / year                            */
+  /* ------------------------------------------------- */
   useEffect(() => {
-    let updated = [...news];
+    let list = [...news];
 
     if (year) {
-      updated = updated.filter((n) => {
-        const nYear = n.published_at
-          ? new Date(n.published_at).getFullYear().toString()
-          : "";
-        return nYear === year;
-      });
+      list = list.filter(
+        (n) =>
+          n.published_at &&
+          new Date(n.published_at).getFullYear().toString() === year
+      );
     }
-
     if (month) {
-      updated = updated.filter((n) => {
-        const nMonth = n.published_at
-          ? (new Date(n.published_at).getMonth() + 1)
-              .toString()
-              .padStart(2, "0")
-          : "";
-        return nMonth === month;
-      });
+      list = list.filter(
+        (n) =>
+          n.published_at &&
+          (new Date(n.published_at).getMonth() + 1)
+            .toString()
+            .padStart(2, "0") === month
+      );
     }
 
-    setFiltered(updated);
+    setFiltered(list);
   }, [month, year, news]);
 
-  // ───── Unique Years ─────
+  /* ------------------------------------------------- */
+  /* Unique years                                      */
+  /* ------------------------------------------------- */
   const uniqueYears = useMemo(() => {
-    return Array.from(
-      new Set(
-        news
-          .map((n) =>
-            n.published_at
-              ? new Date(n.published_at).getFullYear().toString()
-              : ""
-          )
-          .filter(Boolean)
-      )
-    ).sort((a, b) => Number(b) - Number(a));
+    const set = new Set<string>();
+    news.forEach((n) => {
+      if (n.published_at)
+        set.add(new Date(n.published_at).getFullYear().toString());
+    });
+    return Array.from(set).sort((a, b) => +b - +a);
   }, [news]);
 
-  // ───── Get Badge Style ─────
-  const getBadgeStyle = (program?: string) => {
-    const colors = program
-      ? PROGRAM_COLORS[program] || PROGRAM_COLORS.default
+  /* ------------------------------------------------- */
+  /* Badge colour helper                               */
+  /* ------------------------------------------------- */
+  const badgeColor = (program?: string) => {
+    const { light, dark } = program
+      ? PROGRAM_COLORS[program] ?? PROGRAM_COLORS.default
       : PROGRAM_COLORS.default;
-    return darkMode
-      ? { backgroundColor: colors.darkBg, color: colors.darkText }
-      : { backgroundColor: colors.lightBg, color: colors.lightText };
+    return darkMode ? dark : light;
   };
 
-  // ───── Loading State ─────
+  /* ------------------------------------------------- */
+  /* Render                                            */
+  /* ------------------------------------------------- */
   if (loading) {
     return (
-      <div
-        style={{
-          fontFamily: "system-ui, sans-serif",
-          color: darkMode ? "#d1d5db" : "#374151",
-          fontSize: "0.875rem",
-          textAlign: "center",
-          padding: "2rem",
-        }}
-      >
-        Loading latest news...
+      <div className={styles.loading}>
+        <div className={styles.spinner}></div>
+        <p style={{ color: theme.textMuted }}>Loading latest news...</p>
       </div>
     );
   }
 
-  // ───── Empty State ─────
   if (news.length === 0) {
     return (
-      <div
-        style={{
-          fontFamily: "system-ui, sans-serif",
-          color: darkMode ? "#9ca3af" : "#6b7280",
-          fontSize: "0.875rem",
-          textAlign: "center",
-          padding: "2rem",
-        }}
-      >
+      <div className={styles.empty} style={{ color: theme.textMuted }}>
         No news available right now.
       </div>
     );
   }
 
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", width: "100%" }}>
-      {/* Header + Filters */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "1rem",
-          alignItems: "center",
-          justifyContent: "space-between",
-          marginBottom: "1.5rem",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <h2
-            style={{
-              fontSize: "1.5rem",
-              fontWeight: "bold",
-              background: "linear-gradient(to right, #4f46e5, #7c3aed)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            Immigration News
-          </h2>
-          <Filter style={{ width: "14px", height: "14px", color: "#6366f1" }} />
+    <div
+      className={styles.container}
+      style={{
+        backgroundColor: theme.bgPrimary,
+        color: theme.textPrimary,
+      }}
+    >
+      {/* Header */}
+      <header className={styles.header}>
+        <div className={styles.titleWrapper}>
+          <h1 className={styles.title}>Immigration News</h1>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "0.75rem",
-            alignItems: "center",
-          }}
-        >
-          {/* Month Filter */}
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: "0.75rem",
-                fontWeight: "500",
-                color: darkMode ? "#d1d5db" : "#374151",
-                marginBottom: "0.25rem",
-              }}
-            >
+        <div className={styles.filters}>
+          {/* Month */}
+          <Filter className={styles.filterIcon} />
+          <div className={styles.filterGroup}>
+            <label className={styles.label} style={{ color: theme.textMuted }}>
               Month
             </label>
             <select
               value={month}
               onChange={(e) => setMonth(e.target.value)}
+              className={styles.select}
               style={{
-                padding: "0.375rem 0.75rem",
-                fontSize: "0.875rem",
-                border: `1px solid ${darkMode ? "#4b5563" : "#d1d5db"}`,
-                borderRadius: "0.375rem",
-                backgroundColor: darkMode ? "#1f2937" : "white",
-                color: darkMode ? "#f3f4f6" : "#111827",
-                minWidth: "140px",
+                backgroundColor: theme.bgSecondary,
+                borderColor: theme.border,
+                color: theme.textPrimary,
               }}
             >
-              <option value="">All</option>
+              <option value="">All Months</option>
               {Array.from({ length: 12 }, (_, i) => (
                 <option key={i + 1} value={(i + 1).toString().padStart(2, "0")}>
                   {new Date(0, i).toLocaleString("en", { month: "long" })}
@@ -255,33 +215,22 @@ export default function ImmigrationNewsPage() {
             </select>
           </div>
 
-          {/* Year Filter */}
-          <div>
-            <label
-              style={{
-                display: "block",
-                fontSize: "0.75rem",
-                fontWeight: "500",
-                color: darkMode ? "#d1d5db" : "#374151",
-                marginBottom: "0.25rem",
-              }}
-            >
+          {/* Year */}
+          <div className={styles.filterGroup}>
+            <label className={styles.label} style={{ color: theme.textMuted }}>
               Year
             </label>
             <select
               value={year}
               onChange={(e) => setYear(e.target.value)}
+              className={styles.select}
               style={{
-                padding: "0.375rem 0.75rem",
-                fontSize: "0.875rem",
-                border: `1px solid ${darkMode ? "#4b5563" : "#d1d5db"}`,
-                borderRadius: "0.375rem",
-                backgroundColor: darkMode ? "#1f2937" : "white",
-                color: darkMode ? "#f3f4f6" : "#111827",
-                minWidth: "100px",
+                backgroundColor: theme.bgSecondary,
+                borderColor: theme.border,
+                color: theme.textPrimary,
               }}
             >
-              <option value="">All</option>
+              <option value="">All Years</option>
               {uniqueYears.map((y) => (
                 <option key={y} value={y}>
                   {y}
@@ -290,118 +239,67 @@ export default function ImmigrationNewsPage() {
             </select>
           </div>
 
-          {/* Clear Filters */}
+          {/* Clear */}
           {(month || year) && (
             <button
               onClick={() => {
                 setMonth("");
                 setYear("");
               }}
+              className={styles.clearButton}
               style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.25rem",
-                padding: "0.375rem 0.75rem",
-                fontSize: "0.75rem",
-                fontWeight: "500",
-                backgroundColor: darkMode ? "#374151" : "#e5e7eb",
-                color: darkMode ? "#d1d5db" : "#374151",
-                borderRadius: "0.375rem",
-                border: "none",
-                cursor: "pointer",
+                backgroundColor: theme.bgTertiary,
+                color: theme.textSecondary,
               }}
             >
-              <X style={{ width: "14px", height: "14px" }} />
+              <X size={14} />
               Clear
             </button>
           )}
         </div>
-      </div>
+      </header>
 
-      {/* News List */}
+      {/* Grid */}
       {filtered.length > 0 ? (
-        <div style={{ display: "grid", gap: "1rem" }}>
+        <div className={styles.grid}>
           {filtered.map((item) => (
-            <div
+            <article
               key={item.id}
+              className={styles.card}
               style={{
-                border: `1px solid ${darkMode ? "#374151" : "#e5e7eb"}`,
-                borderRadius: "0.5rem",
-                padding: "1rem",
-                backgroundColor: darkMode ? "#1f2937" : "white",
-                transition: "all 0.2s",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                backgroundColor: theme.bgCard,
+                borderColor: theme.border,
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.boxShadow =
-                  "0 4px 6px -1px rgba(0,0,0,0.1)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)")
-              }
             >
-              {/* Title */}
-              <h3
-                style={{
-                  fontSize: "1.125rem",
-                  fontWeight: "600",
-                  color: darkMode ? "#f3f4f6" : "#111827",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {item.title}
-              </h3>
-
-              {/* Summary */}
-              <h3
-                style={{
-                  fontSize: "1.125rem",
-                  fontWeight: "600",
-                  color: darkMode ? "#f3f4f6" : "#111827",
-                  marginBottom: "0.5rem",
-                }}
+              <h3 className={styles.cardTitle}>{item.title}</h3>
+              <p
+                className={styles.cardSummary}
+                style={{ color: theme.textSecondary }}
               >
                 {item.summary}
-              </h3>
+              </p>
 
-              {/* Meta */}
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: "0.75rem",
-                  alignItems: "center",
-                  fontSize: "0.75rem",
-                  color: darkMode ? "#9ca3af" : "#6b7280",
-                  marginBottom: "0.5rem",
-                }}
-              >
+              <div className={styles.meta} style={{ color: theme.textMuted }}>
                 {item.source && <span>{item.source}</span>}
                 {item.published_at && (
                   <>
-                    <span>•</span>
-                    <span
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.25rem",
-                      }}
-                    >
-                      <Calendar style={{ width: "12px", height: "12px" }} />
+                    <span className={styles.dot}>•</span>
+                    <span className={styles.date}>
+                      <Calendar size={12} />
                       {new Date(item.published_at).toLocaleDateString()}
                     </span>
                   </>
                 )}
                 {item.program && (
                   <>
-                    <span>•</span>
+                    <span className={styles.dot}>•</span>
                     <span
+                      className={styles.badge}
                       style={{
-                        ...getBadgeStyle(item.program),
-                        padding: "0.125rem 0.5rem",
-                        borderRadius: "9999px",
-                        fontSize: "0.7rem",
-                        fontWeight: "500",
+                        backgroundColor: darkMode
+                          ? `${badgeColor(item.program)}20`
+                          : `${badgeColor(item.program)}15`,
+                        color: badgeColor(item.program),
                       }}
                     >
                       {item.program}
@@ -410,59 +308,31 @@ export default function ImmigrationNewsPage() {
                 )}
               </div>
 
-              {/* Read More */}
               {item.url && (
                 <a
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "0.25rem",
-                    fontSize: "0.875rem",
-                    color: "#4f46e5",
-                    textDecoration: "none",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.textDecoration = "underline")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.textDecoration = "none")
-                  }
+                  className={styles.readMore}
                 >
                   Read more
-                  <ExternalLink style={{ width: "14px", height: "14px" }} />
+                  <ExternalLink size={14} />
                 </a>
               )}
-            </div>
+            </article>
           ))}
         </div>
       ) : (
-        <div
-          style={{
-            textAlign: "center",
-            padding: "2rem",
-            color: darkMode ? "#9ca3af" : "#6b7280",
-            fontSize: "0.875rem",
-          }}
-        >
+        <div className={styles.noResults} style={{ color: theme.textMuted }}>
           No news found for selected filters.
         </div>
       )}
 
       {/* Footer */}
-      <div
-        style={{
-          marginTop: "1.5rem",
-          textAlign: "center",
-          fontSize: "0.75rem",
-          color: darkMode ? "#9ca3af" : "#6b7280",
-        }}
-      >
+      <footer className={styles.footer} style={{ color: theme.textMuted }}>
         Showing <strong>{filtered.length}</strong> of{" "}
         <strong>{news.length}</strong> articles
-      </div>
+      </footer>
     </div>
   );
 }

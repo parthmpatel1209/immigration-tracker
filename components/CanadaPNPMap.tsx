@@ -140,7 +140,7 @@ export default function CanadaPNPMap() {
               extraCls: styles.statRemaining,
             },
             {
-              label: "Boost Quotas",
+              label: "Quota Boost",
               value: provinces.reduce((a, p) => a + p.bonus_points, 0),
               icon: Rocket,
             },

@@ -79,23 +79,11 @@ export default function Footer() {
             >
               Terms of Use
             </button>
-
-            <button
-              onClick={() => setModal("terms")}
-              className={styles.linkButton} // ← same class
-              aria-label="View Terms of Use"
-            >
-              Contact
-            </button>
           </nav>
 
           {/* Made with love */}
           <p className={styles.love}>
-            Made with{" "}
-            <span role="img" aria-label="heart">
-              Heart
-            </span>{" "}
-            in Canada for Canadian immigrants
+            Made with ❤️ in Canada for Canadian immigrants
           </p>
         </div>
       </footer>
