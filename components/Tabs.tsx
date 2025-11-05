@@ -1,143 +1,286 @@
 "use client";
 
-import { useState, ReactNode, useEffect } from "react";
+import { useState, ReactNode, useEffect, useRef, useCallback } from "react";
 import { Sun, Moon } from "lucide-react";
-
-// ───── Color Map (for future badge use) ─────
-const PROGRAM_COLORS: Record<
-  string,
-  { lightBg: string; lightText: string; darkBg: string; darkText: string }
-> = {
-  "Express Entry": {
-    lightBg: "#e0e7ff",
-    lightText: "#4338ca",
-    darkBg: "#312e81",
-    darkText: "#c7d2fe",
-  },
-  PNP: {
-    lightBg: "#d1fae5",
-    lightText: "#065f46",
-    darkBg: "#064e3b",
-    darkText: "#a7f3d0",
-  },
-  CEC: {
-    lightBg: "#e9d5ff",
-    lightText: "#6b21a8",
-    darkBg: "#4c1d95",
-    darkText: "#e9d5ff",
-  },
-  FSW: {
-    lightBg: "#fef3c7",
-    lightText: "#92400e",
-    darkBg: "#78350f",
-    darkText: "#fde68a",
-  },
-  default: {
-    lightBg: "#e5e7eb",
-    lightText: "#374151",
-    darkBg: "#374151",
-    darkText: "#d1d5db",
-  },
-};
 
 interface Tab {
   label: string;
   content: ReactNode;
 }
-
 interface TabsProps {
   tabs: Tab[];
 }
 
+/* --------------------------------------------------------------- */
 export default function Tabs({ tabs }: TabsProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDark, setIsDark] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  // Apply dark mode to <html>
+  /* ---- Detect mobile (≤640px) --------------------------------- */
   useEffect(() => {
-    const html = document.documentElement;
-    if (isDark) {
-      html.classList.add("dark");
-    } else {
-      html.classList.remove("dark");
-    }
-  }, [isDark]);
-
-  // Optional: sync with system preference on mount
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    setIsDark(mediaQuery.matches);
-    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
+    const mql = window.matchMedia("(max-width: 640px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    setIsMobile(mql.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
   }, []);
 
+  /* ---- Dark-mode handling -------------------------------------- */
+  useEffect(() => {
+    const html = document.documentElement;
+    if (isDark) html.classList.add("dark");
+    else html.classList.remove("dark");
+  }, [isDark]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    setIsDark(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsDark(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  /* ---- Center active tab (mobile only) ------------------------ */
+  const scrollToTab = useCallback(
+    (idx: number) => {
+      if (!isMobile) return;
+
+      const container = scrollContainerRef.current;
+      const tab = tabRefs.current[idx];
+      if (!container || !tab) return;
+
+      const cW = container.clientWidth;
+      const tW = tab.offsetWidth;
+      const tL = tab.offsetLeft;
+
+      const desired = tL - cW / 2 + tW / 2;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      const bounded = Math.max(0, Math.min(desired, maxScroll));
+
+      container.scrollTo({ left: bounded, behavior: "smooth" });
+    },
+    [isMobile]
+  );
+
+  useEffect(() => {
+    scrollToTab(activeIndex);
+  }, [activeIndex, scrollToTab]);
+
+  /* ---- Fade gradients (mobile only) --------------------------- */
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const update = () => {
+      const left = container.querySelector("#fade-left") as HTMLElement;
+      const right = container.querySelector("#fade-right") as HTMLElement;
+
+      const atStart = container.scrollLeft <= 1;
+      const atEnd =
+        Math.abs(
+          container.scrollWidth - container.scrollLeft - container.clientWidth
+        ) <= 1;
+
+      if (left) left.style.opacity = atStart ? "0" : "1";
+      if (right) right.style.opacity = atEnd ? "0" : "1";
+    };
+
+    update();
+    const debounced = (() => {
+      let t: NodeJS.Timeout;
+      return () => {
+        clearTimeout(t);
+        t = setTimeout(update, 30);
+      };
+    })();
+
+    container.addEventListener("scroll", debounced);
+    window.addEventListener("resize", update);
+    return () => {
+      container.removeEventListener("scroll", debounced);
+      window.removeEventListener("resize", update);
+    };
+  }, [isMobile, tabs]);
+
+  /* ---- Scale & opacity (mobile only – **all tabs** treated equally) */
+  const getScaleAndOpacity = (idx: number) => {
+    if (!isMobile) return { scale: 1, opacity: 1 };
+
+    const container = scrollContainerRef.current;
+    if (!container) return { scale: 1, opacity: 1 };
+
+    const tab = tabRefs.current[idx];
+    if (!tab) return { scale: 1, opacity: 1 };
+
+    const cRect = container.getBoundingClientRect();
+    const tRect = tab.getBoundingClientRect();
+
+    const tabCenter = tRect.left + tRect.width / 2;
+    const containerCenter = cRect.left + cRect.width / 2;
+    const distance = Math.abs(tabCenter - containerCenter);
+    const maxDist = cRect.width * 0.45; // same as before
+
+    const scale = 1 - (distance / maxDist) * 0.15;
+    const clamped = Math.max(scale, 0.85);
+    const opacity = 0.7 + (clamped - 0.85) * 2;
+
+    return { scale: clamped, opacity };
+  };
+
+  /* --------------------------------------------------------------- */
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", width: "100%" }}>
-      {/* Tabs Header */}
+      {/* Header ----------------------------------------------------- */}
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
           alignItems: "center",
+          borderBottom: `1px solid ${isDark ? "#374151" : "#e5e7eb"}`,
           paddingBottom: "0.75rem",
           marginBottom: "1rem",
-          borderBottom: `1px solid ${isDark ? "#374151" : "#e5e7eb"}`,
         }}
       >
-        {/* Tab Buttons */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-          {tabs.map((tab, index) => (
-            <button
-              key={index}
-              onClick={() => setActiveIndex(index)}
+        {/* Scrollable area (mobile) / static (desktop) ------------- */}
+        <div
+          ref={scrollContainerRef}
+          style={{
+            position: "relative",
+            flex: 1,
+            overflowX: isMobile ? "auto" : "visible",
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+            padding: isMobile ? "0 3rem 4px 3rem" : "0",
+            maskImage: isMobile
+              ? isDark
+                ? "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)"
+                : "linear-gradient(to right, transparent 0%, white 12%, white 88%, transparent 100%)"
+              : "none",
+          }}
+          className={isMobile ? "no-scrollbar" : undefined}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: "0.75rem",
+              minWidth: isMobile ? "max-content" : "auto",
+              alignItems: "center",
+              height: "3rem",
+            }}
+          >
+            {tabs.map((tab, i) => {
+              const isActive = i === activeIndex;
+              const { scale, opacity } = isActive
+                ? { scale: 1, opacity: 1 }
+                : getScaleAndOpacity(i);
+
+              const fontSize = isActive ? "1rem" : `${0.875 * scale}rem`;
+
+              return (
+                <button
+                  key={i}
+                  ref={(el) => {
+                    tabRefs.current[i] = el;
+                  }}
+                  onClick={() => {
+                    setActiveIndex(i);
+                    scrollToTab(i);
+                  }}
+                  style={{
+                    flexShrink: 0,
+                    padding: "0.5rem 1rem",
+                    fontSize,
+                    fontWeight: isActive ? "600" : "500",
+                    color: isActive
+                      ? isDark
+                        ? "#c7d2fe"
+                        : "#4f46e5"
+                      : isDark
+                      ? "#9ca3af"
+                      : "#6b7280",
+                    backgroundColor: isActive
+                      ? isDark
+                        ? "#312e81"
+                        : "#e0e7ff"
+                      : "transparent",
+                    borderRadius: "9999px",
+                    border: "none",
+                    cursor: "pointer",
+                    transition:
+                      "all 0.3s cubic-bezier(0.4,0,0.2,1), transform 0.3s",
+                    outline: "none",
+                    opacity,
+                    transform: `scale(${scale})`,
+                    transformOrigin: "center",
+                    whiteSpace: "nowrap",
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive)
+                      e.currentTarget.style.backgroundColor = isDark
+                        ? "#374151"
+                        : "#f3f4f6";
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive)
+                      e.currentTarget.style.backgroundColor = "transparent";
+                  }}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* left fade (mobile only) */}
+          {isMobile && (
+            <div
+              id="fade-left"
               style={{
-                padding: "0.5rem 1rem",
-                fontSize: "0.875rem",
-                fontWeight: activeIndex === index ? "600" : "500",
-                color:
-                  activeIndex === index
-                    ? isDark
-                      ? "#c7d2fe"
-                      : "#4f46e5"
-                    : isDark
-                    ? "#9ca3af"
-                    : "#6b7280",
-                backgroundColor:
-                  activeIndex === index
-                    ? isDark
-                      ? "#312e81"
-                      : "#e0e7ff"
-                    : "transparent",
-                borderRadius: "0.375rem",
-                border: "none",
-                cursor: "pointer",
-                transition: "all 0.2s",
-                outline: "none",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                bottom: 0,
+                width: "3rem",
+                background: isDark
+                  ? "linear-gradient(to right, #1f2937 30%, transparent)"
+                  : "linear-gradient(to right, #ffffff 30%, transparent)",
+                pointerEvents: "none",
+                opacity: 0,
+                transition: "opacity 0.3s ease",
+                zIndex: 10,
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.backgroundColor = isDark
-                  ? "#374151"
-                  : "#f3f4f6")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.backgroundColor =
-                  activeIndex === index
-                    ? isDark
-                      ? "#312e81"
-                      : "#e0e7ff"
-                    : "transparent")
-              }
-            >
-              {tab.label}
-            </button>
-          ))}
+            />
+          )}
+
+          {/* right fade (mobile only) */}
+          {isMobile && (
+            <div
+              id="fade-right"
+              style={{
+                position: "absolute",
+                top: 0,
+                right: 0,
+                bottom: 0,
+                width: "3rem",
+
+                pointerEvents: "none",
+                opacity: 1,
+                transition: "opacity 0.3s ease",
+                zIndex: 10,
+              }}
+            />
+          )}
         </div>
 
-        {/* Dark Mode Toggle */}
+        {/* Dark-mode toggle */}
         <button
           onClick={() => setIsDark(!isDark)}
           style={{
+            flexShrink: 0,
             padding: "0.5rem",
             borderRadius: "9999px",
             backgroundColor: isDark ? "#374151" : "#f3f4f6",
@@ -145,20 +288,11 @@ export default function Tabs({ tabs }: TabsProps) {
             border: "none",
             cursor: "pointer",
             transition: "all 0.2s",
+            marginLeft: "0.5rem",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
           }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor = isDark
-              ? "#4b5563"
-              : "#e5e7eb")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor = isDark
-              ? "#374151"
-              : "#f3f4f6")
-          }
           title="Toggle Dark Mode"
         >
           {isDark ? (
@@ -169,16 +303,12 @@ export default function Tabs({ tabs }: TabsProps) {
         </button>
       </div>
 
-      {/* Tab Content */}
-      <div
-        style={{
-          animation: "fadeIn 0.3s ease-in-out",
-        }}
-      >
+      {/* Content ---------------------------------------------------- */}
+      <div style={{ animation: "fadeIn 0.3s ease-in-out" }}>
         {tabs[activeIndex].content}
       </div>
 
-      {/* Keyframes for fade-in */}
+      {/* Global styles */}
       <style jsx>{`
         @keyframes fadeIn {
           from {
@@ -189,6 +319,9 @@ export default function Tabs({ tabs }: TabsProps) {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+        .no-scrollbar::-webkit-scrollbar {
+          display: none;
         }
       `}</style>
     </div>

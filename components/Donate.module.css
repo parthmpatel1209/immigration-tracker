@@ -39,6 +39,27 @@
   box-shadow: 0 25px 30px -5px rgba(0, 0, 0, 0.15), 0 15px 15px -5px rgba(0, 0, 0, 0.08);
 }
 
+.cardsWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;           /* space between the two cards */
+  width: 100%;
+  max-width: 58rem;
+}
+
+/* Optional: subtle divider line */
+.cardsWrapper::after {
+  content: "";
+  width: 60px;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  border-radius: 1px;
+}
+:global(.dark) .cardsWrapper::after {
+  background: rgba(255, 255, 255, 0.15);
+}
+
 /* Typography */
 .title {
   font-size: 1.875rem;
