@@ -1,0 +1,78 @@
+/* ──────────────────────────────────────────────────────────────
+   PRPathways – 1 rem outer padding + consistent badge colours
+   ────────────────────────────────────────────────────────────── */
+.wrapper { padding:1rem; width:100%; box-sizing:border-box; font-family:system-ui,sans-serif; }
+
+/* Header */
+.header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem; }
+.title  { font-size:1.5rem; font-weight:bold;
+          background:linear-gradient(to right,#4f46e5,#7c3aed);
+          -webkit-background-clip:text; background-clip:text; color:transparent; }
+.filterIcon { width:14px; height:14px; color:#6366f1; }
+
+/* Province filter */
+.filterWrapper { margin-bottom:1.5rem; }
+.filterLabel   { display:block; font-size:.75rem; font-weight:500; margin-bottom:.5rem; }
+.filterSelect  { width:100%; max-width:400px; padding:.5rem .75rem; font-size:.875rem;
+                 border-radius:.375rem; }
+
+/* Card grid */
+.grid { display:grid; gap:1rem;
+        grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); }
+
+/* Card */
+.card { border:1px solid; border-radius:.5rem; padding:1.5rem;
+        transition:all .3s ease; box-shadow:0 1px 3px rgba(0,0,0,.1);
+        position:relative; overflow:hidden; }
+.card:hover { transform:translateY(-4px); }
+
+/* ----------  BADGE COLOURS (same for light & dark) ---------- */
+.badge { display:inline-flex; align-items:center; padding:.125rem .5rem;
+         font-size:.7rem; font-weight:500; border-radius:9999px; margin-left:.5rem; }
+
+/* Express Entry */
+.badge.express   { background:#e0e7ff; color:#4338ca; }
+html.dark .badge.express { background:#312e81; color:#c7d2fe; }
+
+/* PNP */
+.badge.pnp       { background:#d1fae5; color:#065f46; }
+html.dark .badge.pnp { background:#064e3b; color:#a7f3d0; }
+
+/* CEC */
+.badge.cec       { background:#e9d5ff; color:#6b21a8; }
+html.dark .badge.cec { background:#4c1d95; color:#e9d5ff; }
+
+/* FSW */
+.badge.fsw       { background:#fef3c7; color:#92400e; }
+html.dark .badge.fsw { background:#78350f; color:#fde68a; }
+
+/* Default */
+.badge.default   { background:#e5e7eb; color:#374151; }
+html.dark .badge.default { background:#374151; color:#d1d5db; }
+
+/* ----------  Dark-mode overrides (the rest) ---------- */
+html.dark .filterLabel   { color:#d1d5db; }
+html.dark .filterSelect  { border-color:#4b5563; background:#1f2937; color:#f3f4f6; }
+
+html.dark .card          { border-color:#374151; background:#1f2937; }
+html.dark .cardTitle     { color:#f3f4f6; }
+html.dark .cardSummary   { color:#9ca3af; }
+html.dark .cardLink      { color:#4f46e5; }
+
+html.light .filterLabel  { color:#374151; }
+html.light .filterSelect { border-color:#d1d5db; background:white; color:#111827; }
+
+html.light .card         { border-color:#e5e7eb; background:white; }
+html.light .cardTitle    { color:#111827; }
+html.light .cardSummary  { color:#6b7280; }
+html.light .cardLink     { color:#4f46e5; }
+
+/* Footer */
+.footer { margin-top:1.5rem; text-align:center; font-size:.75rem; }
+html.dark .footer  { color:#9ca3af; }
+html.light .footer { color:#6b7280; }
+
+/* Loading / Empty */
+.message { font-size:.875rem; text-align:center; padding:2rem; }
+html.dark .message  { color:#d1d5db; }
+html.light .message { color:#374151; }

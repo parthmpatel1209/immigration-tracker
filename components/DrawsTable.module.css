@@ -2,7 +2,9 @@
 .container {
   font-family: system-ui, sans-serif;
   width: 100%;
-  padding: 1rem 1rem;
+  padding: 0 1rem;               /* <-- remove the 1rem padding */
+  margin: 0;                /* <-- explicit zero margin */
+  box-sizing: border-box;
 }
 
 .header {

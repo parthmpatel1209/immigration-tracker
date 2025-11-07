@@ -92,6 +92,7 @@ function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
             style={{
               color: isDark ? "#93c5fd" : "#3b82f6",
             }}
+            className={styles.icon} // optional: keep size
           />
           <span className={styles.crsValue}>{draw.crs_cutoff}</span>
         </div>

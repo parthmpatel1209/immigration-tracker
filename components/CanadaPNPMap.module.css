@@ -2,7 +2,7 @@
 .container {
   min-height: 100vh;
   background: linear-gradient(to bottom right, #eff6ff, #ffffff, #eef2ff);
-  padding: 0 1rem;
+  padding: 1rem 1rem;
   font-family: system-ui, -apple-system, sans-serif;
   border-radius: 20px;
 }
@@ -39,7 +39,7 @@
   margin: 0 auto 2rem;
 }
 .searchInput {
-  width: 100%;
+  width: 80%;
   padding: 1rem 1rem 1rem 3rem;
   font-size: 1rem;
   border-radius: 1.5rem;
@@ -68,7 +68,7 @@
 }
 .searchIcon {
   position: absolute;
-  left: 1rem;
+  left: 3rem;
   top: 50%;
   transform: translateY(-50%);
   color: #94a3b8;
