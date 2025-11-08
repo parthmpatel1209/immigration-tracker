@@ -1,3 +1,4 @@
+// app/components/ChatBot.tsx   (or wherever you keep it)
 "use client";
 
 import { useState, useEffect, useRef } from "react";
@@ -15,14 +16,14 @@ export default function ChatBot() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   /* ---------------------------------------------------------- */
-  /*  Auto-scroll to bottom when a new message arrives          */
+  /*  Auto‑scroll to bottom when a new message arrives          */
   /* ---------------------------------------------------------- */
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   /* ---------------------------------------------------------- */
-  /*  Graceful open/close animation                             */
+  /*  Graceful close animation                                 */
   /* ---------------------------------------------------------- */
   const toggle = () => {
     if (isOpen) {
@@ -36,9 +37,6 @@ export default function ChatBot() {
     }
   };
 
-  /* ---------------------------------------------------------- */
-  /*  Send message with 429 retry logic                         */
-  /* ---------------------------------------------------------- */
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -47,74 +45,46 @@ export default function ChatBot() {
     setInput("");
     setIsLoading(true);
 
-    let retryCount = 0;
-    const maxRetries = 3;
+    try {
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: userMsg }),
+      });
 
-    while (true) {
-      try {
-        const res = await fetch("/api/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: userMsg }),
-        });
+      const data = await res.json();
 
-        // ---- 429 Retry ----
-        if (res.status === 429 && retryCount < maxRetries) {
-          retryCount++;
-          const delay = 1000 * 2 ** retryCount; // 2s, 4s, 8s
-          setMessages((prev) => [
-            ...prev,
-            {
-              role: "error",
-              text: `Rate limited — retrying in ${delay / 1000}s…`,
-            },
-          ]);
-          await new Promise((r) => setTimeout(r, delay));
-          continue; // retry
-        }
-
-        const data = await res.json();
-
-        if (data.error) {
-          setMessages((prev) => [
-            ...prev,
-            {
-              role: "error",
-              text: data.error || "Sorry, something went wrong.",
-            },
-          ]);
-        } else {
-          setMessages((prev) => [...prev, { role: "bot", text: data.reply }]);
-        }
-        break; // success
-      } catch (err) {
+      if (data.error) {
         setMessages((prev) => [
           ...prev,
-          { role: "error", text: "Network error. Try again later." },
+          { role: "error", text: data.error || "Sorry, something went wrong." },
         ]);
-        break;
-      } finally {
-        setIsLoading(false);
+      } else {
+        setMessages((prev) => [...prev, { role: "bot", text: data.reply }]);
       }
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "error", text: "Network error. Try again later." },
+      ]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <>
-      {/* Floating toggle button – scoped with .chatBotRoot */}
-      <button
-        onClick={toggle}
-        className={`${styles.toggleBtn} ${styles.chatBotRoot}`}
-      >
+      {/* Floating toggle button */}
+      <button onClick={toggle} className={styles.toggleBtn}>
         <MessageCircle className="w-6 h-6" />
       </button>
 
-      {/* Chat window – fully scoped */}
+      {/* Chat window */}
       {isOpen && (
         <div
           className={`${styles.container} ${styles.chatWindow} ${
-            styles.chatBotRoot
-          } ${isClosing ? styles.closing : ""}`}
+            isClosing ? styles.closing : ""
+          }`}
         >
           <div className={styles.header}>Canadian Immigration Assistant</div>
 
@@ -147,7 +117,7 @@ export default function ChatBot() {
               </div>
             )}
 
-            {/* Invisible anchor for auto-scroll */}
+            {/* invisible anchor for auto‑scroll */}
             <div ref={messagesEndRef} />
           </div>
 
@@ -155,8 +125,8 @@ export default function ChatBot() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={
-                (e) => e.key === "Enter" && !e.shiftKey && sendMessage() // Fixed: only one quote
+              onKeyDown={(e) =>
+                e.key === "Enter" && !e.shiftKey && sendMessage()
               }
               placeholder="Ask a question..."
               className={styles.input}
