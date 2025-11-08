@@ -30,16 +30,16 @@
 :global(html.dark) .headerTitle::before {
   background: rgba(0, 0, 0, 0.25); 
 }
-
 /* ───── SEARCH ───── */
 .searchWrapper {
   position: relative;
   max-width: 40rem;
   margin: 0 auto 2rem;
 }
+
 .searchInput {
-  width: 80%;
-  padding: 1rem 1rem 1rem 3rem;
+  width: 100%; /* Changed from 80% to 100% for better control */
+  padding: 1rem 1rem 1rem 2.5rem; /* Reduced left padding slightly */
   font-size: 1rem;
   border-radius: 1.5rem;
   border: 1px solid #e2e8f0;
@@ -47,30 +47,69 @@
   color: #1e293b;
   outline: none;
   transition: all 0.3s ease;
+  box-sizing: border-box;
 }
-.searchInput::placeholder { color: #94a3b8; }
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
 .searchInput:focus {
   border-color: #a78bfa;
   background: #fff;
   box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.3);
 }
+
 :global(html.dark) .searchInput {
   background: rgba(255, 255, 255, 0.12);
   border-color: rgba(255, 255, 255, 0.3);
   color: #fff;
 }
-:global(html.dark) .searchInput::placeholder { color: rgba(255, 255, 255, 0.7); }
+
+:global(html.dark) .searchInput::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
 :global(html.dark) .searchInput:focus {
   background: rgba(255, 255, 255, 0.2);
   border-color: #c084fc;
   box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.3);
 }
+
 .searchIcon {
   position: absolute;
-  left: 3rem;
+  left: 0.9rem; /* Reduced from 3rem → use smaller fixed value */
   top: 50%;
   transform: translateY(-50%);
   color: #94a3b8;
+  pointer-events: none; /* Prevents icon from blocking input */
+  width: 20px;
+  height: 20px;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 640px) {
+  .searchInput {
+    padding-left: 2.8rem; /* Enough for icon + spacing */
+    font-size: 0.95rem; /* Prevents zoom on iOS */
+  }
+
+  .searchIcon {
+    left: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .searchInput {
+    padding: 0.85rem 0.85rem 0.85rem 2.6rem;
+    font-size: 0.9rem;
+  }
+
+  .searchIcon {
+    left: 0.75rem;
+    width: 18px;
+    height: 18px;
+  }
 }
 
 /* ───── STATS SUMMARY ───── */
