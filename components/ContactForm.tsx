@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import styles from "./ContactForm.module.css";
-import AdSenseAd from "@/components/AdSenseAd";
+import ChatBot from "@/components/ChatBot";
 
 interface FormData {
   name: string;
@@ -247,10 +247,8 @@ export default function ContactForm() {
             immigrationdatacanada@gmail.com
           </a>
         </p>
-        <div className="mt-6">
-          <AdSenseAd adSlot="1234567890" />
-        </div>
       </div>
+      <ChatBot />
     </div>
   );
 }

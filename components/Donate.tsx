@@ -1,7 +1,6 @@
 "use client";
 import styles from "./Donate.module.css";
 import ShareSupportCard from "./ShareSupportCard";
-import AdSenseAd from "@/components/AdSenseAd";
 
 // Load public display email from .env.local
 const DISPLAY_EMAIL =
@@ -63,9 +62,6 @@ export default function Donate() {
           </p>
 
           <ShareSupportCard />
-        </div>
-        <div className="mt-6">
-          <AdSenseAd adSlot="1234567890" />
         </div>
       </section>
     </>

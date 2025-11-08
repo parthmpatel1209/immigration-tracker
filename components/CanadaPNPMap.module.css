@@ -7,7 +7,6 @@
   border-radius: 20px;
 }
 
-/* dark mode overrides */
 :global(html.dark) .container {
   background: linear-gradient(to bottom right, #111827, #1e1b4b, #111827);
 }
