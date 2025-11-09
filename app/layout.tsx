@@ -17,6 +17,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
+      <head>
+        {/*PNG favicon */}
+        <link rel="icon" href="/favicon.png" type="image/png" />
+      </head>
       {/* Google AdSense */}
       <Script
         async

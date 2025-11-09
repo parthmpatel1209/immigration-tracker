@@ -132,7 +132,7 @@ export default function ContactForm() {
               value={formData.name}
               onChange={handleChange}
               className={styles.contact_input}
-              placeholder="John Doe"
+              placeholder="Parth Patel"
             />
           </div>
 

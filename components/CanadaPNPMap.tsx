@@ -101,7 +101,7 @@ export default function CanadaPNPMap() {
         <header className="text-center mb-10">
           <h1 className={styles.headerTitle}>Canada PNP Quotas 2025</h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
-            Real-time Provincial Nominee Program allocations
+            Latest Provincial Nominee Program allocations
           </p>
         </header>
 

@@ -127,7 +127,7 @@ export default function Header() {
         <h1 className="__header__title">Canada Express Entry Tracker</h1>
 
         <p className="__header__subtitle">
-          Live updates on CRS scores and immigration draws
+          Latest updates on CRS scores and immigration draws
         </p>
       </div>
       {/* ---------- SCOPED GLOBAL CSS ---------- */}
