@@ -88,6 +88,22 @@ export const termsList: Terms[] = [
         content:
           'For questions about these Terms, email: <a href="mailto:immigrationdatacanada@gmail.com" class="text-blue-600 hover:underline">immigrationdatacanada@gmail.com</a>',
       },
+      {
+        title: "12. Critical Disclaimer – Not Immigration Advice",
+        content: `
+    <strong>Immigration Tracker, its owner, coder, editor, and any contributors are NOT certified immigration consultants, lawyers, or authorized representatives of IRCC.</strong>
+    <br/><br/>
+    The **chatbot** that appears on various pages is **AI-generated** and may provide **inaccurate, outdated, unverified, or irrelevant information**.
+    <br/><br/>
+    <strong>You must:</strong>
+    <ul class="list-disc pl-6 mt-2">
+      <li>Always double-check data with the official <a href="https://www.canada.ca/en/immigration-refugees-citizenship.html" class="text-blue-600 hover:underline">IRCC website</a>.</li>
+      <li>Seek advice from a <strong>Regulated Canadian Immigration Consultant (RCIC)</strong> or licensed lawyer before acting.</li>
+    </ul>
+    <br/>
+    <em>We provide this site to help you find information as accurately as possible, but we are not responsible for any decisions made based on its content.</em>
+  `.trim(),
+      },
     ],
   },
 ];

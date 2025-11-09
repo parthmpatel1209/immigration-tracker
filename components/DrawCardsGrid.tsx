@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Calendar, Users, Hash, MapPin } from "lucide-react";
 import styles from "./DrawCardsGrid.module.css";
 import CanadaPNPMap from "./CanadaPNPMap";
+import ChatBot from "@/components/ChatBot";
 
 // ──────────────────────────────────────────────────────────────
 // Types – EXACT same as DrawsTable (draw_province: string | null)
@@ -285,6 +286,7 @@ export default function DrawCardsGrid() {
       <section className={styles.mapSection}>
         <CanadaPNPMap />
       </section>
+      <ChatBot />
     </div>
   );
 }

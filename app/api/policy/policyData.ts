@@ -82,6 +82,23 @@ export const policies: Policy[] = [
         content:
           'For questions about this Privacy Policy, please contact us at: <a href="mailto:immigrationdatacanada@gmail.com" className="text-blue-600 hover:underline">immigrationdatacanada@gmail.com</a>. ',
       },
+      {
+        title: "12. Important Disclaimer – Not Legal Advice",
+        content: `
+    <strong>Immigration Tracker is not operated by a certified immigration consultant, lawyer, or authorized IRCC representative.</strong>
+    The owner, developer, editor, and any contributors are <strong>not licensed</strong> to give immigration advice.
+    All information on this site – including the **chatbot** that appears on various pages – is provided **for informational purposes only**.
+    It may be **outdated, incomplete, inaccurate, or irrelevant** to your specific situation.
+    <br/><br/>
+    <strong>We strongly recommend you:</strong>
+    <ul class="list-disc pl-6 mt-2">
+      <li>Verify every detail with the official <a href="https://www.canada.ca/en/immigration-refugees-citizenship.html" class="text-blue-600 hover:underline">IRCC website</a>.</li>
+      <li>Consult a <strong>Regulated Canadian Immigration Consultant (RCIC)</strong> or lawyer before making any immigration decision.</li>
+    </ul>
+    <br/>
+    <em>Relying on this site or the chatbot is at your own risk. We are not liable for any consequences.</em>
+  `.trim(),
+      },
     ],
   },
 ];
