@@ -9,7 +9,7 @@ export async function GET() {
   try {
     const { data, error } = await supabase
       .from("pr_pathways")
-      .select("*")
+      .select("id, province, program, summary, url, status, key_requirements")
       .order("province", { ascending: true });
 
     if (error) throw error;

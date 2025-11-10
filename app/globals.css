@@ -47,4 +47,20 @@ body {
   scrollbar-width: none; /* Firefox */
 }
 
+/* app/globals.css (or any global stylesheet) */
+.pr-loading,
+.pr-empty {
+  text-align: center;
+  padding: 2rem;
+  color: #374151;
+}
+.pr-loading.dark,
+.pr-empty.dark {
+  color: #d1d5db;
+}
+.pr-empty.dark {
+  color: #9ca3af;
+}
+
+
 
