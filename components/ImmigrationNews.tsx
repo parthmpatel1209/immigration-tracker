@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Calendar, ExternalLink, Filter, X } from "lucide-react";
 import styles from "./ImmigrationNews.module.css";
 
@@ -12,6 +12,7 @@ interface NewsItem {
   published_at?: string;
   url?: string;
   program?: string;
+  image_url?: string;
 }
 
 /* ------------------------------------------------------------------ */
@@ -55,12 +56,18 @@ const DARK = {
 };
 
 export default function ImmigrationNews() {
+  /* ------------------------------------------------- */
+  /* State & refs                                      */
+  /* ------------------------------------------------- */
   const [news, setNews] = useState<NewsItem[]>([]);
   const [filtered, setFiltered] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
   const [darkMode, setDarkMode] = useState(false);
+
+  const touchStartX = useRef<number | null>(null);
+  const isSwiping = useRef(false);
 
   const theme = darkMode ? DARK : LIGHT;
 
@@ -84,7 +91,6 @@ export default function ImmigrationNews() {
   /* ------------------------------------------------- */
   useEffect(() => {
     let mounted = true;
-
     const fetchNews = async () => {
       try {
         const res = await fetch("/api/news");
@@ -99,9 +105,7 @@ export default function ImmigrationNews() {
         if (mounted) setLoading(false);
       }
     };
-
     fetchNews();
-
     return () => {
       mounted = false;
     };
@@ -112,7 +116,6 @@ export default function ImmigrationNews() {
   /* ------------------------------------------------- */
   useEffect(() => {
     let list = [...news];
-
     if (year) {
       list = list.filter(
         (n) =>
@@ -129,7 +132,6 @@ export default function ImmigrationNews() {
             .padStart(2, "0") === month
       );
     }
-
     setFiltered(list);
   }, [month, year, news]);
 
@@ -156,6 +158,49 @@ export default function ImmigrationNews() {
   };
 
   /* ------------------------------------------------- */
+  /* Swipe + click state                               */
+  /* ------------------------------------------------- */
+  const toggleFlip = (flipper: HTMLElement) => {
+    const isFlipped = flipper.classList.contains(styles.flipped);
+    flipper.classList.remove(styles.swiping);
+    if (isFlipped) {
+      flipper.classList.remove(styles.flipped);
+    } else {
+      flipper.classList.add(styles.flipped);
+    }
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    isSwiping.current = false;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent, id: number) => {
+    if (!touchStartX.current) return;
+    const deltaX = e.touches[0].clientX - touchStartX.current;
+    if (Math.abs(deltaX) > 30) {
+      isSwiping.current = true;
+      const flipper = e.currentTarget;
+      if (deltaX < 0) {
+        flipper.classList.add(styles.swiping);
+      } else {
+        flipper.classList.remove(styles.swiping);
+      }
+    }
+  };
+
+  const handleTouchEnd = (id: number) => {
+    touchStartX.current = null;
+    if (isSwiping.current) {
+      isSwiping.current = false;
+      const flipper = document
+        .querySelector(`[data-card-id="${id}"]`)
+        ?.closest(`.${styles.cardFlipper}`) as HTMLElement;
+      if (flipper) toggleFlip(flipper);
+    }
+  };
+
+  /* ------------------------------------------------- */
   /* Render                                            */
   /* ------------------------------------------------- */
   if (loading) {
@@ -178,19 +223,15 @@ export default function ImmigrationNews() {
   return (
     <div
       className={styles.container}
-      style={{
-        backgroundColor: theme.bgPrimary,
-        color: theme.textPrimary,
-      }}
+      style={{ backgroundColor: theme.bgPrimary, color: theme.textPrimary }}
     >
-      {/* Header */}
+      {/* ------------------- Header ------------------- */}
       <header className={styles.header}>
         <div className={styles.titleWrapper}>
           <h1 className={styles.title}>Immigration News</h1>
         </div>
 
         <div className={styles.filters}>
-          {/* Month */}
           <Filter className={styles.filterIcon} />
           <div className={styles.filterGroup}>
             <label className={styles.label} style={{ color: theme.textMuted }}>
@@ -215,7 +256,6 @@ export default function ImmigrationNews() {
             </select>
           </div>
 
-          {/* Year */}
           <div className={styles.filterGroup}>
             <label className={styles.label} style={{ color: theme.textMuted }}>
               Year
@@ -239,7 +279,6 @@ export default function ImmigrationNews() {
             </select>
           </div>
 
-          {/* Clear */}
           {(month || year) && (
             <button
               onClick={() => {
@@ -252,17 +291,16 @@ export default function ImmigrationNews() {
                 color: theme.textSecondary,
               }}
             >
-              <X size={14} />
-              Clear
+              <X size={14} /> Clear
             </button>
           )}
         </div>
       </header>
 
-      {/* Grid */}
+      {/* ------------------- Grid ------------------- */}
       {filtered.length > 0 ? (
         <div className={styles.grid}>
-          {filtered.map((item) => (
+          {filtered.map((item, index) => (
             <article
               key={item.id}
               className={styles.card}
@@ -271,54 +309,113 @@ export default function ImmigrationNews() {
                 borderColor: theme.border,
               }}
             >
-              <h3 className={styles.cardTitle}>{item.title}</h3>
-              <p
-                className={styles.cardSummary}
-                style={{ color: theme.textSecondary }}
+              <div
+                data-card-id={item.id}
+                className={`${styles.cardFlipper} ${
+                  index < 3 ? styles.intro : ""
+                }`}
+                ref={(el) => {
+                  if (el && index < 3) {
+                    const timer = setTimeout(
+                      () => el.classList.remove(styles.intro),
+                      4000
+                    );
+                    return () => clearTimeout(timer);
+                  }
+                }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={(e) => handleTouchMove(e, item.id)}
+                onTouchEnd={() => handleTouchEnd(item.id)}
+                onClick={(e) => {
+                  const flipper = e.currentTarget;
+                  if (!isSwiping.current) toggleFlip(flipper);
+                }}
               >
-                {item.summary}
-              </p>
-
-              <div className={styles.meta} style={{ color: theme.textMuted }}>
-                {item.source && <span>{item.source}</span>}
-                {item.published_at && (
-                  <>
-                    <span className={styles.dot}>•</span>
-                    <span className={styles.date}>
-                      <Calendar size={12} />
-                      {new Date(item.published_at).toLocaleDateString()}
-                    </span>
-                  </>
-                )}
-                {item.program && (
-                  <>
-                    <span className={styles.dot}>•</span>
-                    <span
-                      className={styles.badge}
-                      style={{
-                        backgroundColor: darkMode
-                          ? `${badgeColor(item.program)}20`
-                          : `${badgeColor(item.program)}15`,
-                        color: badgeColor(item.program),
+                {/* FRONT: Image */}
+                <div className={styles.cardFront}>
+                  {item.image_url ? (
+                    <img
+                      src={item.image_url}
+                      alt={item.title}
+                      className={styles.cardImage}
+                      loading="lazy"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const placeholder = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (placeholder) placeholder.style.display = "flex";
                       }}
-                    >
-                      {item.program}
-                    </span>
-                  </>
-                )}
-              </div>
+                    />
+                  ) : null}
+                  <div
+                    className={styles.imagePlaceholder}
+                    style={{ display: item.image_url ? "none" : "flex" }}
+                  >
+                    No Image
+                  </div>
+                </div>
 
-              {item.url && (
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.readMore}
+                {/* BACK: Info */}
+                <div
+                  className={styles.cardBack}
+                  style={
+                    {
+                      "--bg-card": theme.bgCard,
+                      "--text-primary": theme.textPrimary,
+                      "--text-secondary": theme.textSecondary,
+                      "--text-muted": theme.textMuted,
+                    } as React.CSSProperties
+                  }
                 >
-                  Read more
-                  <ExternalLink size={14} />
-                </a>
-              )}
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.summary}</p>
+                  </div>
+
+                  <div className={styles.meta}>
+                    {item.source && <span>{item.source}</span>}
+                    {item.published_at && (
+                      <>
+                        {item.source && <span className={styles.dot}> • </span>}
+                        <span className={styles.date}>
+                          <Calendar size={12} />
+                          {new Date(item.published_at).toLocaleDateString()}
+                        </span>
+                      </>
+                    )}
+                    {item.program && (
+                      <>
+                        {(item.source || item.published_at) && (
+                          <span className={styles.dot}> • </span>
+                        )}
+                        <span
+                          className={styles.badge}
+                          style={{
+                            backgroundColor: darkMode
+                              ? `${badgeColor(item.program)}20`
+                              : `${badgeColor(item.program)}15`,
+                            color: badgeColor(item.program),
+                          }}
+                        >
+                          {item.program}
+                        </span>
+                      </>
+                    )}
+                  </div>
+
+                  {item.url && (
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.readMore}
+                    >
+                      Read more
+                      <ExternalLink size={14} />
+                    </a>
+                  )}
+                </div>
+              </div>
             </article>
           ))}
         </div>
@@ -328,7 +425,7 @@ export default function ImmigrationNews() {
         </div>
       )}
 
-      {/* Footer */}
+      {/* ------------------- Footer ------------------- */}
       <footer className={styles.footer} style={{ color: theme.textMuted }}>
         Showing <strong>{filtered.length}</strong> of{" "}
         <strong>{news.length}</strong> articles

@@ -268,42 +268,107 @@ export default function DrawsTable() {
           emptyCell: themeStyles.emptyCell,
           emptySvg: themeStyles.emptySvg,
         }}
+        darkMode={darkMode} // ← ADD THIS LINE
       />
 
       {/* Pagination Controls */}
+      {/* ──────────────────────────────────────── Pagination ──────────────────────────────────────── */}
       <div className={styles.pagination}>
+        {/* Previous */}
         <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
           disabled={currentPage === 1}
-          className={`${styles.paginationButton} ${
-            themeStyles.paginationButton
-          } ${currentPage === 1 ? styles.paginationButtonDisabled : ""}`}
+          className={`
+      ${styles.modernBtn} ${styles.modernBtnPrevNext}
+      ${currentPage === 1 ? styles.modernBtnDisabled : ""}
+      ${darkMode ? styles.modernBtnDark : styles.modernBtnLight}
+    `}
         >
+          <svg
+            className={styles.modernBtnIcon}
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
           Previous
         </button>
-        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-          <button
-            key={page}
-            onClick={() => setCurrentPage(page)}
-            className={`${styles.pageNumber} ${themeStyles.pageNumber} ${
-              currentPage === page ? themeStyles.pageNumberActive : ""
-            }`}
-          >
-            {page}
-          </button>
-        ))}
+
+        {/* Page numbers – responsive list */}
+        <div className={styles.pageList}>
+          {(() => {
+            const pages: (number | "ellipsis")[] = [];
+
+            pages.push(1);
+            if (currentPage > 4) pages.push("ellipsis");
+            const start = Math.max(2, currentPage - 2);
+            const end = Math.min(totalPages - 1, currentPage + 2);
+            for (let i = start; i <= end; i++) pages.push(i);
+            if (currentPage < totalPages - 3) pages.push("ellipsis");
+            if (totalPages > 1) pages.push(totalPages);
+
+            // dedupe while preserving order
+            const uniq: (number | "ellipsis")[] = [];
+            pages.forEach((p) => {
+              if (!uniq.includes(p)) uniq.push(p);
+            });
+            return uniq;
+          })().map((item, idx) => {
+            if (item === "ellipsis") {
+              return (
+                <span key={`ell-${idx}`} className={styles.modernEllipsis}>
+                  …
+                </span>
+              );
+            }
+            return (
+              <button
+                key={item}
+                onClick={() => setCurrentPage(item)}
+                className={`
+            ${styles.modernBtn} ${styles.modernBtnPage}
+            ${
+              currentPage === item
+                ? darkMode
+                  ? styles.modernBtnActiveDark
+                  : styles.modernBtnActiveLight
+                : ""
+            }
+            ${darkMode ? styles.modernBtnDark : styles.modernBtnLight}
+          `}
+              >
+                {item}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Next */}
         <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
           disabled={currentPage === totalPages}
-          className={`${styles.paginationButton} ${
-            themeStyles.paginationButton
-          } ${
-            currentPage === totalPages ? styles.paginationButtonDisabled : ""
-          }`}
+          className={`
+      ${styles.modernBtn} ${styles.modernBtnPrevNext}
+      ${currentPage === totalPages ? styles.modernBtnDisabled : ""}
+      ${darkMode ? styles.modernBtnDark : styles.modernBtnLight}
+    `}
         >
           Next
+          <svg
+            className={styles.modernBtnIcon}
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
         </button>
       </div>
 

@@ -344,80 +344,282 @@
   color: #6b7280;
 }
 
-/* Pagination styles */
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
+/* -------------------------------------------------
+   Pagination – responsive
+   ------------------------------------------------- */
+   .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;               /* allow wrap on ultra-narrow screens */
+  }
+  
+  /* Container that scrolls horizontally on small screens */
+  .pageList {
+    display: flex;
+    gap: 0.25rem;
+    overflow-x: auto;
+    padding: 0 0.25rem;
+    scrollbar-width: none;         /* Firefox */
+  }
+  .pageList::-webkit-scrollbar {
+    display: none;                 /* Chrome / Safari */
+  }
+  
+  /* Ellipsis */
+  .ellipsis {
+    display: flex;
+    align-items: center;
+    padding: 0 0.5rem;
+    font-weight: 600;
+    color: inherit;
+    opacity: 0.6;
+  }
+  
+  /* Make the page-number buttons a bit smaller on phones */
+  @media (max-width: 480px) {
+    .pageNumber,
+    .paginationButton {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+  }
 
-.paginationButton {
-  padding: 0.375rem 0.75rem;
+  /* ──────────────────────────────── Modern Buttons ──────────────────────────────── */
+.modernBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
   font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: 0.375rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
   border: none;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.22s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.paginationButtonDark {
-  background-color: #374151;
-  color: #d1d5db;
-}
-
-.paginationButtonDark:hover:not(:disabled) {
-  background-color: #4b5563;
-}
-
-.paginationButtonLight {
-  background-color: #f3f4f6;
+/* Light & Dark base */
+.modernBtnLight {
+  background: rgba(255, 255, 255, 0.75);
   color: #374151;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  backdrop-filter: blur(8px);
+}
+.modernBtnDark {
+  background: rgba(31, 41, 55, 0.75);
+  color: #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+  backdrop-filter: blur(8px);
 }
 
-.paginationButtonLight:hover:not(:disabled) {
-  background-color: #e5e7eb;
-}
+/* Hover */
+.modernBtnLight:hover:not(:disabled) { background: rgba(255,255,255,0.95); transform: translateY(-1px); }
+.modernBtnDark:hover:not(:disabled)   { background: rgba(55, 65, 81, 0.95); transform: translateY(-1px); }
 
-.paginationButtonDisabled {
-  opacity: 0.5;
+/* Active page */
+.modernBtnActiveLight { background: #4f46e5 !important; color: #fff !important; }
+.modernBtnActiveDark  { background: #6366f1 !important; color: #fff !important; }
+
+/* Disabled */
+.modernBtnDisabled {
+  opacity: 0.45;
   cursor: not-allowed;
+  transform: none !important;
 }
 
-.pageNumber {
-  padding: 0.375rem 0.75rem;
+/* Prev/Next specific */
+.modernBtnPrevNext { min-width: 88px; }
+
+/* Page-number specific */
+.modernBtnPage { min-width: 36px; padding: 0.45rem 0.6rem; }
+
+/* Icon inside button */
+.modernBtnIcon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Ellipsis */
+.modernEllipsis {
+  display: flex;
+  align-items: center;
+  padding: 0 0.4rem;
+  font-weight: 700;
+  color: inherit;
+  opacity: 0.6;
+}
+
+/* ──────────────────────────────── Responsive tweaks ──────────────────────────────── */
+@media (max-width: 480px) {
+  .modernBtn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.8rem;
+  }
+  .modernBtnPrevNext { min-width: 76px; }
+  .modernBtnPage     { min-width: 32px; }
+}
+
+/* Keep the scrollable page list from earlier */
+.pageList {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0 0.25rem;
+  scrollbar-width: none;
+}
+.pageList::-webkit-scrollbar { display: none; }
+
+/* ──────────────────────────────── MOBILE CARD ──────────────────────────────── */
+.mobileCard {
+  border-radius: 1rem;
+  padding: 1.25rem;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.mobileCardLight {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.mobileCardDark {
+  background: #111827;
+  border: 1px solid #374151;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Hover/Tap Feedback */
+.mobileCard:hover,
+.mobileCard:active {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Round Badge (Program) */
+.mobileBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem; 
+  margin-top: 0.75rem;
+}
+
+.mobileBadgeLight {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.mobileBadgeDark {
+  background: #312e81;
+  color: #c7d2fe;
+}
+
+/* Label + Value Rows */
+.mobileRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
   font-size: 0.875rem;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: background-color 0.2s, color 0.2s;
 }
 
-.pageNumberDark {
-  background-color: #374151;
-  color: #d1d5db;
+.mobileRow:last-child {
+  margin-bottom: 0;
 }
 
-.pageNumberDark:hover {
-  background-color: #4b5563;
+.mobileIcon {
+  width: 1.1rem;
+  height: 1.1rem;
+  opacity: 0.7;
+  flex-shrink: 0;
 }
 
-.pageNumberLight {
-  background-color: #f3f4f6;
-  color: #374151;
+.mobileLabel {
+  font-weight: 500;
+  min-width: 80px;
+  color: inherit;
+  opacity: 0.8;
 }
 
-.pageNumberLight:hover {
-  background-color: #e5e7eb;
+.mobileValue {
+  font-weight: 600;
+  color: inherit;
 }
 
-.pageNumberActiveDark {
-  background-color: #4f46e5;
-  color: white;
+.mobileValue strong {
+  font-weight: 700;
 }
 
-.pageNumberActiveLight {
-  background-color: #4f46e5;
-  color: white;
+/* Round Number (Top Left) */
+.mobileRound {
+  font-size: 1.25rem;
+  font-weight: 800;
+  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
+
+/* Date */
+.mobileDatePrimary {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.mobileDateRelative {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 0.125rem;
+}
+
+/* Empty State */
+.mobileEmpty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #9ca3af;
+}
+
+.mobileEmpty svg {
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.75rem;
+  opacity: 0.5;
+}
+
+/* ──────────────────────────────── RESPONSIVE VISIBILITY ──────────────────────────────── */
+.desktopOnly {
+  display: none;
+}
+
+.mobileOnly {
+  display: block;
+}
+
+/* Show desktop version on medium screens and up */
+@media (min-width: 768px) {
+  .desktopOnly {
+    display: block;
+  }
+  .mobileOnly {
+    display: none;
+  }
+}
+
+/* ──────────────────────────────── MOBILE CARD SPACING ──────────────────────────────── */
+.mobileCard + .mobileCard {
+  margin-top: 1.5rem; /* 24px gap between cards */
+}
+

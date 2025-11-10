@@ -119,10 +119,13 @@ function CarouselCard({ p, darkMode }: { p: Pathway; darkMode: boolean }) {
             {p.province}
           </h3>
           <div className={styles.badgeContainer}>
-            <span className={styles.badge} style={badgeStyle}>
+            <span
+              className={`${styles.badge} ${styles.program}`}
+              style={badgeStyle}
+            >
               {p.program}
             </span>
-            <span className={styles.badge} style={statusBadge}>
+            <span className={`${styles.badge} ${styles.status}`}>
               {p.status}
             </span>
           </div>
@@ -194,7 +197,7 @@ function CarouselCard({ p, darkMode }: { p: Pathway; darkMode: boolean }) {
               onClick={() => setSlide(i)}
               className={`${styles.trackSegment} ${
                 slide === i ? styles.active : ""
-              } ${darkMode ? styles.dark : styles.light}`}
+              }`}
               aria-label={`Slide ${i + 1}`}
             >
               <span className={styles.trackFill} />
