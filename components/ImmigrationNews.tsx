@@ -67,6 +67,7 @@ export default function ImmigrationNews() {
   const [darkMode, setDarkMode] = useState(false);
 
   const touchStartX = useRef<number | null>(null);
+  const touchLastY = useRef<Map<number, number>>(new Map());
   const isSwiping = useRef(false);
 
   const theme = darkMode ? DARK : LIGHT;
@@ -375,26 +376,35 @@ export default function ImmigrationNews() {
                   {/* Scrollable Content */}
                   <div
                     className={styles.content}
+                    onTouchStart={(e) => {
+                      const touch = e.touches[0];
+                      touchLastY.current.set(item.id, touch.clientY);
+                    }}
                     onTouchMove={(e) => {
-                      // Prevent page scroll when scrolling inside card
+                      const touch = e.touches[0];
+                      const lastY = touchLastY.current.get(item.id);
+                      if (lastY === undefined) return;
+
+                      const deltaY = touch.clientY - lastY;
+                      touchLastY.current.set(item.id, touch.clientY);
+
                       const target = e.currentTarget;
-                      const atTop = target.scrollTop === 0;
+                      const atTop = target.scrollTop <= 0;
                       const atBottom =
                         target.scrollHeight - target.scrollTop <=
                         target.clientHeight + 1;
 
-                      // Allow default scroll behavior unless at boundary
-                      if (
-                        (atTop && e.deltaY < 0) ||
-                        (atBottom && e.deltaY > 0)
-                      ) {
+                      // If scrolling up at top OR down at bottom → allow parent scroll
+                      if ((atTop && deltaY > 0) || (atBottom && deltaY < 0)) {
                         e.stopPropagation();
                       }
                     }}
-                    onWheel={(e) => {
-                      // Desktop: prevent page scroll when at boundaries
+                    onTouchEnd={() => {
+                      touchLastY.current.delete(item.id);
+                    }}
+                    onWheel={(e: React.WheelEvent) => {
                       const target = e.currentTarget;
-                      const atTop = target.scrollTop === 0;
+                      const atTop = target.scrollTop <= 0;
                       const atBottom =
                         target.scrollHeight - target.scrollTop <=
                         target.clientHeight + 1;
