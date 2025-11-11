@@ -311,15 +311,17 @@ export default function ImmigrationNews() {
             >
               <div
                 data-card-id={item.id}
-                className={`${styles.cardFlipper} ${
-                  index < 3 ? styles.intro : ""
-                }`}
+                className={`
+    ${styles.cardFlipper}
+    ${index === 0 ? styles.autoFlip : ""}   /* ONLY FIRST CARD */
+  `}
                 ref={(el) => {
-                  if (el && index < 3) {
-                    const timer = setTimeout(
-                      () => el.classList.remove(styles.intro),
-                      4000
-                    );
+                  if (el && index === 0) {
+                    // Remove autoFlip class after animation ends
+                    const timer = setTimeout(() => {
+                      el.classList.remove(styles.autoFlip);
+                    }, 4000); // matches animation duration
+
                     return () => clearTimeout(timer);
                   }
                 }}
@@ -327,8 +329,10 @@ export default function ImmigrationNews() {
                 onTouchMove={(e) => handleTouchMove(e, item.id)}
                 onTouchEnd={() => handleTouchEnd(item.id)}
                 onClick={(e) => {
-                  const flipper = e.currentTarget;
-                  if (!isSwiping.current) toggleFlip(flipper);
+                  if (!isSwiping.current) {
+                    const flipper = e.currentTarget;
+                    toggleFlip(flipper);
+                  }
                 }}
               >
                 {/* FRONT: Image */}
@@ -369,7 +373,40 @@ export default function ImmigrationNews() {
                   }
                 >
                   {/* Scrollable Content */}
-                  <div className={styles.content}>
+                  <div
+                    className={styles.content}
+                    onTouchMove={(e) => {
+                      // Prevent page scroll when scrolling inside card
+                      const target = e.currentTarget;
+                      const atTop = target.scrollTop === 0;
+                      const atBottom =
+                        target.scrollHeight - target.scrollTop <=
+                        target.clientHeight + 1;
+
+                      // Allow default scroll behavior unless at boundary
+                      if (
+                        (atTop && e.deltaY < 0) ||
+                        (atBottom && e.deltaY > 0)
+                      ) {
+                        e.stopPropagation();
+                      }
+                    }}
+                    onWheel={(e) => {
+                      // Desktop: prevent page scroll when at boundaries
+                      const target = e.currentTarget;
+                      const atTop = target.scrollTop === 0;
+                      const atBottom =
+                        target.scrollHeight - target.scrollTop <=
+                        target.clientHeight + 1;
+
+                      if (
+                        (atTop && e.deltaY < 0) ||
+                        (atBottom && e.deltaY > 0)
+                      ) {
+                        e.stopPropagation();
+                      }
+                    }}
+                  >
                     <h3>{item.title}</h3>
                     <p>{item.summary}</p>
                   </div>

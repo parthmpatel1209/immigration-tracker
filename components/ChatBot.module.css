@@ -390,30 +390,66 @@
 }
 
 /* -------------------------------------------------- */
-/* Responsive tweaks                                   */
+/* Responsive tweaks – Improved mobile spacing */
 /* -------------------------------------------------- */
 @media (max-width: 480px) {
-  .container {
-    width: calc(100vw - 32px);
-    height: calc(100vh - 120px);
-    max-height: 600px;
-    bottom: 80px;
-    right: 16px;
-  }
+  /* Toggle button – more padding from edges */
   .toggleBtn {
-    bottom: 16px;
-    right: 16px;
+    bottom: 20px;
+    right: 20px;
     width: 52px;
     height: 52px;
   }
-  .header { font-size: 1rem; padding: 14px 16px; }
-  .messages { padding: 12px; }
-  .message { font-size: 0.9rem; padding: 9px 12px; }
-  .inputBar { padding: 10px; }
-  .input { padding: 9px 12px; }
+
+  /* Chat window – full width with safe margins */
+  .container {
+    width: calc(100vw - 40px);     /* 20px margin on each side */
+    height: calc(100vh - 140px);   /* Leave space for toggle + safe area */
+    max-height: 620px;
+    bottom: 88px;                  /* Clear the toggle button */
+    right: 20px;
+    left: 20px;                    /* Explicitly center with equal margins */
+    margin: 0 auto;
+  }
+
+  /* Optional: Reduce header font slightly */
+  .header {
+    font-size: 1rem;
+    padding: 14px 16px;
+  }
+
+  /* Messages padding */
+  .messages {
+    padding: 12px;
+  }
+
+  /* Message bubbles */
+  .userMessage,
+  .botMessage {
+    font-size: 0.9rem;
+    padding: 9px 12px;
+  }
+
+  /* Input bar */
+  .inputBar {
+    padding: 10px;
+  }
+
+  /* Input field */
+  .input {
+    padding: 9px 12px;
+    font-size: 0.925rem;
+  }
+
+  /* Suggestion buttons */
   .suggestionBtn {
     font-size: 0.825rem;
     padding: 9px 12px;
+  }
+
+  /* Ensure suggestions don't overflow */
+  .suggestions {
+    padding: 0 4px;
   }
 }
 
