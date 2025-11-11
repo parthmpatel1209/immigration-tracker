@@ -356,6 +356,7 @@ export default function ImmigrationNews() {
                 </div>
 
                 {/* BACK: Info */}
+                {/* BACK: Info */}
                 <div
                   className={styles.cardBack}
                   style={
@@ -367,53 +368,59 @@ export default function ImmigrationNews() {
                     } as React.CSSProperties
                   }
                 >
-                  <div>
+                  {/* Scrollable Content */}
+                  <div className={styles.content}>
                     <h3>{item.title}</h3>
                     <p>{item.summary}</p>
                   </div>
 
-                  <div className={styles.meta}>
-                    {item.source && <span>{item.source}</span>}
-                    {item.published_at && (
-                      <>
-                        {item.source && <span className={styles.dot}> • </span>}
-                        <span className={styles.date}>
-                          <Calendar size={12} />
-                          {new Date(item.published_at).toLocaleDateString()}
-                        </span>
-                      </>
-                    )}
-                    {item.program && (
-                      <>
-                        {(item.source || item.published_at) && (
-                          <span className={styles.dot}> • </span>
-                        )}
-                        <span
-                          className={styles.badge}
-                          style={{
-                            backgroundColor: darkMode
-                              ? `${badgeColor(item.program)}20`
-                              : `${badgeColor(item.program)}15`,
-                            color: badgeColor(item.program),
-                          }}
-                        >
-                          {item.program}
-                        </span>
-                      </>
+                  {/* Fixed Footer */}
+                  <div className={styles.footer}>
+                    <div className={styles.meta}>
+                      {item.source && <span>{item.source}</span>}
+                      {item.published_at && (
+                        <>
+                          {item.source && (
+                            <span className={styles.dot}> • </span>
+                          )}
+                          <span className={styles.date}>
+                            <Calendar size={12} />
+                            {new Date(item.published_at).toLocaleDateString()}
+                          </span>
+                        </>
+                      )}
+                      {item.program && (
+                        <>
+                          {(item.source || item.published_at) && (
+                            <span className={styles.dot}> • </span>
+                          )}
+                          <span
+                            className={styles.badge}
+                            style={{
+                              backgroundColor: darkMode
+                                ? `${badgeColor(item.program)}20`
+                                : `${badgeColor(item.program)}15`,
+                              color: badgeColor(item.program),
+                            }}
+                          >
+                            {item.program}
+                          </span>
+                        </>
+                      )}
+                    </div>
+
+                    {item.url && (
+                      <a
+                        href={item.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.readMore}
+                      >
+                        Read more
+                        <ExternalLink size={14} />
+                      </a>
                     )}
                   </div>
-
-                  {item.url && (
-                    <a
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.readMore}
-                    >
-                      Read more
-                      <ExternalLink size={14} />
-                    </a>
-                  )}
                 </div>
               </div>
             </article>

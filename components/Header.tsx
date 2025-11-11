@@ -124,7 +124,7 @@ export default function Header() {
       <div className="__header__glass">
         <div className="__header__glow" />
 
-        <h1 className="__header__title">Canada Express Entry Tracker</h1>
+        <h1 className="__header__title">Canada Immigration Data Tracker</h1>
 
         <p className="__header__subtitle">
           Latest updates on CRS scores and immigration draws

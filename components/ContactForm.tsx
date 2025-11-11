@@ -183,6 +183,7 @@ export default function ContactForm() {
               <option value="">Select an option</option>
               <option value="Student">Student</option>
               <option value="Worker">Worker</option>
+              <option value="Visitor">Visitor</option>
               <option value="Permanent Resident">Permanent Resident</option>
               <option value="Citizen">Citizen</option>
               <option value="Other">Other</option>

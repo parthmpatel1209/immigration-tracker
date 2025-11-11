@@ -8,7 +8,7 @@ import { Analytics } from "@vercel/analytics/react";
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Immigration Tracker",
+  title: "Immigration Data Tracker",
   description: "Track Canadian PR draws and CRS scores",
 };
 
