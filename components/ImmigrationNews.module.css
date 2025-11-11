@@ -385,3 +385,50 @@ cardBack .footer {
 :global(html.dark) .closeBack:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* ------------------------------------------------- */
+/* Floating Date Label – Top-Right on Front          */
+/* ------------------------------------------------- */
+.dateLabel {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 3;
+  font-size: 0.625rem;          /* 10px */
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid transparent;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+/* ---- LIGHT MODE (default) ---- */
+.dateLabel {
+  background: rgba(255, 255, 255, 0.92);
+  color: #1e293b;               /* slate-800 */
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+/* ---- DARK MODE ---- */
+:global(html.dark) .dateLabel {
+  background: rgba(15, 23, 42, 0.88);   /* slate-900 */
+  color: #f1f5f9;                      /* slate-100 */
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+/* Hover pop-in (optional but nice) */
+.card:hover .dateLabel {
+  transform: translateY(-2px);
+  opacity: 1;
+}
+.dateLabel {
+  transform: translateY(0);
+  opacity: 0.95;
+}

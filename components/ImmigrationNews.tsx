@@ -159,6 +159,22 @@ export default function ImmigrationNews() {
   };
 
   /* ------------------------------------------------- */
+  /* Relative date label helper                        */
+  /* ------------------------------------------------- */
+  const getRelativeDate = (dateStr?: string): string => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+    return date.toLocaleDateString("en", { month: "short", day: "numeric" });
+  };
+
+  /* ------------------------------------------------- */
   /* Swipe + click state                               */
   /* ------------------------------------------------- */
   const toggleFlip = (flipper: HTMLElement) => {
@@ -352,6 +368,14 @@ export default function ImmigrationNews() {
                       }}
                     />
                   ) : null}
+
+                  {/* Floating Date Label */}
+                  {item.published_at && (
+                    <div className={styles.dateLabel}>
+                      {getRelativeDate(item.published_at)}
+                    </div>
+                  )}
+
                   <div
                     className={styles.imagePlaceholder}
                     style={{ display: item.image_url ? "none" : "flex" }}
