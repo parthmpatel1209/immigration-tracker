@@ -11,7 +11,7 @@ export async function GET() {
       .from("news")
       .select("*")
       .order("published_at", { ascending: false })
-      .limit(50);
+      .limit(500);
 
     if (error) throw error;
 
