@@ -1,7 +1,7 @@
 // /lib/crs.ts
 
 // Define interfaces for type safety
-interface BreakdownRow {
+export interface BreakdownRow {
   idx?: number;
   id?: string;
   factor: string;
@@ -10,6 +10,12 @@ interface BreakdownRow {
   points_with_spouse: number;
   points_no_spouse: number;
   created_at?: string;
+}
+
+export interface LanguagePointsRow {
+  clb_level: number;
+  points_with_spouse: number;
+  points_no_spouse: number;
 }
 
 // Convert IELTS scores to CLB levels

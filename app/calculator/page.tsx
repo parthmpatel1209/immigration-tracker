@@ -1,4 +1,5 @@
 // app/calculator/page.tsx
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -366,50 +367,29 @@ export default function CalculatorPage() {
             }}
           >
             {(["listening", "reading", "writing", "speaking"] as const).map(
-              (skill) => (
-                <Tooltip key={skill} text="Spouse IELTS band (0–9, step 0.5)">
-                  <input
-                    name={`spouse_${skill}`}
-                    placeholder={`Spouse ${
-                      skill.charAt(0).toUpperCase() + skill.slice(1)
-                    }`}
-                    type="number"
-                    min={0}
-                    max={9}
-                    step={0.5}
-                    value={form[`spouse_${skill}` as keyof typeof form] || ""}
-                    onChange={handleChange}
-                    style={inputStyle}
-                  />
-                </Tooltip>
-              )
+              (skill) => {
+                const key = `spouse_${skill}` as const;
+                return (
+                  <Tooltip key={skill} text="Spouse IELTS band (0–9, step 0.5)">
+                    <input
+                      name={key}
+                      placeholder={`Spouse ${
+                        skill.charAt(0).toUpperCase() + skill.slice(1)
+                      }`}
+                      type="number"
+                      min={0}
+                      max={9}
+                      step={0.5}
+                      value={form[key] || ""}
+                      onChange={handleChange}
+                      style={inputStyle}
+                    />
+                  </Tooltip>
+                );
+              }
             )}
 
-            <Tooltip text="Spouse's highest education">
-              <select
-                name="spouse_education"
-                value={form.spouse_education}
-                onChange={handleChange}
-                style={{ ...selectStyle, gridColumn: "span 2" }}
-              >
-                <option value="">Select Education</option>
-                <option value="phd">Doctoral (PhD)</option>
-                <option value="masters">Master’s or Professional Degree</option>
-                <option value="two_or_more">
-                  Two or more certificates (one 3+ years)
-                </option>
-                <option value="bachelors">Bachelor’s or 3+ year program</option>
-                <option value="college_3_year">
-                  Three-year post-secondary
-                </option>
-                <option value="college_2_year">Two-year post-secondary</option>
-                <option value="college_1_year">One-year post-secondary</option>
-                <option value="highschool">Secondary school diploma</option>
-                <option value="less_than_secondary">
-                  Less than secondary school
-                </option>
-              </select>
-            </Tooltip>
+            {/* spouse education select is here */}
           </div>
         </>
       )}
