@@ -1,0 +1,143 @@
+/* components/DisclaimerBanner.module.css */
+
+.banner {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  background: linear-gradient(to right, #eff6ff, #ffffff, #eef2ff);
+  border-bottom: 2px solid #93c5fd;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  border-radius: 0 0 1rem 1rem; /* Tighter, cleaner rounded bottom */
+  overflow: hidden;
+  animation: slideDown 0.5s ease-out forwards;
+  transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.banner.exiting {
+  animation: slideUp 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Dark mode */
+:global(html.dark) .banner {
+  background: linear-gradient(to right, #111827, #1e1b4b, #111827);
+  border-bottom-color: #4c1d95;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem; /* Tight but comfortable */
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: center;
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    gap: 1.5rem;
+  }
+}
+
+.text {
+  color: #1e40af;
+  font-size: 0.89rem;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  .text {
+    text-align: left;
+    font-size: 0.94rem;
+  }
+}
+
+:global(html.dark) .text {
+  color: #dbeafe;
+}
+.text strong {
+  font-weight: 800;
+  color: #1d4ed8;
+}
+:global(html.dark) .text strong {
+  color: #c4b5fd;
+}
+
+.link {
+  color: #2563eb;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.link:hover {
+  color: #1d4ed8;
+}
+:global(html.dark) .link {
+  color: #93c5fd;
+}
+:global(html.dark) .link:hover {
+  color: #dbeafe;
+}
+
+/* Compact button */
+.button {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 1rem;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+  font-size: 0.82rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.button:hover {
+  background-color: #2563eb;
+  transform: translateY(-1.5px);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.button:active {
+  transform: translateY(0);
+}
+
+:global(html.dark) .button {
+  background-color: #6366f1;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+:global(html.dark) .button:hover {
+  background-color: #4f46e5;
+  box-shadow: 0 8px 22px rgba(99, 102, 241, 0.5);
+}
+
+/* Animations */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}

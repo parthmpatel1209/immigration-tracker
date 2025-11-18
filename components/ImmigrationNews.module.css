@@ -87,6 +87,68 @@
   transition: background .2s;
 }
 
+/* ───────────────────── Filter Toggle Button ───────────────────── */
+.filterToggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  color: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterToggleBtn:hover {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+:global(html.dark) .filterToggleBtn:hover {
+  background: rgba(99, 102, 241, 0.2);
+}
+
+.filterToggleActive {
+  background: rgba(99, 102, 241, 0.15) !important;
+  border-color: #6366f1 !important;
+  color: #6366f1;
+}
+
+/* Hide text on very small screens – icon only */
+.filterToggleText {
+  display: none;
+}
+@media (min-width: 640px) {
+  .filterToggleText { display: inline; }
+}
+
+/* Filters wrapper – animated show / hide */
+.filtersWrapper {
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.35s ease, margin 0.35s ease;
+}
+
+.filtersHidden {
+  max-height: 0;
+  opacity: 0;
+  margin-bottom: 0 !important;
+}
+
+.filtersVisible {
+  max-height: 600px;
+  opacity: 1;
+  margin-bottom: 1.5rem;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.filtersVisible { animation: slideDown 0.4s ease-out; }
+
 /* Grid --------------------------------------------------- */
 /* RESPONSIVE GRID – 2 ON PHONE, 5 ON DESKTOP */
 .grid { 

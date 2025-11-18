@@ -65,6 +65,7 @@ export default function ImmigrationNews() {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
   const [darkMode, setDarkMode] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const touchStartX = useRef<number | null>(null);
   const touchLastY = useRef<Map<number, number>>(new Map());
@@ -286,8 +287,28 @@ export default function ImmigrationNews() {
           <h1 className={styles.title}>Immigration News</h1>
         </div>
 
-        <div className={styles.filters}>
+        <button
+          onClick={() => setShowFilters((prev) => !prev)}
+          className={`${styles.filterToggleBtn} ${
+            showFilters ? styles.filterToggleActive : ""
+          }`}
+          aria-label={showFilters ? "Hide filters" : "Show filters"}
+        >
           <Filter className={styles.filterIcon} />
+          <span className={styles.filterToggleText}>
+            {showFilters ? "Hide" : "Show"} Filters
+          </span>
+        </button>
+      </header>
+
+      {/* ------------------- Filters (collapsible) ------------------- */}
+      <div
+        className={`${styles.filtersWrapper} ${
+          showFilters ? styles.filtersVisible : styles.filtersHidden
+        }`}
+      >
+        <div className={styles.filters}>
+          {/* Month */}
           <div className={styles.filterGroup}>
             <label className={styles.label} style={{ color: theme.textMuted }}>
               Month
@@ -311,6 +332,7 @@ export default function ImmigrationNews() {
             </select>
           </div>
 
+          {/* Year */}
           <div className={styles.filterGroup}>
             <label className={styles.label} style={{ color: theme.textMuted }}>
               Year
@@ -334,6 +356,7 @@ export default function ImmigrationNews() {
             </select>
           </div>
 
+          {/* Clear button – only when something is selected */}
           {(month || year) && (
             <button
               onClick={() => {
@@ -350,7 +373,7 @@ export default function ImmigrationNews() {
             </button>
           )}
         </div>
-      </header>
+      </div>
 
       {/* ------------------- Grid ------------------- */}
       {filtered.length > 0 ? (
