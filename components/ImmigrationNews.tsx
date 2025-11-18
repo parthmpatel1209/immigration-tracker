@@ -178,13 +178,8 @@ export default function ImmigrationNews() {
   /* Swipe + click state                               */
   /* ------------------------------------------------- */
   const toggleFlip = (flipper: HTMLElement) => {
-    const isFlipped = flipper.classList.contains(styles.flipped);
-    flipper.classList.remove(styles.swiping);
-    if (isFlipped) {
-      flipper.classList.remove(styles.flipped);
-    } else {
-      flipper.classList.add(styles.flipped);
-    }
+    flipper.classList.remove(styles.swipingLeft, styles.swipingLeft);
+    flipper.classList.toggle(styles.flipped);
   };
 
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -193,28 +188,71 @@ export default function ImmigrationNews() {
   };
 
   const handleTouchMove = (e: React.TouchEvent, id: number) => {
-    if (!touchStartX.current) return;
-    const deltaX = e.touches[0].clientX - touchStartX.current;
-    if (Math.abs(deltaX) > 30) {
+    if (touchStartX.current === null) return;
+
+    const currentX = e.touches[0].clientX;
+    const deltaX = currentX - touchStartX.current;
+
+    if (Math.abs(deltaX) > 20) {
       isSwiping.current = true;
-      const flipper = e.currentTarget;
+    }
+
+    // Visual feedback during swipe
+    const flipper = e.currentTarget as HTMLElement;
+    if (Math.abs(deltaX) > 30) {
       if (deltaX < 0) {
-        flipper.classList.add(styles.swiping);
+        flipper.classList.add(styles.swipingLeft);
+        flipper.classList.remove(styles.swipingRight);
       } else {
-        flipper.classList.remove(styles.swiping);
+        flipper.classList.add(styles.swipingRight);
+        flipper.classList.remove(styles.swipingLeft);
       }
     }
   };
 
   const handleTouchEnd = (id: number) => {
-    touchStartX.current = null;
-    if (isSwiping.current) {
+    if (!isSwiping.current || touchStartX.current === null) {
+      touchStartX.current = null;
       isSwiping.current = false;
-      const flipper = document
-        .querySelector(`[data-card-id="${id}"]`)
-        ?.closest(`.${styles.cardFlipper}`) as HTMLElement;
-      if (flipper) toggleFlip(flipper);
+      return;
     }
+
+    const currentX = touchStartX.current;
+    const deltaX =
+      (
+        document
+          .querySelector(`[data-card-id="${id}"]`)
+          ?.closest(`.${styles.cardFlipper}`) as HTMLElement
+      )?.getBoundingClientRect()?.left! + 50; // rough center estimate
+
+    const swipeThreshold = 60;
+    const swipeDistance = currentX - deltaX;
+
+    const flipper = document
+      .querySelector(`[data-card-id="${id}"]`)
+      ?.closest(`.${styles.cardFlipper}`) as HTMLElement;
+
+    if (flipper) {
+      if (Math.abs(swipeDistance) > swipeThreshold) {
+        if (swipeDistance > 0) {
+          // Swiped right → go back to front
+          flipper.classList.remove(styles.flipped);
+        } else {
+          // Swiped left → show back
+          flipper.classList.add(styles.flipped);
+        }
+      } else {
+        // Not enough swipe → just toggle (optional)
+        toggleFlip(flipper);
+      }
+
+      // Clean up visual classes
+      flipper.classList.remove(styles.swipingLeft, styles.swipingRight);
+    }
+
+    // Reset
+    touchStartX.current = null;
+    isSwiping.current = false;
   };
 
   /* ------------------------------------------------- */
@@ -388,6 +426,20 @@ export default function ImmigrationNews() {
                 {/* BACK: Info */}
                 <div
                   className={styles.cardBack}
+                  onClick={(e) => {
+                    // Only on mobile + if clicking on the back (not a link)
+                    if (window.innerWidth < 768) {
+                      const flipper = (e.target as HTMLElement).closest(
+                        `.${styles.cardFlipper}`
+                      );
+                      if (flipper?.classList.contains(styles.flipped)) {
+                        e.stopPropagation();
+                        (flipper as HTMLElement).classList.remove(
+                          styles.flipped
+                        );
+                      }
+                    }
+                  }}
                   style={
                     {
                       "--bg-card": theme.bgCard,

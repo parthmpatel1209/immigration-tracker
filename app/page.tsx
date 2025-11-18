@@ -16,8 +16,9 @@ export default function HomePage() {
   const tabs = [
     { label: "Latest Draw", content: <DrawCardsGrid /> },
     { label: "CRS Scores", content: <DrawsTable /> },
-    { label: "Immigration News", content: <ImmigrationNews /> },
-    { label: "PR Pathways by Province", content: <PRPathways /> },
+
+    { label: "News", content: <ImmigrationNews /> },
+    { label: "PR Pathways", content: <PRPathways /> },
     { label: "FAQs", content: <FAQs /> },
     { label: "Support", content: <Donate /> },
     { label: "Contact Us", content: <ContactForm /> },

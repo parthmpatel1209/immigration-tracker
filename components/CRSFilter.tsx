@@ -19,7 +19,7 @@ export default function CRSFilter({
     { label: "200 - 400", value: [200, 400] },
     { label: "401 - 500", value: [401, 500] },
     { label: "501 - 600", value: [501, 600] },
-    { label: "601 - 700", value: [601, 700] },
+    { label: "600 +", value: [601, 700] },
   ];
 
   return (

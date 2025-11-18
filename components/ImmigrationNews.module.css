@@ -432,3 +432,10 @@ cardBack .footer {
   transform: translateY(0);
   opacity: 0.95;
 }
+
+.cardFlipper.swipingLeft {
+  transform: rotateY(-30deg) !important;
+}
+.cardFlipper.swipingRight {
+  transform: rotateY(30deg) !important;
+}

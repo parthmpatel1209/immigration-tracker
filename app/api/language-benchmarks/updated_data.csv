@@ -1,0 +1,101 @@
+id	factor	level_key	level_label	points_no_spouse	points_with_spouse	created_at
+0fc960aa-19b6-4ad9-9315-1de674604ef3	age	42	42 years	28	25	2025-11-15 01:06:45.296081+00
+1b3218a1-8e52-4318-8881-442357965cc6	age	32	32 years	94	85	2025-11-15 01:06:45.296081+00
+256eb8b4-e17b-4eb8-b095-b160a3bd845c	age	18	18 years	99	90	2025-11-15 01:06:45.296081+00
+2b815bc8-58b7-4361-9670-4b75b69283fe	age	17_or_less	17 years or less	0	0	2025-11-15 01:06:45.296081+00
+39462b4e-a823-43bc-ac25-979f704cd778	age	43	43 years	17	15	2025-11-15 01:06:45.296081+00
+4f552c02-b057-4d32-99b7-b369d19c8a45	age	31	31 years	99	90	2025-11-15 01:06:45.296081+00
+59d587c5-74e0-468f-b25d-ae7465c61f30	age	20-29	20 to 29 years	110	100	2025-11-15 01:06:45.296081+00
+698d6996-b6d0-4c33-8d62-33b8452dd52d	age	40	40 years	50	45	2025-11-15 01:06:45.296081+00
+73df1d87-0e9d-4575-9dff-11fbbe57324b	age	39	39 years	55	50	2025-11-15 01:06:45.296081+00
+7ea8bfb9-aa2f-44a8-bc1f-6c699f3e0c3c	age	34	34 years	83	75	2025-11-15 01:06:45.296081+00
+93a77444-2b61-46bf-85ec-8ab3b6033a64	age	36	36 years	72	65	2025-11-15 01:06:45.296081+00
+b7b96dec-a757-42db-b277-9c35a4a5bedb	age	35	35 years	77	70	2025-11-15 01:06:45.296081+00
+b91d17d9-8ffa-46a1-bcad-c37a418fe88e	age	30	30 years	105	95	2025-11-15 01:06:45.296081+00
+d3a52f73-70bb-4549-bb3a-7a2ad896bfbd	age	33	33 years	88	80	2025-11-15 01:06:45.296081+00
+d9e2ee90-f0f7-43d1-902c-767bd1029b43	age	19	19 years	105	95	2025-11-15 01:06:45.296081+00
+dd071ab9-d575-4fe8-bd2e-424be5ad4ac9	age	45+	45 years and older	0	0	2025-11-15 01:06:45.296081+00
+dfde74df-78f0-4714-b699-9173c4c7107c	age	44	44 years	6	5	2025-11-15 01:06:45.296081+00
+ea54d10d-d14a-44a4-a7c7-00265790c718	age	41	41 years	39	35	2025-11-15 01:06:45.296081+00
+f5b00ebb-adcf-4782-b1f6-fe8045950cd9	age	37	37 years	66	60	2025-11-15 01:06:45.296081+00
+fb07bcfe-3717-47d5-acda-6eddddffff89	age	38	38 years	61	55	2025-11-15 01:06:45.296081+00
+27f65a0a-7576-40b5-9497-9f1ba8c6a616	canadian_work_experience	4_years	4 years	72	63	2025-11-15 01:06:45.296081+00
+3d623f11-4c20-45e8-a5a4-b1a84689c735	canadian_work_experience	5_plus	5+ years	80	70	2025-11-15 01:06:45.296081+00
+4d2740d2-4d89-4b08-8b42-ec6148762d07	canadian_work_experience	2_years	2 years	53	46	2025-11-15 01:06:45.296081+00
+b1158a70-04f3-40d7-aa4d-eab6bf43a6e0	canadian_work_experience	3_years	3+ years	64	56	2025-11-15 01:06:45.296081+00
+f429ccd2-6e96-4032-99bf-6af5235943a8	canadian_work_experience	1_year	1 year	40	35	2025-11-15 01:06:45.296081+00
+f61289c7-5c84-4674-8dbf-f2a3850c86fc	canadian_work_experience	none	None or less than 1 year	0	0	2025-11-15 01:06:45.296081+00
+01d9b103-bdc2-405f-9669-40fbd1059642	education	phd	Doctoral (PhD)	150	140	2025-11-15 01:06:45.296081+00
+0b21f1c7-7244-4478-81c4-ad0df2ebe77c	education	college_2_year	Two-year post-secondary	98	91	2025-11-15 01:06:45.296081+00
+13e86d16-17a0-49a7-8934-0041d9488511	education	college_1_year	One-year post-secondary	90	84	2025-11-15 01:06:45.296081+00
+1abd4b02-a978-40d5-bd1e-ee399ad7f4fb	education	two_or_more	Two or more certificates (one 3+ years)	128	119	2025-11-15 01:06:45.296081+00
+505e705a-52ca-4888-a120-d72d8f827346	education	less_than_secondary	Less than secondary school	0	0	2025-11-15 01:06:45.296081+00
+5d301ded-447e-44ae-9af4-d0962e8fecf2	education	highschool	Secondary school diploma	30	28	2025-11-15 01:06:45.296081+00
+a68eab3c-de99-4186-be57-aba68962931b	education	bachelors	Bachelor’s or 3+ year program	120	112	2025-11-15 01:06:45.296081+00
+f1d9761b-347d-4f0c-9c40-b66c6467613a	education	masters	Master’s or professional degree	135	126	2025-11-15 01:06:45.296081+00
+fc8b2a5e-9f3d-4a2b-8c1f-7d6e3b1290a4	education	college_3_year	Three-year post-secondary	120	112	2025-11-15 01:06:45.296081+00
+03ed0a78-b421-45ce-824f-b55b10792666	official_first_language	clb_less_4	CLB less than 4 (per ability)	0	0	2025-11-16 05:36:00+00
+457cc770-4e74-4381-b946-461c7372f4bf	official_first_language	clb_4_5	CLB 4 or 5 (per ability)	6	6	2025-11-16 05:36:00+00
+7d24eee2-c049-4786-88a3-7d2d14ab3ac6	official_first_language	clb_6	CLB 6 (per ability)	9	8	2025-11-16 05:36:00+00
+c4d90447-c1ae-41c4-aa41-c31e52a13675	official_first_language	clb_7	CLB 7 (per ability)	17	16	2025-11-16 05:36:00+00
+12f5a248-3e04-4550-8931-00270d792ac6	official_first_language	clb_8	CLB 8 (per ability)	23	22	2025-11-16 05:36:00+00
+4fa940e5-61b4-401e-8f5e-bce60fc59ea6	official_first_language	clb_9	CLB 9 (per ability)	31	29	2025-11-16 05:36:00+00
+18b69dd5-3125-47a4-ad90-f28ce0395354	official_first_language	clb_10_plus	CLB 10 or more (per ability)	34	32	2025-11-16 05:36:00+00
+d2238a71-f499-47ee-a4f3-6a723bbab67d	official_second_language	clb_4_less	CLB 4 or less (per ability)	0	0	2025-11-16 05:36:00+00
+37f0d3ea-04ee-439c-80cb-b592b1d7a261	official_second_language	clb_5_6	CLB 5 or 6 (per ability)	1	1	2025-11-16 05:36:00+00
+097b767e-6966-467d-a713-aee1355b27ae	official_second_language	clb_7_8	CLB 7 or 8 (per ability)	3	3	2025-11-16 05:36:00+00
+b1c0373c-1a4a-4f9d-ad9e-3b6688e07e89	official_second_language	clb_9_plus	CLB 9 or more (per ability)	6	6	2025-11-16 05:36:00+00
+cf688174-e76f-4370-8b29-70450385872d	spouse_education	less_than_secondary	Less than secondary school	0	0	2025-11-16 05:36:00+00
+af75d446-0298-4b79-b4fb-ca777e596de4	spouse_education	highschool	Secondary school diploma	0	2	2025-11-16 05:36:00+00
+30b82919-8311-4541-a3e9-1c542bff5162	spouse_education	college_1_year	One-year post-secondary	0	6	2025-11-16 05:36:00+00
+e21369f6-a2c5-4dd4-88d6-e131e9bbf717	spouse_education	college_2_year	Two-year post-secondary	0	7	2025-11-16 05:36:00+00
+df154d13-ced1-451f-8d39-df28de13fc34	spouse_education	bachelors	Bachelor’s or 3+ year program	0	8	2025-11-16 05:36:00+00
+1e31d857-c98e-48ec-9abb-a25bf3d973f3	spouse_education	two_or_more	Two or more certificates (one 3+ years)	0	9	2025-11-16 05:36:00+00
+c9df52e2-950f-4d59-9b06-9f4b988bc615	spouse_education	masters	Master’s or professional degree	0	10	2025-11-16 05:36:00+00
+1dcf6919-813c-4627-8bac-289507fe1d38	spouse_education	phd	Doctoral (PhD)	0	10	2025-11-16 05:36:00+00
+20a9f636-4526-4279-8d75-a1de91ec7660	spouse_first_language	clb_4_less	CLB 4 or less (per ability)	0	0	2025-11-16 05:36:00+00
+7b88146c-43da-41b8-afc1-108f1a82da65	spouse_first_language	clb_5_6	CLB 5 or 6 (per ability)	0	1	2025-11-16 05:36:00+00
+6c1ab10a-c982-4495-b359-0931a2fda852	spouse_first_language	clb_7_8	CLB 7 or 8 (per ability)	0	3	2025-11-16 05:36:00+00
+f62da148-84da-4b9e-98be-00cc34a6e277	spouse_first_language	clb_9_plus	CLB 9 or more (per ability)	0	5	2025-11-16 05:36:00+00
+75a3d0e0-beeb-4c19-8f94-82b9816cb1c1	spouse_canadian_work_experience	none	None or less than 1 year	0	0	2025-11-16 05:36:00+00
+e4362b04-0ec7-4a1b-93f7-55288e2577b1	spouse_canadian_work_experience	1_year	1 year	0	5	2025-11-16 05:36:00+00
+c2b1119f-0a4e-4bc6-b71e-51165e1320c0	spouse_canadian_work_experience	2_years	2 years	0	7	2025-11-16 05:36:00+00
+6abf7c30-3dbb-4203-9f7c-db5503a94645	spouse_canadian_work_experience	3_years	3 years	0	8	2025-11-16 05:36:00+00
+ae652517-ee57-4cb7-b3da-f334b925d2df	spouse_canadian_work_experience	4_years	4 years	0	9	2025-11-16 05:36:00+00
+db9e7c33-388b-4aa6-8dff-7e4739ddaece	spouse_canadian_work_experience	5_plus	5+ years	0	10	2025-11-16 05:36:00+00
+dfa73855-f50b-47f2-9ef7-d82b183b4131	transfer_edu_lang	secondary_less	Secondary or less + CLB 7+	0	0	2025-11-16 05:36:00+00
+0c5db795-fd1b-4c6a-af83-6aac2a079510	transfer_edu_lang	1year_plus_clb7_one9	One-year+ post-secondary + CLB 7+ (at least one ability CLB 9)	13	13	2025-11-16 05:36:00+00
+eab74e1d-9dd3-4259-8270-1dd22cfd1caa	transfer_edu_lang	1year_plus_clb9_all	One-year+ post-secondary + CLB 9+ all abilities	25	25	2025-11-16 05:36:00+00
+ce1f0502-722e-4905-a2ba-6d9125a3ffa9	transfer_edu_lang	two_more_clb7_one9	Two+ credentials (one 3+ years) + CLB 7+ (at least one ability CLB 9)	25	25	2025-11-16 05:36:00+00
+a132c94b-4cd4-475d-97d6-7d376c8b97cf	transfer_edu_lang	two_more_clb9_all	Two+ credentials (one 3+ years) + CLB 9+ all abilities	50	50	2025-11-16 05:36:00+00
+93643ad6-3de1-4240-b0cc-b9ea747e6d49	transfer_edu_lang	masters_clb7_one9	Master's/professional + CLB 7+ (at least one ability CLB 9)	25	25	2025-11-16 05:36:00+00
+d76ace0e-a5e2-46cc-ac74-1be868bda95f	transfer_edu_lang	masters_clb9_all	Master's/professional + CLB 9+ all abilities	50	50	2025-11-16 05:36:00+00
+06716da4-b1ad-4f5a-89d1-990cbd80756a	transfer_edu_lang	phd_clb7_one9	PhD + CLB 7+ (at least one ability CLB 9)	25	25	2025-11-16 05:36:00+00
+12439419-70c2-4209-a7a8-6bf9c9adbbab	transfer_edu_lang	phd_clb9_all	PhD + CLB 9+ all abilities	50	50	2025-11-16 05:36:00+00
+732f7b9e-1a10-4fdf-9b6c-0d35717d79b0	transfer_edu_can_work	secondary_less	Secondary or less + Canadian work	0	0	2025-11-16 05:36:00+00
+aa04d0e0-7dd6-4c9c-9958-1132d6cf73e2	transfer_edu_can_work	1year_plus_1yr_can	One-year+ post-secondary + 1 year Canadian work	13	13	2025-11-16 05:36:00+00
+894253d1-ec65-443b-8c4a-ab5c045b652f	transfer_edu_can_work	1year_plus_2plus_can	One-year+ post-secondary + 2+ years Canadian work	25	25	2025-11-16 05:36:00+00
+7842c5f1-d2bf-48e9-9b68-1167a60a4e75	transfer_edu_can_work	two_more_1yr_can	Two+ credentials (one 3+ years) + 1 year Canadian work	25	25	2025-11-16 05:36:00+00
+b953fdcd-ec53-41e9-b573-577d58f2917d	transfer_edu_can_work	two_more_2plus_can	Two+ credentials (one 3+ years) + 2+ years Canadian work	50	50	2025-11-16 05:36:00+00
+711ba35b-82fd-44fa-bc1b-97ee07fe9646	transfer_edu_can_work	masters_1yr_can	Master's/professional + 1 year Canadian work	25	25	2025-11-16 05:36:00+00
+dc2790bf-4979-496d-a54f-2a574776daed	transfer_edu_can_work	masters_2plus_can	Master's/professional + 2+ years Canadian work	50	50	2025-11-16 05:36:00+00
+856e44a0-db40-43c9-a331-db575ca680e0	transfer_edu_can_work	phd_1yr_can	PhD + 1 year Canadian work	25	25	2025-11-16 05:36:00+00
+9f9f5aa5-5e7a-4a70-8604-ca9932d736d7	transfer_edu_can_work	phd_2plus_can	PhD + 2+ years Canadian work	50	50	2025-11-16 05:36:00+00
+c8cbc61f-95e3-4095-a5bc-1693ef8a10e9	transfer_foreign_lang	none	No foreign work + CLB 7+	0	0	2025-11-16 05:36:00+00
+5fc7bd27-499f-4194-9477-9241272d3781	transfer_foreign_lang	1-2yr_clb7_one9	1-2 years foreign work + CLB 7+ (at least one ability CLB 9)	13	13	2025-11-16 05:36:00+00
+b9449d32-d8d6-4e96-bcc1-b89198ef3b22	transfer_foreign_lang	1-2yr_clb9_all	1-2 years foreign work + CLB 9+ all abilities	25	25	2025-11-16 05:36:00+00
+39c231a8-d1cc-4ce8-b604-011c3e6b7858	transfer_foreign_lang	3plus_clb7_one9	3+ years foreign work + CLB 7+ (at least one ability CLB 9)	25	25	2025-11-16 05:36:00+00
+b0e53d1e-55a1-499e-b340-790543c7b198	transfer_foreign_lang	3plus_clb9_all	3+ years foreign work + CLB 9+ all abilities	50	50	2025-11-16 05:36:00+00
+94ba7095-1f53-40d8-8a4e-f9e3e6c5a956	transfer_foreign_can_work	none	No foreign work + Canadian work	0	0	2025-11-16 05:36:00+00
+ae739ff3-a92a-43b5-8484-b1e5d87845fb	transfer_foreign_can_work	1-2yr_1yr_can	1-2 years foreign work + 1 year Canadian work	13	13	2025-11-16 05:36:00+00
+b7ff9a68-e98d-44e2-98e1-cdfc4e15727e	transfer_foreign_can_work	1-2yr_2plus_can	1-2 years foreign work + 2+ years Canadian work	25	25	2025-11-16 05:36:00+00
+cc2fda3f-0906-485b-a4bc-b8d498f2e28d	transfer_foreign_can_work	3plus_1yr_can	3+ years foreign work + 1 year Canadian work	25	25	2025-11-16 05:36:00+00
+9acd2396-ad1f-46c0-a6d5-adf146b4becf	transfer_foreign_can_work	3plus_2plus_can	3+ years foreign work + 2+ years Canadian work	50	50	2025-11-16 05:36:00+00
+0c8e05c9-5189-4128-95f2-186913fe35db	transfer_cert_lang	clb5_one7	Certificate + CLB 5+ (at least one ability CLB 7)	25	25	2025-11-16 05:36:00+00
+079a4c88-f698-47da-aa32-e21419d36101	transfer_cert_lang	clb7_all	Certificate + CLB 7+ all abilities	50	50	2025-11-16 05:36:00+00
+ac509ce1-48d4-4e23-a735-8655568bae23	additional	sibling	Brother or sister in Canada (citizen/PR, 18+)	15	15	2025-11-16 05:36:00+00
+5d5d7576-34bc-4d56-9e04-1fc2cf6639ce	additional	french_low_eng	French NCLC 7+ all abilities + English CLB 4 or lower (or no English test)	25	25	2025-11-16 05:36:00+00
+425b1657-b461-494f-888b-32952821fa28	additional	french_high_eng	French NCLC 7+ all abilities + English CLB 5+ all abilities	50	50	2025-11-16 05:36:00+00
+a482681c-6660-4501-988c-c6b2dbab6fc0	additional	postsec_can_1-2yr	Post-secondary education in Canada (1-2 years)	15	15	2025-11-16 05:36:00+00
+6d0fb742-4ec2-4b77-bcd3-1fbc84a38543	additional	postsec_can_3plus	Post-secondary education in Canada (3+ years)	30	30	2025-11-16 05:36:00+00
+2b83b45f-16bd-4941-ab63-94902c1f5c03	additional	prov_nomination	Provincial/territorial nomination	600	600	2025-11-16 05:36:00+00

@@ -29,6 +29,7 @@ export default function DrawsTable() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [darkMode, setDarkMode] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [showFilters, setShowFilters] = useState(false); // This controls filter visibility
   const itemsPerPage = 50;
 
   // Detect dark mode
@@ -160,91 +161,108 @@ export default function DrawsTable() {
       {/* Header */}
       <div className={styles.header}>
         <h2 className={styles.headerTitle}>CRS Draw History</h2>
-        <Filter className={styles.filterIcon} />
+        <button
+          onClick={() => setShowFilters((prev) => !prev)}
+          className={`${styles.filterToggleBtn} ${
+            showFilters ? styles.filterToggleActive : ""
+          }`}
+          aria-label={showFilters ? "Hide filters" : "Show filters"}
+        >
+          <Filter className={styles.filterIcon} />
+          <span className={styles.filterToggleText}>
+            {showFilters ? "Hide" : "Show"} Filters
+          </span>
+        </button>
       </div>
 
-      {/* Filters */}
-      <div className={styles.filters}>
-        {/* Program Filter */}
-        <div>
-          <label className={`${styles.label} ${themeStyles.label}`}>
-            Program
-          </label>
-          <select
-            value={selectedProgram}
-            onChange={(e) => setSelectedProgram(e.target.value)}
-            className={`${styles.select} ${themeStyles.select}`}
-          >
-            {programs.map((p) => (
-              <option key={p} value={p} className={themeStyles.selectOption}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
+      {/* Filters — Only visible when showFilters is true */}
+      <div
+        className={`${styles.filtersWrapper} ${
+          showFilters ? styles.filtersVisible : styles.filtersHidden
+        }`}
+      >
+        <div className={styles.filters}>
+          {/* Program Filter */}
+          <div>
+            <label className={`${styles.label} ${themeStyles.label}`}>
+              Program
+            </label>
+            <select
+              value={selectedProgram}
+              onChange={(e) => setSelectedProgram(e.target.value)}
+              className={`${styles.select} ${themeStyles.select}`}
+            >
+              {programs.map((p) => (
+                <option key={p} value={p} className={themeStyles.selectOption}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Province Filter */}
-        <div>
-          <label className={`${styles.label} ${themeStyles.label}`}>
-            Province
-          </label>
-          <select
-            value={selectedProvince}
-            onChange={(e) => setSelectedProvince(e.target.value)}
-            className={`${styles.select} ${themeStyles.select}`}
-          >
-            {provinces.map((p) => (
-              <option key={p} value={p} className={themeStyles.selectOption}>
-                {p}
-              </option>
-            ))}
-          </select>
-        </div>
+          {/* Province Filter */}
+          <div>
+            <label className={`${styles.label} ${themeStyles.label}`}>
+              Province
+            </label>
+            <select
+              value={selectedProvince}
+              onChange={(e) => setSelectedProvince(e.target.value)}
+              className={`${styles.select} ${themeStyles.select}`}
+            >
+              {provinces.map((p) => (
+                <option key={p} value={p} className={themeStyles.selectOption}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* CRS Range */}
-        <div>
-          <label className={`${styles.label} ${themeStyles.label}`}>
-            CRS Range
-          </label>
-          <CRSFilter
-            onRangeChange={setCrsRange}
-            styles={{
-              select: themeStyles.select,
-              selectOption: themeStyles.selectOption,
-            }}
-          />
-        </div>
+          {/* CRS Range */}
+          <div>
+            <label className={`${styles.label} ${themeStyles.label}`}>
+              CRS Range
+            </label>
+            <CRSFilter
+              onRangeChange={setCrsRange}
+              styles={{
+                select: themeStyles.select,
+                selectOption: themeStyles.selectOption,
+              }}
+            />
+          </div>
 
-        {/* Desktop Sort Buttons */}
-        <div className={`${styles.sortButtons} hidden lg:flex`}>
-          <button
-            onClick={() => toggleSort("date")}
-            className={`${styles.sortButton} ${themeStyles.sortButton}`}
-          >
-            <Calendar className={styles.sortIcon} />
-            Date
-            {sortBy === "date" && (
-              <ArrowUpDown
-                className={`${styles.arrowIcon} ${
-                  sortOrder === "asc" ? styles.arrowIconAsc : ""
-                }`}
-              />
-            )}
-          </button>
-          <button
-            onClick={() => toggleSort("crs")}
-            className={`${styles.sortButton} ${themeStyles.sortButton}`}
-          >
-            <Hash className={styles.sortIcon} />
-            CRS
-            {sortBy === "crs" && (
-              <ArrowUpDown
-                className={`${styles.arrowIcon} ${
-                  sortOrder === "asc" ? styles.arrowIconAsc : ""
-                }`}
-              />
-            )}
-          </button>
+          {/* Desktop Sort Buttons */}
+          <div className={`${styles.sortButtons} hidden lg:flex`}>
+            <button
+              onClick={() => toggleSort("date")}
+              className={`${styles.sortButton} ${themeStyles.sortButton}`}
+            >
+              <Calendar className={styles.sortIcon} />
+              Date
+              {sortBy === "date" && (
+                <ArrowUpDown
+                  className={`${styles.arrowIcon} ${
+                    sortOrder === "asc" ? styles.arrowIconAsc : ""
+                  }`}
+                />
+              )}
+            </button>
+            <button
+              onClick={() => toggleSort("crs")}
+              className={`${styles.sortButton} ${themeStyles.sortButton}`}
+            >
+              <Hash className={styles.sortIcon} />
+              CRS
+              {sortBy === "crs" && (
+                <ArrowUpDown
+                  className={`${styles.arrowIcon} ${
+                    sortOrder === "asc" ? styles.arrowIconAsc : ""
+                  }`}
+                />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -268,21 +286,20 @@ export default function DrawsTable() {
           emptyCell: themeStyles.emptyCell,
           emptySvg: themeStyles.emptySvg,
         }}
-        darkMode={darkMode} // ← ADD THIS LINE
+        darkMode={darkMode}
       />
 
       {/* Pagination Controls */}
-      {/* ──────────────────────────────────────── Pagination ──────────────────────────────────────── */}
       <div className={styles.pagination}>
         {/* Previous */}
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
           disabled={currentPage === 1}
           className={`
-      ${styles.modernBtn} ${styles.modernBtnPrevNext}
-      ${currentPage === 1 ? styles.modernBtnDisabled : ""}
-      ${darkMode ? styles.modernBtnDark : styles.modernBtnLight}
-    `}
+            ${styles.modernBtn} ${styles.modernBtnPrevNext}
+            ${currentPage === 1 ? styles.modernBtnDisabled : ""}
+            ${darkMode ? styles.modernBtnDark : styles.modernBtnLight}
+          `}
         >
           <svg
             className={styles.modernBtnIcon}
@@ -291,18 +308,17 @@ export default function DrawsTable() {
           >
             <path
               fillRule="evenodd"
-              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              d="M12.707 5.293a1 1 0 010 1.414L9.1 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
               clipRule="evenodd"
             />
           </svg>
           Previous
         </button>
 
-        {/* Page numbers – responsive list */}
+        {/* Page numbers */}
         <div className={styles.pageList}>
           {(() => {
             const pages: (number | "ellipsis")[] = [];
-
             pages.push(1);
             if (currentPage > 4) pages.push("ellipsis");
             const start = Math.max(2, currentPage - 2);
@@ -311,7 +327,6 @@ export default function DrawsTable() {
             if (currentPage < totalPages - 3) pages.push("ellipsis");
             if (totalPages > 1) pages.push(totalPages);
 
-            // dedupe while preserving order
             const uniq: (number | "ellipsis")[] = [];
             pages.forEach((p) => {
               if (!uniq.includes(p)) uniq.push(p);
@@ -330,16 +345,16 @@ export default function DrawsTable() {
                 key={item}
                 onClick={() => setCurrentPage(item)}
                 className={`
-            ${styles.modernBtn} ${styles.modernBtnPage}
-            ${
-              currentPage === item
-                ? darkMode
-                  ? styles.modernBtnActiveDark
-                  : styles.modernBtnActiveLight
-                : ""
-            }
-            ${darkMode ? styles.modernBtnDark : styles.modernBtnLight}
-          `}
+                  ${styles.modernBtn} ${styles.modernBtnPage}
+                  ${
+                    currentPage === item
+                      ? darkMode
+                        ? styles.modernBtnActiveDark
+                        : styles.modernBtnActiveLight
+                      : ""
+                  }
+                  ${darkMode ? styles.modernBtnDark : styles.modernBtnLight}
+                `}
               >
                 {item}
               </button>
@@ -352,10 +367,10 @@ export default function DrawsTable() {
           onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
           disabled={currentPage === totalPages}
           className={`
-      ${styles.modernBtn} ${styles.modernBtnPrevNext}
-      ${currentPage === totalPages ? styles.modernBtnDisabled : ""}
-      ${darkMode ? styles.modernBtnDark : styles.modernBtnLight}
-    `}
+            ${styles.modernBtn} ${styles.modernBtnPrevNext}
+            ${currentPage === totalPages ? styles.modernBtnDisabled : ""}
+            ${darkMode ? styles.modernBtnDark : styles.modernBtnLight}
+          `}
         >
           Next
           <svg
