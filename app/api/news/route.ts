@@ -1,9 +1,10 @@
 // app/api/news/route.ts
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_ANON_KEY!
+);
 
 export async function GET() {
   try {
@@ -13,32 +14,39 @@ export async function GET() {
       .order("published_at", { ascending: false })
       .limit(500);
 
-    if (error) throw error;
+    if (error) {
+      console.error("Supabase error:", error);
+      return Response.json({ error: error.message }, { status: 500 });
+    }
 
-    const transformedData =
-      data?.map((item: any) => {
-        let imageUrl: string | null = null;
+    const transformedData = data.map((item: any) => {
+      let image_url: string | null = null;
 
-        if (item.image_path) {
-          // `image_path` is just the file name → build public URL
-          const { data: urlData } = supabase.storage
-            .from("images")
-            .getPublicUrl(item.image_path);
+      if (item.image_path) {
+        const { data: urlData } = supabase.storage
+          .from("images")
+          .getPublicUrl(item.image_path);
+        image_url = urlData.publicUrl;
+      }
 
-          imageUrl = urlData.publicUrl; // e.g. https://…/Id1_Image.png
-        }
-
-        return { ...item, image_url: imageUrl };
-      }) ?? [];
-
-    return new Response(JSON.stringify(transformedData), {
-      headers: { "Content-Type": "application/json" },
+      return {
+        id: item.id,
+        title: item.title,
+        summary: item.summary,
+        source: item.source ?? undefined,
+        published_at: item.published_at ?? undefined,
+        url: item.url ?? undefined,
+        program: item.program ?? undefined,
+        image_url,
+      };
     });
+
+    return Response.json(transformedData); // always 200 + valid JSON
   } catch (err: any) {
-    console.error("News API error:", err);
-    return new Response(
-      JSON.stringify({ error: err?.message || String(err) }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    console.error("Unexpected news API error:", err);
+    return Response.json(
+      { error: err?.message || "Internal Server Error" },
+      { status: 500 }
     );
   }
 }

@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { X } from "lucide-react";
 import styles from "./DisclaimerBanner.module.css";
 
 export default function DisclaimerBanner() {
@@ -48,7 +47,6 @@ export default function DisclaimerBanner() {
           aria-label="Dismiss disclaimer"
         >
           Got it
-          <X className="w-4 h-4" />
         </button>
       </div>
     </div>

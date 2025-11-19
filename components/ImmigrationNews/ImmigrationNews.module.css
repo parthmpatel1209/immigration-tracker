@@ -176,40 +176,21 @@
   .grid { grid-template-columns: repeat(5, 1fr); } 
 }
 /* ------------------------------------------------- */
-/* FLIPPING CARD – 3D FLIP (FRONT → BACK)           */
+/* FLIPPING CARD – 3D FLIP (FRONT ↔ BACK)           */
 /* ------------------------------------------------- */
 .card {
   perspective: 1200px;
   height: 100%;
+  border-radius: 0.75rem;
   border: 1px solid transparent;
-  border-radius: .75rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,.05);
-  transition: box-shadow .3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
 }
-.card:hover { box-shadow: 0 10px 20px rgba(0,0,0,.1); }
-
-/* ------------------------------------------------- */
-/* AUTO-FLIP – runs **once** on mount, then removed   */
-/* ------------------------------------------------- */
-.cardFlipper.autoFlip {
-  animation: autoFlipOnce 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-@keyframes autoFlipOnce {
-  0%   { transform: rotateY(0deg); }
-  30%  { transform: rotateY(0deg); }      /* front pause */
-  50%  { transform: rotateY(180deg); }    /* show back */
-  70%  { transform: rotateY(180deg); }    /* back pause */
-  100% { transform: rotateY(0deg); }      /* back to front */
+.card:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* INTERACTIVE FLIP – wins over animation */
-.card:hover .cardFlipper,
-.cardFlipper.flipped {
-  animation: none !important;
-  transform: rotateY(180deg) !important;
-}
-
-/* Flipper ------------------------------------------------ */
+/* Flipper container */
 .cardFlipper {
   position: relative;
   width: 100%;
@@ -218,8 +199,64 @@
   transform-style: preserve-3d;
   cursor: pointer;
 }
-.card:hover .cardFlipper,
-.cardFlipper.flipped { transform: rotateY(180deg); }
+
+/* Flipped state (manual tap or swipe) */
+.cardFlipper.flipped {
+  transform: rotateY(180deg);
+}
+
+/* Auto-flip once on first card */
+.cardFlipper.autoFlip {
+  animation: autoFlipOnce 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes autoFlipOnce {
+  0%   { transform: rotateY(0deg); }
+  30%  { transform: rotateY(0deg); }
+  50%  { transform: rotateY(180deg); }
+  70%  { transform: rotateY(180deg); }
+  100% { transform: rotateY(0deg); }
+}
+
+/* Front & Back shared styles */
+.cardFront,
+.cardBack {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+/* Back side is rotated 180° */
+.cardBack {
+  transform: rotateY(180deg);
+}
+
+/* ------------------------------------------------- */
+/* MOST IMPORTANT: Make the VISIBLE side clickable   */
+/* ------------------------------------------------- */
+.cardFront,
+.cardBack {
+  pointer-events: none;        /* Block clicks by default */
+}
+
+.cardFlipper .cardFront {
+  pointer-events: auto;        /* Front is clickable when visible */
+}
+
+.cardFlipper.flipped .cardBack {
+  pointer-events: auto;        /* Back is clickable when flipped */
+}
+
+.cardFlipper.flipped .cardFront {
+  pointer-events: none;        /* Hide clicks on hidden front */
+}
+
+/* Optional: subtle hover lift when not flipped */
+.card:hover .cardFlipper:not(.flipped) {
+  transform: translateY(-4px);
+}
 
 /* Front & Back – absolute, full size --------------------- */
 .cardFront,
@@ -230,7 +267,9 @@
   height: 100%;
   backface-visibility: hidden;
   border-radius: .75rem;
-  overflow: hidden;               /* <-- keeps everything inside */
+  overflow: hidden;  
+  -webkit-backface-visibility:0;
+  pointer-events: none;             /* <-- keeps everything inside */
 }
 
 /* FRONT: Image ------------------------------------------- */
@@ -267,9 +306,10 @@
 .cardFront img { z-index: 2; }
 
 /* BACK: Info --------------------------------------------- */
+/* BACK: Info – with safe top padding for X button */
 .cardBack {
   z-index: 1;
-  background-color: var(--bg-card);
+  background-color: var(--bg-card, #ffffff);
   color: var(--text-primary);
   transform: rotateY(180deg);
   padding: 0.75rem;
@@ -278,22 +318,29 @@
   gap: 0.5rem;
   box-sizing: border-box;
   overflow: hidden;
-  height: 100%; /* match card height */
+  height: 100%;
 }
 
-/* Scrollable area – title + summary */
+/* THIS IS THE KEY FIX – gives breathing room for the X button */
 .cardBack .content {
   flex: 1;
   overflow-y: auto;
-  padding-right: 0.25rem; /* space for scrollbar */
+  padding-right: 0.25rem;
   margin-right: -0.25rem;
-  min-height: 0; /* allow shrink */
-  touch-action: pan-y;           /* Allow vertical scroll only */
-  -webkit-overflow-scrolling: touch; /* Smooth iOS scroll */
-  overscroll-behavior: contain;
+  min-height: 0;
+  
+  /* ADD THIS LINE */
+  padding-top: 2.5rem;  /* Makes space for the X button at top-right */
+
+  /* Keep your existing smooth scroll */
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156,163,175,.3) transparent;
 }
 
-/* Custom scrollbar (optional, modern look) */
+/* WebKit scrollbar styling (Chrome, Edge, Safari) */
 .cardBack .content::-webkit-scrollbar {
   width: 6px;
 }
@@ -301,11 +348,11 @@
   background: transparent;
 }
 .cardBack .content::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.3);
+  background: rgba(156,163,175,.3);
   border-radius: 3px;
 }
 .cardBack .content::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.5);
+  background: rgba(156,163,175,.5);
 }
 
 /* Title */
@@ -413,40 +460,6 @@ cardBack .footer {
   font-size: .875rem; 
 }
 
-/* X Button – top-right corner of back side */
-.closeBack {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  background: rgba(0, 0, 0, 0.3);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background 0.2s;
-  backdrop-filter: blur(4px);
-}
-
-.closeBack:hover {
-  background: rgba(0, 0, 0, 0.5);
-}
-
-/* Dark mode – keep visible */
-:global(html.dark) .closeBack {
-  background: rgba(255, 255, 255, 0.2);
-  color: #e2e8f0;
-}
-
-:global(html.dark) .closeBack:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
 
 /* ------------------------------------------------- */
 /* Floating Date Label – Top-Right on Front          */
@@ -500,4 +513,40 @@ cardBack .footer {
 }
 .cardFlipper.swipingRight {
   transform: rotateY(30deg) !important;
+}
+
+.closeBack {
+  position: absolute;
+  top: 0.75rem;        /* Slightly lower than before */
+  right: 0.75rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.35);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(8px);
+  pointer-events: auto !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.closeBack:hover {
+  background: rgba(0, 0, 0, 0.55);
+  transform: scale(1.1);
+}
+
+:global(html.dark) .closeBack {
+  background: rgba(255, 255, 255, 0.25);
+  color: #e2e8f0;
+}
+
+:global(html.dark) .closeBack:hover {
+  background: rgba(255, 255, 255, 0.4);
 }
