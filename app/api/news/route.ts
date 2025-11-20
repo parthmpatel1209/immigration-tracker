@@ -32,6 +32,7 @@ export async function GET() {
       return {
         id: item.id,
         title: item.title,
+        title_text: item.title_text,
         summary: item.summary,
         source: item.source ?? undefined,
         published_at: item.published_at ?? undefined,

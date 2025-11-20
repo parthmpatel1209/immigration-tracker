@@ -4,6 +4,7 @@ export interface NewsItem {
   title: string;
   summary: string;
   source?: string;
+  title_text?: string;
   published_at?: string;
   url?: string;
   program?: string;
