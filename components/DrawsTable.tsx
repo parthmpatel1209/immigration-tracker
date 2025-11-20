@@ -12,10 +12,10 @@ dayjs.extend(relativeTime);
 
 interface Draw {
   id: number;
-  round: number;
+  round: string;
   program: string;
-  crs_cutoff: number;
-  invitations: number;
+  crs_cutoff: string;
+  invitations: string;
   draw_date: string;
   draw_province: string | null;
 }
@@ -65,26 +65,39 @@ export default function DrawsTable() {
 
     if (selectedProgram !== "All")
       list = list.filter((d) => d.program === selectedProgram);
+
     if (selectedProvince !== "All")
       list = list.filter((d) => d.draw_province === selectedProvince);
-    if (crsRange)
-      list = list.filter(
-        (d) => d.crs_cutoff >= crsRange[0] && d.crs_cutoff <= crsRange[1]
-      );
 
+    if (crsRange) {
+      const [min, max] = crsRange;
+      list = list.filter((d) => {
+        const score = Number(d.crs_cutoff);
+        return !isNaN(score) && score >= min && score <= max;
+      });
+    }
+
+    // Sorting
     if (sortBy === "crs") {
-      list.sort((a, b) =>
-        sortOrder === "asc"
-          ? a.crs_cutoff - b.crs_cutoff
-          : b.crs_cutoff - a.crs_cutoff
-      );
+      list.sort((a, b) => {
+        const aScore = Number(a.crs_cutoff);
+        const bScore = Number(b.crs_cutoff);
+        // Handle possible NaN (rare, but safe)
+        if (isNaN(aScore) && isNaN(bScore)) return 0;
+        if (isNaN(aScore)) return 1;
+        if (isNaN(bScore)) return -1;
+
+        return sortOrder === "asc" ? aScore - bScore : bScore - aScore;
+      });
     } else {
+      // Date sorting (already safe)
       list.sort((a, b) =>
         sortOrder === "asc"
           ? dayjs(a.draw_date).valueOf() - dayjs(b.draw_date).valueOf()
           : dayjs(b.draw_date).valueOf() - dayjs(a.draw_date).valueOf()
       );
     }
+
     return list;
   }, [draws, selectedProgram, selectedProvince, crsRange, sortBy, sortOrder]);
 

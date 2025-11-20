@@ -85,7 +85,7 @@ export default function ImmigrationNews() {
     setVisibleCount(ITEMS_PER_PAGE);
   }, [filterProps.month, filterProps.year]);
 
-  const visibleNews = filtered.slice(0, visibleCount); // 👈 only show this many
+  const visibleNews = filtered.slice(0, visibleCount);
 
   if (loading) {
     return (
@@ -102,9 +102,11 @@ export default function ImmigrationNews() {
       style={{ backgroundColor: theme.bgPrimary, color: theme.textPrimary }}
     >
       <NewsHeader
+        theme={theme}
         showFilters={showFilters}
         onToggleFilters={() => setShowFilters(!showFilters)}
       />
+
       <NewsFilters show={showFilters} theme={theme} {...filterProps} />
 
       <NewsTicker

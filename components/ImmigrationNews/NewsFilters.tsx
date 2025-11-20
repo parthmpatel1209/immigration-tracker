@@ -32,16 +32,27 @@ export function NewsFilters({
       className={`${styles.filtersWrapper} ${
         show ? styles.filtersVisible : styles.filtersHidden
       }`}
+      style={{
+        backgroundColor:
+          theme.bgCard + (theme.bgCard === "#ffffff" ? "dd" : "cc"),
+        borderColor: theme.border,
+        boxShadow:
+          theme.bgPrimary === "#ffffff"
+            ? "0 4px 18px rgba(0,0,0,0.06)"
+            : "0 4px 18px rgba(0,0,0,0.3)",
+      }}
     >
       <div className={styles.filters}>
+        {/* Month Filter */}
         <div className={styles.filterGroup}>
           <label className={styles.label} style={{ color: theme.textMuted }}>
             Month
           </label>
+
           <select
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            className={styles.select}
+            className={styles.modernSelect}
             style={{
               backgroundColor: theme.bgSecondary,
               borderColor: theme.border,
@@ -57,14 +68,16 @@ export function NewsFilters({
           </select>
         </div>
 
+        {/* Year Filter */}
         <div className={styles.filterGroup}>
           <label className={styles.label} style={{ color: theme.textMuted }}>
             Year
           </label>
+
           <select
             value={year}
             onChange={(e) => setYear(e.target.value)}
-            className={styles.select}
+            className={styles.modernSelect}
             style={{
               backgroundColor: theme.bgSecondary,
               borderColor: theme.border,
@@ -80,13 +93,15 @@ export function NewsFilters({
           </select>
         </div>
 
+        {/* Clear Button */}
         {hasActiveFilters && (
           <button
             onClick={clearFilters}
-            className={styles.clearButton}
+            className={styles.clearFiltersButton}
             style={{
               backgroundColor: theme.bgTertiary,
               color: theme.textSecondary,
+              borderColor: theme.border,
             }}
           >
             <X size={14} /> Clear

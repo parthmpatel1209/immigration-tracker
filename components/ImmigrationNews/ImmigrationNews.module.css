@@ -45,109 +45,180 @@
   height: 1.25rem; 
 }
 
-/* Filters ------------------------------------------------ */
-.filters { 
-  display: flex; 
-  flex-wrap: wrap; 
-  gap: 1rem; 
-  align-items: end; 
-}
-.filterGroup { 
-  display: flex; 
-  flex-direction: column; 
-  gap: .25rem; 
-  min-width: 140px; 
-}
-.label { 
-  font-size: .75rem; 
-  font-weight: 500; 
-}
-.select {
-  padding: .5rem .75rem;
-  font-size: .875rem;
-  border: 1px solid transparent;
-  border-radius: .5rem;
-  outline: none;
-  transition: border .2s, box-shadow .2s;
-}
-.select:focus { 
-  border-color: #4f46e5; 
-  box-shadow: 0 0 0 2px rgba(79,70,229,.2); 
-}
-.clearButton {
-  display: flex;
-  align-items: center;
-  gap: .25rem;
-  padding: .5rem .75rem;
-  font-size: .75rem;
-  font-weight: 500;
-  border: none;
-  border-radius: .5rem;
-  cursor: pointer;
-  transition: background .2s;
-}
+/* ───────────────────────────────
+   Modern Filter Toggle Button
+─────────────────────────────── */
 
-/* ───────────────────── Filter Toggle Button ───────────────────── */
 .filterToggleBtn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  background: transparent;
+  gap: 0.55rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.65rem;
   border: 1px solid transparent;
-  border-radius: 0.5rem;
-  color: inherit;
-  font-size: 0.875rem;
-  font-weight: 500;
+  background: var(--bg-secondary);
   cursor: pointer;
-  transition: all 0.2s ease;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  user-select: none;
 }
 
 .filterToggleBtn:hover {
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(99, 102, 241, 0.10);
+  border-color: #6366f1;
 }
 
-:global(html.dark) .filterToggleBtn:hover {
-  background: rgba(99, 102, 241, 0.2);
+/* Dark mode override for filter toggle button */
+:global(html.dark) .filterToggleBtn {
+  color: #ffffff;            /* White text */
+  border-color: rgba(255,255,255,0.18) !important;
+}
+
+:global(html.dark) .filterIconWrapper {
+  border-color: rgba(255,255,255,0.18) !important;
+}
+
+:global(html.dark) .filterToggleActive {
+  color: #ffffff !important;
+  background: rgba(99,102,241,0.25) !important;
+  border-color: #6366f1 !important;
 }
 
 .filterToggleActive {
-  background: rgba(99, 102, 241, 0.15) !important;
+  background: rgba(99, 102, 241, 0.18) !important;
   border-color: #6366f1 !important;
-  color: #6366f1;
+  color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
 }
 
-/* Hide text on very small screens – icon only */
+/* icon container */
+.filterIconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 0.45rem;
+  border: 1px solid transparent;
+  transition: all 0.25s ease;
+}
+
+/* icon */
+.filterIconModern {
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* rotate on active (nice micro animation) */
+.filterToggleActive .filterIconModern {
+  transform: rotate(90deg);
+}
+
+/* hide label on mobile */
 .filterToggleText {
   display: none;
 }
+
 @media (min-width: 640px) {
-  .filterToggleText { display: inline; }
+  .filterToggleText {
+    display: inline;
+  }
 }
 
-/* Filters wrapper – animated show / hide */
+
+/* Filters ------------------------------------------------ */
+/* ----------------------------------------------------
+   Modern Filters Container
+---------------------------------------------------- */
 .filtersWrapper {
-  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  backdrop-filter: blur(12px);
   transition: max-height 0.35s ease, opacity 0.35s ease, margin 0.35s ease;
+}
+
+.filtersVisible {
+  max-height: 500px;
+  opacity: 1;
 }
 
 .filtersHidden {
   max-height: 0;
   opacity: 0;
-  margin-bottom: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
-.filtersVisible {
-  max-height: 600px;
-  opacity: 1;
-  margin-bottom: 1.5rem;
+/* ----------------------------------------------------
+   Layout
+---------------------------------------------------- */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: flex-end;
 }
 
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-12px); }
-  to   { opacity: 1; transform: translateY(0); }
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 150px;
 }
-.filtersVisible { animation: slideDown 0.4s ease-out; }
+
+.label {
+  font-size: .75rem;
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* ----------------------------------------------------
+   Modern Select
+---------------------------------------------------- */
+.modernSelect {
+  padding: .6rem .75rem;
+  font-size: .875rem;
+  border-radius: .5rem;
+  border: 1px solid var(--border);
+  background-color: var(--bg-secondary);
+  transition: all 0.2s ease;
+}
+
+.modernSelect:hover {
+  border-color: #6366f1;
+}
+
+.modernSelect:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 2px rgba(99,102,241,0.28);
+  outline: none;
+}
+
+/* ----------------------------------------------------
+   Clear Button
+---------------------------------------------------- */
+.clearFiltersButton {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .55rem .8rem;
+  font-size: .75rem;
+  font-weight: 500;
+  background: transparent;
+  border-radius: .5rem;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clearFiltersButton:hover {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+  border-color: #dc2626;
+}
+
 
 /* Grid --------------------------------------------------- */
 /* RESPONSIVE GRID – 2 ON PHONE, 5 ON DESKTOP */

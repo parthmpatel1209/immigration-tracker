@@ -13,11 +13,11 @@ import ChatBot from "@/components/ChatBot";
 // ──────────────────────────────────────────────────────────────
 interface Draw {
   id: number;
-  round: number;
+  round: string;
   program: string;
   draw_province: string | null;
-  crs_cutoff?: number | null;
-  invitations?: number | null;
+  crs_cutoff?: string | null;
+  invitations?: string | null;
   draw_date: string;
 }
 
@@ -162,10 +162,13 @@ function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
             <Users className={styles.iconSm} />
             <span>
               {draw.invitations != null
-                ? Number(draw.invitations).toLocaleString()
+                ? /^\d+$/.test(draw.invitations) // check if it’s all digits
+                  ? Number(draw.invitations).toLocaleString()
+                  : draw.invitations
                 : "N/A"}
             </span>
           </div>
+
           <div className={styles.stat}>
             <Calendar className={styles.iconSm} />
             <span>{formattedDate}</span>

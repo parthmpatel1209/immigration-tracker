@@ -6,10 +6,10 @@ import styles from "./DrawsTable.module.css";
 
 interface Draw {
   id: number;
-  round: number;
+  round: string;
   program: string;
-  crs_cutoff: number;
-  invitations: number;
+  crs_cutoff: string;
+  invitations: string;
   draw_date: string;
   draw_province: string | null;
 }
