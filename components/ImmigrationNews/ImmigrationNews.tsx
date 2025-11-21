@@ -15,6 +15,8 @@ const ITEMS_PER_PAGE = 30; // ✅ REQUIRED CONSTANT
 const LIGHT = {
   bgPrimary: "#ffffff",
   bgCard: "#ffffff",
+  bgSecondary: "#ffffff",
+  bgTertiary: "#f3f4f6",
   textPrimary: "#1f2937",
   textSecondary: "#4b5563",
   textMuted: "#9ca3af",
@@ -24,6 +26,8 @@ const LIGHT = {
 const DARK = {
   bgPrimary: "#0f172a",
   bgCard: "#1e293b",
+  bgSecondary: "#0f172a",
+  bgTertiary: "#334155",
   textPrimary: "#f1f5f9",
   textSecondary: "#cbd5e1",
   textMuted: "#94a3b8",

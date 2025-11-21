@@ -106,150 +106,152 @@ export default function ContactForm() {
   }
 
   return (
-    <div className={styles.contact_container}>
-      <div className={styles.contact_wrapper}>
-        <header className={styles.contact_header}>
-          <h1 className={styles.contact_title}>Get in Touch</h1>
-          <p className={styles.contact_subtitle}>
-            Fill out the form and we’ll get back to you as soon as possible.
-          </p>
-        </header>
+    <>
+      <div className={styles.contact_container}>
+        <div className={styles.contact_wrapper}>
+          <header className={styles.contact_header}>
+            <h1 className={styles.contact_title}>Get in Touch</h1>
+            <p className={styles.contact_subtitle}>
+              Fill out the form and we’ll get back to you as soon as possible.
+            </p>
+          </header>
 
-        <form
-          onSubmit={handleSubmit}
-          className={styles.contact_form}
-          noValidate
-        >
-          <div className={styles.contact_field}>
-            <label htmlFor="name" className={styles.contact_label}>
-              Full Name <span className={styles.contact_required}>*</span>
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              required
-              value={formData.name}
-              onChange={handleChange}
-              className={styles.contact_input}
-              placeholder="Parth Patel"
-            />
-          </div>
+          <form
+            onSubmit={handleSubmit}
+            className={styles.contact_form}
+            noValidate
+          >
+            <div className={styles.contact_field}>
+              <label htmlFor="name" className={styles.contact_label}>
+                Full Name <span className={styles.contact_required}>*</span>
+              </label>
+              <input
+                id="name"
+                name="name"
+                type="text"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                className={styles.contact_input}
+                placeholder="Parth Patel"
+              />
+            </div>
 
-          <div className={styles.contact_field}>
-            <label htmlFor="email" className={styles.contact_label}>
-              Email Address <span className={styles.contact_required}>*</span>
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              value={formData.email}
-              onChange={handleChange}
-              className={styles.contact_input}
-              placeholder="you@example.com"
-            />
-          </div>
+            <div className={styles.contact_field}>
+              <label htmlFor="email" className={styles.contact_label}>
+                Email Address <span className={styles.contact_required}>*</span>
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                className={styles.contact_input}
+                placeholder="you@example.com"
+              />
+            </div>
 
-          <div className={styles.contact_field}>
-            <label htmlFor="phone" className={styles.contact_label}>
-              Phone Number{" "}
-              <span className={styles.contact_optional}>(optional)</span>
-            </label>
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              value={formData.phone}
-              onChange={handleChange}
-              className={styles.contact_input}
-              placeholder="+1 (555) 123-4567"
-            />
-          </div>
+            <div className={styles.contact_field}>
+              <label htmlFor="phone" className={styles.contact_label}>
+                Phone Number{" "}
+                <span className={styles.contact_optional}>(optional)</span>
+              </label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                value={formData.phone}
+                onChange={handleChange}
+                className={styles.contact_input}
+                placeholder="+1 (555) 123-4567"
+              />
+            </div>
 
-          <div className={styles.contact_field}>
-            <label htmlFor="status" className={styles.contact_label}>
-              Immigration Status{" "}
-              <span className={styles.contact_optional}>(optional)</span>
-            </label>
-            <select
-              id="status"
-              name="status"
-              value={formData.status}
-              onChange={handleChange}
-              className={styles.contact_select}
+            <div className={styles.contact_field}>
+              <label htmlFor="status" className={styles.contact_label}>
+                Immigration Status{" "}
+                <span className={styles.contact_optional}>(optional)</span>
+              </label>
+              <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className={styles.contact_select}
+              >
+                <option value="">Select an option</option>
+                <option value="Student">Student</option>
+                <option value="Worker">Worker</option>
+                <option value="Visitor">Visitor</option>
+                <option value="Permanent Resident">Permanent Resident</option>
+                <option value="Citizen">Citizen</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div className={styles.contact_field}>
+              <label htmlFor="message" className={styles.contact_label}>
+                Your Message <span className={styles.contact_required}>*</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows={5}
+                value={formData.message}
+                onChange={handleChange}
+                className={styles.contact_textarea}
+                placeholder="Tell us how we can help…"
+              />
+            </div>
+
+            {error && <div className={styles.contact_error}>{error}</div>}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={styles.contact_submitBtn}
             >
-              <option value="">Select an option</option>
-              <option value="Student">Student</option>
-              <option value="Worker">Worker</option>
-              <option value="Visitor">Visitor</option>
-              <option value="Permanent Resident">Permanent Resident</option>
-              <option value="Citizen">Citizen</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+              {loading ? (
+                <>
+                  <svg className={styles.contact_spinner} viewBox="0 0 24 24">
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                      className={styles.contact_spinnerTrack}
+                    />
+                    <path
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v8z"
+                      className={styles.contact_spinnerHead}
+                    />
+                  </svg>
+                  Sending…
+                </>
+              ) : (
+                "Send Message"
+              )}
+            </button>
+          </form>
 
-          <div className={styles.contact_field}>
-            <label htmlFor="message" className={styles.contact_label}>
-              Your Message <span className={styles.contact_required}>*</span>
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              required
-              rows={5}
-              value={formData.message}
-              onChange={handleChange}
-              className={styles.contact_textarea}
-              placeholder="Tell us how we can help…"
-            />
-          </div>
-
-          {error && <div className={styles.contact_error}>{error}</div>}
-
-          <button
-            type="submit"
-            disabled={loading}
-            className={styles.contact_submitBtn}
-          >
-            {loading ? (
-              <>
-                <svg className={styles.contact_spinner} viewBox="0 0 24 24">
-                  <circle
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                    className={styles.contact_spinnerTrack}
-                  />
-                  <path
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                    className={styles.contact_spinnerHead}
-                  />
-                </svg>
-                Sending…
-              </>
-            ) : (
-              "Send Message"
-            )}
-          </button>
-        </form>
-
-        <p className={styles.contact_footer}>
-          Prefer email?{" "}
-          <a
-            href="mailto:immigrationdatacanada@gmail.com"
-            className={styles.contact_footerLink}
-          >
-            immigrationdatacanada@gmail.com
-          </a>
-        </p>
+          <p className={styles.contact_footer}>
+            Prefer email?{" "}
+            <a
+              href="mailto:immigrationdatacanada@gmail.com"
+              className={styles.contact_footerLink}
+            >
+              immigrationdatacanada@gmail.com
+            </a>
+          </p>
+        </div>
       </div>
       <ChatBot />
-    </div>
+    </>
   );
 }

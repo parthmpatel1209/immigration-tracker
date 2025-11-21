@@ -2,34 +2,47 @@
 /* ONLY LOCAL SELECTORS – no :root, no .dark        */
 /* ------------------------------------------------- */
 
-.container { 
-  max-width: auto; 
+.container {
+  max-width: auto;
   background: linear-gradient(to bottom right, #eff6ff, #ffffff, #eef2ff);
 
-  margin: 0 auto; 
-  padding: 1rem 1rem; 
-  border-radius: 10px; 
+  margin: 0 auto;
+  padding: 1rem 1rem;
+  border-radius: 10px;
 }
+
 :global(html.dark) .container {
   background: linear-gradient(to bottom right, #111827, #1e1b4b, #111827);
 }
-@media (min-width: 640px) { .container { padding: 2rem; } }
 
-/* Header ------------------------------------------------- */
-.header { 
-  display: flex; 
-  flex-direction: column; 
-  gap: 1.5rem; 
-  margin-bottom: 2rem; 
-}
-@media (min-width: 768px) {
-  .header { 
-    flex-direction: row; 
-    justify-content: space-between; 
-    align-items: center; 
+@media (min-width: 640px) {
+  .container {
+    padding: 2rem;
   }
 }
-.titleWrapper { display: flex; align-items: center; gap: .5rem; }
+
+/* Header ------------------------------------------------- */
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
 .title {
   font-size: 1.875rem;
   font-weight: 700;
@@ -39,10 +52,11 @@
   background-clip: text;
   margin: 0;
 }
-.filterIcon { 
-  color: #6366f1; 
-  width: 1.25rem; 
-  height: 1.25rem; 
+
+.filterIcon {
+  color: #6366f1;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 /* ───────────────────────────────
@@ -71,17 +85,18 @@
 
 /* Dark mode override for filter toggle button */
 :global(html.dark) .filterToggleBtn {
-  color: #ffffff;            /* White text */
-  border-color: rgba(255,255,255,0.18) !important;
+  color: #ffffff;
+  /* White text */
+  border-color: rgba(255, 255, 255, 0.18) !important;
 }
 
 :global(html.dark) .filterIconWrapper {
-  border-color: rgba(255,255,255,0.18) !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
 }
 
 :global(html.dark) .filterToggleActive {
   color: #ffffff !important;
-  background: rgba(99,102,241,0.25) !important;
+  background: rgba(99, 102, 241, 0.25) !important;
   border-color: #6366f1 !important;
 }
 
@@ -116,13 +131,7 @@
 
 /* hide label on mobile */
 .filterToggleText {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .filterToggleText {
-    display: inline;
-  }
+  display: inline;
 }
 
 
@@ -151,39 +160,65 @@
   margin: 0 !important;
 }
 
+
 /* ----------------------------------------------------
    Layout
 ---------------------------------------------------- */
 .filters {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  align-items: end;
 }
 
 .filterGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
-  min-width: 150px;
+  gap: 0.25rem;
+  min-width: 0;
+  /* Prevent overflow in grid */
 }
 
 .label {
-  font-size: .75rem;
+  display: block;
+  font-size: 0.75rem;
   font-weight: 500;
+  margin-bottom: 0.1rem;
   opacity: 0.85;
+  color: #111827;
+}
+
+:global(html.dark) .label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.1rem;
+  opacity: 0.85;
+  color: #b2b3b6;
 }
 
 /* ----------------------------------------------------
-   Modern Select
+   Modern Select (Matching CRS Filter)
 ---------------------------------------------------- */
 .modernSelect {
-  padding: .6rem .75rem;
-  font-size: .875rem;
-  border-radius: .5rem;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
   border: 1px solid var(--border);
   background-color: var(--bg-secondary);
-  transition: all 0.2s ease;
+
+  /* Custom Arrow */
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.25rem;
+  padding-right: 2rem;
+
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
 }
 
 .modernSelect:hover {
@@ -192,7 +227,7 @@
 
 .modernSelect:focus {
   border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99,102,241,0.28);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
   outline: none;
 }
 
@@ -202,12 +237,15 @@
 .clearFiltersButton {
   display: flex;
   align-items: center;
-  gap: .35rem;
-  padding: .55rem .8rem;
-  font-size: .75rem;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.375rem 0.75rem;
+  height: 38px;
+  /* Match select height approx */
+  font-size: 0.875rem;
   font-weight: 500;
   background: transparent;
-  border-radius: .5rem;
+  border-radius: 0.375rem;
   border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.2s ease;
@@ -222,30 +260,39 @@
 
 /* Grid --------------------------------------------------- */
 /* RESPONSIVE GRID – 2 ON PHONE, 5 ON DESKTOP */
-.grid { 
-  display: grid; 
-  gap: 0.75rem; 
+.grid {
+  display: grid;
+  gap: 0.75rem;
 }
 
 /* 1 card on small phones */
-@media (max-width: 479px) { 
-  .grid { grid-template-columns: 1fr; } 
+@media (max-width: 479px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* 2 cards on phones & tablets */
-@media (min-width: 480px) and (max-width: 767px) { 
-  .grid { grid-template-columns: repeat(2, 1fr); } 
+@media (min-width: 480px) and (max-width: 767px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* 2 cards on small tablets */
-@media (min-width: 768px) and (max-width: 1023px) { 
-  .grid { grid-template-columns: repeat(2, 1fr); } 
+@media (min-width: 768px) and (max-width: 1023px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* 5 cards on desktop */
-@media (min-width: 1024px) { 
-  .grid { grid-template-columns: repeat(5, 1fr); } 
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
+
 /* ------------------------------------------------- */
 /* FLIPPING CARD – 3D FLIP (FRONT ↔ BACK)           */
 /* ------------------------------------------------- */
@@ -257,6 +304,7 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.3s ease;
 }
+
 .card:hover {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
@@ -280,12 +328,27 @@
 .cardFlipper.autoFlip {
   animation: autoFlipOnce 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
 @keyframes autoFlipOnce {
-  0%   { transform: rotateY(0deg); }
-  30%  { transform: rotateY(0deg); }
-  50%  { transform: rotateY(180deg); }
-  70%  { transform: rotateY(180deg); }
-  100% { transform: rotateY(0deg); }
+  0% {
+    transform: rotateY(0deg);
+  }
+
+  30% {
+    transform: rotateY(0deg);
+  }
+
+  50% {
+    transform: rotateY(180deg);
+  }
+
+  70% {
+    transform: rotateY(180deg);
+  }
+
+  100% {
+    transform: rotateY(0deg);
+  }
 }
 
 /* Front & Back shared styles */
@@ -309,19 +372,23 @@
 /* ------------------------------------------------- */
 .cardFront,
 .cardBack {
-  pointer-events: none;        /* Block clicks by default */
+  pointer-events: none;
+  /* Block clicks by default */
 }
 
 .cardFlipper .cardFront {
-  pointer-events: auto;        /* Front is clickable when visible */
+  pointer-events: auto;
+  /* Front is clickable when visible */
 }
 
 .cardFlipper.flipped .cardBack {
-  pointer-events: auto;        /* Back is clickable when flipped */
+  pointer-events: auto;
+  /* Back is clickable when flipped */
 }
 
 .cardFlipper.flipped .cardFront {
-  pointer-events: none;        /* Hide clicks on hidden front */
+  pointer-events: none;
+  /* Hide clicks on hidden front */
 }
 
 /* Optional: subtle hover lift when not flipped */
@@ -333,14 +400,16 @@
 .cardFront,
 .cardBack {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
   border-radius: .75rem;
-  overflow: hidden;  
-  -webkit-backface-visibility:0;
-  pointer-events: none;             /* <-- keeps everything inside */
+  overflow: hidden;
+  -webkit-backface-visibility: 0;
+  pointer-events: none;
+  /* <-- keeps everything inside */
 }
 
 /* FRONT: Image ------------------------------------------- */
@@ -349,6 +418,7 @@
   background: #fff;
   position: relative;
 }
+
 .cardImage {
   width: 100%;
   height: 100%;
@@ -357,12 +427,16 @@
   display: block;
   transition: transform .3s ease;
 }
-.card:hover .cardImage { transform: scale(1.04); }
+
+.card:hover .cardImage {
+  transform: scale(1.04);
+}
 
 /* Image placeholder -------------------------------------- */
 .imagePlaceholder {
   position: absolute;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   display: flex;
@@ -374,7 +448,10 @@
   font-size: .875rem;
   z-index: 1;
 }
-.cardFront img { z-index: 2; }
+
+.cardFront img {
+  z-index: 2;
+}
 
 /* BACK: Info --------------------------------------------- */
 /* BACK: Info – with safe top padding for X button */
@@ -399,31 +476,35 @@
   padding-right: 0.25rem;
   margin-right: -0.25rem;
   min-height: 0;
-  
+
   /* ADD THIS LINE */
-  padding-top: 2.5rem;  /* Makes space for the X button at top-right */
+  padding-top: 2.5rem;
+  /* Makes space for the X button at top-right */
 
   /* Keep your existing smooth scroll */
   touch-action: pan-y;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   scrollbar-width: thin;
-  scrollbar-color: rgba(156,163,175,.3) transparent;
+  scrollbar-color: rgba(156, 163, 175, .3) transparent;
 }
 
 /* WebKit scrollbar styling (Chrome, Edge, Safari) */
 .cardBack .content::-webkit-scrollbar {
   width: 6px;
 }
+
 .cardBack .content::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .cardBack .content::-webkit-scrollbar-thumb {
-  background: rgba(156,163,175,.3);
+  background: rgba(156, 163, 175, .3);
   border-radius: 3px;
 }
+
 .cardBack .content::-webkit-scrollbar-thumb:hover {
-  background: rgba(156,163,175,.5);
+  background: rgba(156, 163, 175, .5);
 }
 
 /* Title */
@@ -466,12 +547,16 @@ cardBack .footer {
   color: var(--text-muted);
 }
 
-.cardBack .dot { opacity: .5; }
-.cardBack .date { 
-  display: flex; 
-  align-items: center; 
-  gap: .25rem; 
+.cardBack .dot {
+  opacity: .5;
 }
+
+.cardBack .date {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+
 .cardBack .badge {
   padding: .1rem .45rem;
   border-radius: 9999px;
@@ -491,6 +576,7 @@ cardBack .footer {
   font-weight: 500;
   transition: color .2s;
 }
+
 .cardBack .readMore:hover {
   color: #4338ca;
   text-decoration: underline;
@@ -501,19 +587,44 @@ cardBack .footer {
 .cardBack {
   min-height: 280px;
 }
-@media (min-width: 640px) { .cardFront, .cardBack { min-height: 300px; } }
-@media (min-width: 768px) { .cardFront, .cardBack { min-height: 320px; } }
-@media (min-width: 1024px) { .cardFront, .cardBack { min-height: 360px; } }
+
+@media (min-width: 640px) {
+
+  .cardFront,
+  .cardBack {
+    min-height: 300px;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .cardFront,
+  .cardBack {
+    min-height: 320px;
+  }
+}
+
+@media (min-width: 1024px) {
+
+  .cardFront,
+  .cardBack {
+    min-height: 360px;
+  }
+}
 
 /* States ------------------------------------------------- */
-.loading, .empty, .noResults { 
-  text-align: center; 
-  padding: 3rem 1rem; 
+.loading,
+.empty,
+.noResults {
+  text-align: center;
+  padding: 3rem 1rem;
 }
-.loading p { 
-  margin-top: 1rem; 
-  font-size: .9375rem; 
+
+.loading p {
+  margin-top: 1rem;
+  font-size: .9375rem;
 }
+
 .spinner {
   width: 2.5rem;
   height: 2.5rem;
@@ -523,12 +634,17 @@ cardBack .footer {
   animation: spin 1s linear infinite;
   margin: 0 auto;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
 
-.footer { 
-  margin-top: 2rem; 
-  text-align: center; 
-  font-size: .875rem; 
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.footer {
+  margin-top: 2rem;
+  text-align: center;
+  font-size: .875rem;
 }
 
 
@@ -540,7 +656,8 @@ cardBack .footer {
   top: 0.5rem;
   right: 0.5rem;
   z-index: 3;
-  font-size: 0.625rem;          /* 10px */
+  font-size: 0.625rem;
+  /* 10px */
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: 0.025em;
@@ -558,14 +675,17 @@ cardBack .footer {
 /* ---- LIGHT MODE (default) ---- */
 .dateLabel {
   background: rgba(255, 255, 255, 0.92);
-  color: #1e293b;               /* slate-800 */
+  color: #1e293b;
+  /* slate-800 */
   border-color: rgba(0, 0, 0, 0.12);
 }
 
 /* ---- DARK MODE ---- */
 :global(html.dark) .dateLabel {
-  background: rgba(15, 23, 42, 0.88);   /* slate-900 */
-  color: #f1f5f9;                      /* slate-100 */
+  background: rgba(15, 23, 42, 0.88);
+  /* slate-900 */
+  color: #f1f5f9;
+  /* slate-100 */
   border-color: rgba(255, 255, 255, 0.15);
 }
 
@@ -574,6 +694,7 @@ cardBack .footer {
   transform: translateY(-2px);
   opacity: 1;
 }
+
 .dateLabel {
   transform: translateY(0);
   opacity: 0.95;
@@ -582,13 +703,15 @@ cardBack .footer {
 .cardFlipper.swipingLeft {
   transform: rotateY(-30deg) !important;
 }
+
 .cardFlipper.swipingRight {
   transform: rotateY(30deg) !important;
 }
 
 .closeBack {
   position: absolute;
-  top: 0.75rem;        /* Slightly lower than before */
+  top: 0.75rem;
+  /* Slightly lower than before */
   right: 0.75rem;
   z-index: 10;
   display: flex;
@@ -605,7 +728,7 @@ cardBack .footer {
   transition: all 0.2s ease;
   backdrop-filter: blur(8px);
   pointer-events: auto !important;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .closeBack:hover {
@@ -664,7 +787,7 @@ cardBack .footer {
 /* Hover glow effect */
 .loadMoreModern:hover {
   box-shadow: 0 0 16px rgba(99, 102, 241, 0.35),
-              0 0 6px rgba(99, 102, 241, 0.25);
+    0 0 6px rgba(99, 102, 241, 0.25);
   transform: translateY(-2px);
 }
 
@@ -673,11 +796,9 @@ cardBack .footer {
   content: "";
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    circle at center,
-    rgba(129, 140, 248, 0.45),
-    transparent 70%
-  );
+  background: radial-gradient(circle at center,
+      rgba(129, 140, 248, 0.45),
+      transparent 70%);
   opacity: 0;
   transform: scale(0.3);
   transition: transform 0.4s ease, opacity 0.4s ease;
@@ -705,11 +826,9 @@ cardBack .footer {
   padding: 0.75rem 0;
   margin: 0.75rem 0;
 
-  background: linear-gradient(
-    90deg,
-    rgba(79, 70, 229, 0.15),
-    rgba(129, 140, 248, 0.15)
-  );
+  background: linear-gradient(90deg,
+      rgba(79, 70, 229, 0.15),
+      rgba(129, 140, 248, 0.15));
 
   border-top: 1px solid rgba(99, 102, 241, 0.25);
   border-bottom: 1px solid rgba(99, 102, 241, 0.25);
@@ -722,11 +841,9 @@ cardBack .footer {
 
 /* Dark mode wrapper */
 :global(html.dark) .tickerModernWrapper {
-  background: linear-gradient(
-    90deg,
-    rgba(99, 102, 241, 0.12),
-    rgba(139, 92, 246, 0.12)
-  );
+  background: linear-gradient(90deg,
+      rgba(99, 102, 241, 0.12),
+      rgba(139, 92, 246, 0.12));
   border-color: rgba(129, 140, 248, 0.25);
   --fade-color: rgba(15, 23, 42, 1);
 }
@@ -749,8 +866,13 @@ cardBack .footer {
 
 /* Moves FULL duplicated track width */
 @keyframes tickerModernMove {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
 }
 
 /* Individual headline pills */
@@ -796,8 +918,15 @@ cardBack .footer {
 }
 
 @keyframes liveBlink {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 1; }
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
 }
 
 /* Fade edges */
@@ -850,13 +979,20 @@ cardBack .footer {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #9ca3af; /* grey */
+  background: #9ca3af;
+  /* grey */
   box-shadow: 0 0 6px rgba(156, 163, 175, 0.5);
   animation: oldBlink 2.5s infinite ease-in-out;
 }
 
 @keyframes oldBlink {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
-}
 
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}

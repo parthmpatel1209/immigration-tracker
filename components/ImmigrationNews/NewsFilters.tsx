@@ -34,7 +34,7 @@ export function NewsFilters({
       }`}
       style={{
         backgroundColor:
-          theme.bgCard + (theme.bgCard === "#ffffff" ? "dd" : "cc"),
+          "linear - gradient(to bottom right, #eff6ff, #ffffff, #eef2ff)",
         borderColor: theme.border,
         boxShadow:
           theme.bgPrimary === "#ffffff"
@@ -45,9 +45,7 @@ export function NewsFilters({
       <div className={styles.filters}>
         {/* Month Filter */}
         <div className={styles.filterGroup}>
-          <label className={styles.label} style={{ color: theme.textMuted }}>
-            Month
-          </label>
+          <label className={styles.label}>Month</label>
 
           <select
             value={month}
@@ -70,9 +68,7 @@ export function NewsFilters({
 
         {/* Year Filter */}
         <div className={styles.filterGroup}>
-          <label className={styles.label} style={{ color: theme.textMuted }}>
-            Year
-          </label>
+          <label className={styles.label}>Year</label>
 
           <select
             value={year}

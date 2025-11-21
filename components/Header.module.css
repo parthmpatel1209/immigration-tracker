@@ -1,0 +1,148 @@
+/* Header.module.css */
+
+.root {
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+.floaters {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.floater {
+    position: absolute;
+    width: 2rem;
+    height: 2rem;
+    animation: floatUp var(--duration, 20s) linear infinite;
+    animation-delay: calc(-1 * var(--start-y, 0) / 100 * var(--duration, 20s));
+    transform: translateY(var(--start-y, 100vh));
+}
+
+@keyframes floatUp {
+    from {
+        transform: translateY(var(--start-y, 100vh));
+    }
+
+    to {
+        transform: translateY(-100px);
+        /* Exit just above top */
+    }
+}
+
+/* ---------- ICON STYLES ---------- */
+.icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    --icon-filter: grayscale(1) brightness(0.7);
+    filter: var(--icon-filter) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+    transition: filter 0.4s ease;
+}
+
+:global(html.dark) .icon {
+    --icon-filter: brightness(0) invert(1);
+}
+
+/* ---------- GLASS CARD ---------- */
+.glass {
+    position: relative;
+    text-align: center;
+    padding: 1.75rem 2rem;
+    border-radius: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    max-width: 48rem;
+    width: auto;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    z-index: 2;
+}
+
+:global(html.dark) .glass {
+    background: rgba(15, 23, 42, 0.2);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.38),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.glow {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    opacity: 0.15;
+    filter: blur(20px);
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+.glass:hover .glow {
+    opacity: 0.25;
+}
+
+.title {
+    font-size: 2.25rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+}
+
+:global(html.dark) .title {
+    background: linear-gradient(90deg, #60a5fa, #c084fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.flag {
+    display: inline-block;
+    margin-left: 0.5rem;
+    font-size: 1.8rem;
+    transform: translateY(4px);
+}
+
+.subtitle {
+    margin: 0.75rem 0 0;
+    font-size: 1rem;
+    font-weight: 500;
+    color: #6b7280;
+    letter-spacing: 0.02em;
+}
+
+:global(html.dark) .subtitle {
+    color: #9ca3af;
+}
+
+@media (max-width: 640px) {
+    .title {
+        font-size: 1.75rem;
+    }
+
+    .flag {
+        font-size: 1.5rem;
+    }
+
+    .glass {
+        padding: 1.5rem 1rem;
+        width: auto;
+        /* Ensure it fits content on mobile too */
+    }
+}
