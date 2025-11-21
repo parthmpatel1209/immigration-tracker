@@ -1,0 +1,11 @@
+components/pr-pathways/
+├── PRPathways.tsx
+├── PathwayCard.tsx
+├── slides/
+│   ├── ProvinceSlide.tsx
+│   ├── RequirementsSlide.tsx
+│   └── SummarySlide.tsx
+├── CarouselNav.tsx
+├── ProvinceFilter.tsx
+├── types.ts
+└── PRPathways.module.css     
