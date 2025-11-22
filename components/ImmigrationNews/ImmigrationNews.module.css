@@ -859,10 +859,10 @@ cardBack .footer {
   animation: tickerModernMove linear infinite;
 }
 
-/* Stops animation on hover */
-.tickerModernWrapper:hover .tickerModernTrack {
+/* Stops animation on hover - REMOVED to allow JS drag logic */
+/* .tickerModernWrapper:hover .tickerModernTrack {
   animation-play-state: paused;
-}
+} */
 
 /* Moves FULL duplicated track width */
 @keyframes tickerModernMove {
@@ -905,6 +905,71 @@ cardBack .footer {
 .tickerModernItem:hover {
   transform: translateY(-2px);
   background: rgba(255, 255, 255, 0.75);
+}
+
+:global(html.dark) .tickerModernItem:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Ticker item title */
+.tickerItemTitle {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Ticker date label - modern separator style */
+.tickerDateLabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  /* Light mode - prominent separator */
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(99, 102, 241, 0.2));
+  color: #4338ca;
+  border: 1.5px solid rgba(79, 70, 229, 0.4);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+
+  /* Make it stand out */
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+
+  transition: all 0.2s ease;
+}
+
+/* Add a subtle icon effect with pseudo-element */
+.tickerDateLabel::before {
+  content: "📅";
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+/* Dark mode date label */
+:global(html.dark) .tickerDateLabel {
+  background: linear-gradient(135deg, rgba(129, 140, 248, 0.25), rgba(99, 102, 241, 0.2));
+  color: #c7d2fe;
+  border: 1.5px solid rgba(129, 140, 248, 0.4);
+  box-shadow: 0 2px 8px rgba(129, 140, 248, 0.15);
+}
+
+/* Hover effect on date label */
+.tickerDateLabel:hover {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.35), rgba(99, 102, 241, 0.3));
+  border-color: rgba(79, 70, 229, 0.6);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+:global(html.dark) .tickerDateLabel:hover {
+  background: linear-gradient(135deg, rgba(129, 140, 248, 0.35), rgba(99, 102, 241, 0.3));
+  border-color: rgba(129, 140, 248, 0.6);
+  box-shadow: 0 4px 12px rgba(129, 140, 248, 0.25);
 }
 
 /* LIVE pulse dot */
