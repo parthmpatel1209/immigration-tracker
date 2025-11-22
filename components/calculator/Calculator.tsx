@@ -9,6 +9,7 @@ import {
 import styles from "./Calculator.module.css";
 import LanguageFields from "./LanguageFields";
 import ResultsBreakdown from "./ResultsBreakdown";
+import DisclaimerModal from "./DisclaimerModal";
 
 export default function Calculator() {
     // -------------------------------------------------
@@ -18,6 +19,11 @@ export default function Calculator() {
     const [crsBreakdown, setCrsBreakdown] = useState<BreakdownRow[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
+
+    // -------------------------------------------------
+    // 1.5 Disclaimer Modal
+    // -------------------------------------------------
+    const [showDisclaimer, setShowDisclaimer] = useState(true);
 
     // -------------------------------------------------
     // 2. Form state
@@ -573,6 +579,11 @@ export default function Calculator() {
 
             {/* ---------- RESULTS ---------- */}
             {result && <ResultsBreakdown result={result} hasSpouse={form.spouse} />}
+
+            {/* ---------- DISCLAIMER MODAL ---------- */}
+            {showDisclaimer && (
+                <DisclaimerModal onClose={() => setShowDisclaimer(false)} />
+            )}
         </div>
     );
 }
