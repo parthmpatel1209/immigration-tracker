@@ -29,6 +29,7 @@ export default function Calculator() {
     // 2. Form state
     // -------------------------------------------------
     const [form, setForm] = useState({
+        testType: "IELTS General Training",
         listening: "",
         reading: "",
         writing: "",
@@ -36,6 +37,7 @@ export default function Calculator() {
         age: "",
         education: "",
         spouse: false,
+        spouse_testType: "IELTS General Training",
         spouse_listening: "",
         spouse_reading: "",
         spouse_writing: "",
@@ -45,6 +47,7 @@ export default function Calculator() {
         foreignWork: "",
         certificate: false,
         secondLanguage: false,
+        second_testType: "IELTS General Training",
         second_listening: "",
         second_reading: "",
         second_writing: "",
@@ -53,6 +56,7 @@ export default function Calculator() {
         educationInCanada: "",
         arrangedEmployment: "",
         nomination: false,
+        hasLMIA: false,
     });
 
     // -------------------------------------------------
@@ -128,11 +132,29 @@ export default function Calculator() {
     };
 
     const validate = (): boolean => {
+        // Test type configurations for validation
+        const TEST_RANGES: Record<string, { min: number; max: number; step: number }> = {
+            "IELTS General Training": { min: 0, max: 9, step: 0.5 },
+            "CELPIP-General": { min: 0, max: 12, step: 1 },
+            "PTE-Core": { min: 10, max: 90, step: 1 },
+            "TEF Canada": { min: 0, max: 450, step: 1 },
+            "TCF Canada": { min: 0, max: 699, step: 1 },
+        };
+
+        // Validate applicant language scores
+        const testType = form.testType || "IELTS General Training";
+        const range = TEST_RANGES[testType];
         const skills = ["listening", "reading", "writing", "speaking"] as const;
+
         for (const s of skills) {
             const v = Number(form[s]);
-            if (isNaN(v) || v < 0 || v > 9 || v % 0.5 !== 0) {
-                setFormError(`IELTS ${s} must be 0–9 (step 0.5)`);
+            if (isNaN(v) || v < range.min || v > range.max) {
+                setFormError(`${testType} ${s} must be ${range.min}–${range.max}`);
+                return false;
+            }
+            // Check step validation (for IELTS 0.5 increments)
+            if (range.step === 0.5 && v % 0.5 !== 0) {
+                setFormError(`${testType} ${s} must be in increments of 0.5`);
                 return false;
             }
         }
@@ -148,41 +170,60 @@ export default function Calculator() {
             return false;
         }
 
+        // Validate spouse language scores
         if (form.spouse) {
+            const spouseTestType = form.spouse_testType || "IELTS General Training";
+            const spouseRange = TEST_RANGES[spouseTestType];
             const spouseSkills = [
                 "spouse_listening",
                 "spouse_reading",
                 "spouse_writing",
                 "spouse_speaking",
             ] as const;
+
             for (const s of spouseSkills) {
                 const v = Number(form[s]);
-                if (isNaN(v) || v < 0 || v > 9 || v % 0.5 !== 0) {
+                const skillName = s.split("_")[1];
+                if (isNaN(v) || v < spouseRange.min || v > spouseRange.max) {
                     setFormError(
-                        `Spouse IELTS ${s.split("_")[1]} must be 0–9 (step 0.5)`
+                        `Spouse ${spouseTestType} ${skillName} must be ${spouseRange.min}–${spouseRange.max}`
                     );
                     return false;
                 }
+                if (spouseRange.step === 0.5 && v % 0.5 !== 0) {
+                    setFormError(`Spouse ${spouseTestType} ${skillName} must be in increments of 0.5`);
+                    return false;
+                }
             }
+
             if (!form.spouse_education) {
                 setFormError("Select spouse education level");
                 return false;
             }
         }
 
+        // Validate second language scores
         if (form.secondLanguage) {
+            const secondTestType = form.second_testType || "IELTS General Training";
+            const secondRange = TEST_RANGES[secondTestType];
             const secondSkills = [
                 "second_listening",
                 "second_reading",
                 "second_writing",
                 "second_speaking",
             ] as const;
+
             for (const s of secondSkills) {
                 const v = Number(form[s]);
-                if (isNaN(v) || v < 0 || v > 9 || v % 0.5 !== 0) {
+                const skillName = s.split("_")[1];
+                if (isNaN(v) || v < secondRange.min || v > secondRange.max) {
                     setFormError(
-                        `Second Language IELTS ${s.split("_")[1]} must be 0–9 (step 0.5)`
+                        `Second Language ${secondTestType} ${skillName} must be ${secondRange.min}–${secondRange.max}`
                     );
+                    return false;
+                }
+                if (secondRange.step === 0.5 && v % 0.5 !== 0) {
+                    setFormError(`Second Language ${secondTestType} ${skillName} must be in increments of 0.5`);
                     return false;
                 }
             }
@@ -204,33 +245,45 @@ export default function Calculator() {
         setFormError(null);
         if (!validate()) return;
 
-        const applicantClb = convertIeltsToCLB(ieltsBenchmarks, {
-            listening: form.listening,
-            reading: form.reading,
-            writing: form.writing,
-            speaking: form.speaking,
-        });
+        const applicantClb = convertIeltsToCLB(
+            ieltsBenchmarks,
+            {
+                listening: form.listening,
+                reading: form.reading,
+                writing: form.writing,
+                speaking: form.speaking,
+            },
+            form.testType
+        );
         setClb(applicantClb);
 
         let spouseClbResult = null;
         if (form.spouse) {
-            spouseClbResult = convertIeltsToCLB(ieltsBenchmarks, {
-                listening: form.spouse_listening,
-                reading: form.spouse_reading,
-                writing: form.spouse_writing,
-                speaking: form.spouse_speaking,
-            });
+            spouseClbResult = convertIeltsToCLB(
+                ieltsBenchmarks,
+                {
+                    listening: form.spouse_listening,
+                    reading: form.spouse_reading,
+                    writing: form.spouse_writing,
+                    speaking: form.spouse_speaking,
+                },
+                form.spouse_testType
+            );
             setSpouseClb(spouseClbResult);
         }
 
         let secondClbResult = null;
         if (form.secondLanguage) {
-            secondClbResult = convertIeltsToCLB(ieltsBenchmarks, {
-                listening: form.second_listening,
-                reading: form.second_reading,
-                writing: form.second_writing,
-                speaking: form.second_speaking,
-            });
+            secondClbResult = convertIeltsToCLB(
+                ieltsBenchmarks,
+                {
+                    listening: form.second_listening,
+                    reading: form.second_reading,
+                    writing: form.second_writing,
+                    speaking: form.second_speaking,
+                },
+                form.second_testType
+            );
             setSecondClb(secondClbResult);
         } else {
             setSecondClb(null);
@@ -270,6 +323,7 @@ export default function Calculator() {
 
     const handleReset = () => {
         setForm({
+            testType: "IELTS General Training",
             listening: "",
             reading: "",
             writing: "",
@@ -277,6 +331,7 @@ export default function Calculator() {
             age: "",
             education: "",
             spouse: false,
+            spouse_testType: "IELTS General Training",
             spouse_listening: "",
             spouse_reading: "",
             spouse_writing: "",
@@ -286,6 +341,7 @@ export default function Calculator() {
             foreignWork: "",
             certificate: false,
             secondLanguage: false,
+            second_testType: "IELTS General Training",
             second_listening: "",
             second_reading: "",
             second_writing: "",
@@ -294,6 +350,7 @@ export default function Calculator() {
             educationInCanada: "",
             arrangedEmployment: "",
             nomination: false,
+            hasLMIA: false,
         });
         setResult(null);
         setClb(null);
@@ -529,39 +586,77 @@ export default function Calculator() {
                     </div>
                 </div>
 
-                <div className={styles.checkboxGroup}>
-                    <label className={styles.checkboxWrapper}>
-                        <input
-                            type="checkbox"
-                            name="certificate"
-                            checked={form.certificate}
-                            onChange={handleChange}
-                            className={styles.checkbox}
-                        />
-                        <span>Certificate of Qualification from a Canadian province</span>
-                    </label>
+                {/* Additional Points - All Toggles in One Section */}
+                <div className={styles.toggleSection}>
+                    {/* Certificate of Qualification */}
+                    <div className={styles.toggleRow}>
+                        <div className={styles.toggleLabel}>
+                            Certificate of Qualification from a Canadian province
+                        </div>
+                        <label className={styles.switch}>
+                            <input
+                                type="checkbox"
+                                checked={form.certificate}
+                                onChange={(e) => setForm({ ...form, certificate: e.target.checked })}
+                            />
+                            <span className={styles.slider}></span>
+                        </label>
+                    </div>
 
-                    <label className={styles.checkboxWrapper}>
-                        <input
-                            type="checkbox"
-                            name="sibling"
-                            checked={form.sibling}
-                            onChange={handleChange}
-                            className={styles.checkbox}
-                        />
-                        <span>Sibling in Canada who is a citizen or PR</span>
-                    </label>
+                    {/* Sibling in Canada */}
+                    <div className={styles.toggleRow}>
+                        <div className={styles.toggleLabel}>
+                            Sibling in Canada who is a citizen or PR
+                        </div>
+                        <label className={styles.switch}>
+                            <input
+                                type="checkbox"
+                                checked={form.sibling}
+                                onChange={(e) => setForm({ ...form, sibling: e.target.checked })}
+                            />
+                            <span className={styles.slider}></span>
+                        </label>
+                    </div>
 
-                    <label className={styles.checkboxWrapper}>
-                        <input
-                            type="checkbox"
-                            name="nomination"
-                            checked={form.nomination}
-                            onChange={handleChange}
-                            className={styles.checkbox}
-                        />
-                        <span>Valid Provincial Nomination</span>
-                    </label>
+                    {/* Provincial Nomination */}
+                    <div className={styles.toggleRow}>
+                        <div className={styles.toggleLabel}>
+                            Valid Provincial Nomination
+                        </div>
+                        <label className={styles.switch}>
+                            <input
+                                type="checkbox"
+                                checked={form.nomination}
+                                onChange={(e) => setForm({ ...form, nomination: e.target.checked })}
+                            />
+                            <span className={styles.slider}></span>
+                        </label>
+                    </div>
+
+                    {/* LMIA Job Offer */}
+                    <div className={styles.toggleRow}>
+                        <div className={styles.toggleLabel}>
+                            Do you have a valid job offer supported by a Labour Market Impact Assessment (LMIA)?
+                        </div>
+                        <label className={styles.switch}>
+                            <input
+                                type="checkbox"
+                                checked={form.hasLMIA}
+                                onChange={(e) => setForm({ ...form, hasLMIA: e.target.checked })}
+                            />
+                            <span className={styles.slider}></span>
+                        </label>
+                    </div>
+
+                    {/* LMIA Note */}
+                    <div className={styles.lmiaNote}>
+                        <svg className={styles.infoIcon} width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm1 12H7V7h2v5zm0-6H7V4h2v2z" fill="currentColor" />
+                        </svg>
+                        <span>
+                            As of March 25, 2025, Canada has removed the points for job offers that are supported by a Labour Market Impact Assessment (LMIA) for its Express Entry system.
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -579,6 +674,31 @@ export default function Calculator() {
 
             {/* ---------- RESULTS ---------- */}
             {result && <ResultsBreakdown result={result} hasSpouse={form.spouse} />}
+
+            {/* ---------- CLB LEVELS (for verification) ---------- */}
+            {clb && (
+                <div className={styles.section} style={{ marginTop: "1rem" }}>
+                    <div className={styles.sectionTitle}>CLB Levels (First Language)</div>
+                    <div className={styles.compactGrid}>
+                        <div className={styles.fieldGroup}>
+                            <span className={styles.label}>Listening</span>
+                            <span className={styles.clbValue}>CLB {clb.listening || "N/A"}</span>
+                        </div>
+                        <div className={styles.fieldGroup}>
+                            <span className={styles.label}>Reading</span>
+                            <span className={styles.clbValue}>CLB {clb.reading || "N/A"}</span>
+                        </div>
+                        <div className={styles.fieldGroup}>
+                            <span className={styles.label}>Writing</span>
+                            <span className={styles.clbValue}>CLB {clb.writing || "N/A"}</span>
+                        </div>
+                        <div className={styles.fieldGroup}>
+                            <span className={styles.label}>Speaking</span>
+                            <span className={styles.clbValue}>CLB {clb.speaking || "N/A"}</span>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* ---------- DISCLAIMER MODAL ---------- */}
             {showDisclaimer && (

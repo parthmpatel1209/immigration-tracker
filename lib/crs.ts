@@ -35,7 +35,11 @@ function parseScore(score: string): { min: number; max: number } | null {
   }
 }
 
-export function convertIeltsToCLB(benchmarks: any[], scores: any) {
+export function convertIeltsToCLB(
+  benchmarks: any[],
+  scores: any,
+  testType: string = "IELTS General Training"
+) {
   const result: Record<string, number | null> = {
     listening: null,
     reading: null,
@@ -46,7 +50,8 @@ export function convertIeltsToCLB(benchmarks: any[], scores: any) {
   const skills = ["listening", "reading", "writing", "speaking"] as const;
 
   for (const row of benchmarks) {
-    if (row.test_name !== "IELTS General Training") continue;
+    // Match the test type
+    if (row.test_name !== testType) continue;
 
     for (const skill of skills) {
       if (result[skill] !== null) continue; // Already matched

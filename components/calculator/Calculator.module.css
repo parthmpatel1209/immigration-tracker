@@ -328,6 +328,23 @@
     color: #fca5a5;
 }
 
+.clbValue {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
+}
+
+:global(html.dark) .clbValue {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+}
+
+
 /* Result Card */
 .resultCard {
     background: linear-gradient(145deg, #1e293b, #0f172a);
@@ -478,4 +495,163 @@
     margin-top: 0.125rem;
     /* Align with text line-height */
     flex-shrink: 0;
+}
+
+/* ================================================== */
+/* Toggle Section (iPhone-style switches) */
+/* ================================================== */
+.toggleSection {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border: 1px solid #bae6fd;
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.1);
+}
+
+:global(html.dark) .toggleSection {
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(2, 132, 199, 0.1) 100%);
+    border-color: rgba(14, 165, 233, 0.2);
+}
+
+.toggleRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(14, 165, 233, 0.15);
+}
+
+.toggleRow:last-of-type {
+    border-bottom: none;
+}
+
+:global(html.dark) .toggleRow {
+    border-bottom-color: rgba(14, 165, 233, 0.2);
+}
+
+.toggleLabel {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #0c4a6e;
+    flex: 1;
+    padding-right: 1rem;
+}
+
+:global(html.dark) .toggleLabel {
+    color: #7dd3fc;
+}
+
+/* iPhone-style Toggle Switch */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 51px;
+    height: 31px;
+    flex-shrink: 0;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 31px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 27px;
+    width: 27px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input:checked+.slider {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+input:focus+.slider {
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(14, 165, 233, 0.2);
+}
+
+input:checked+.slider:before {
+    transform: translateX(20px);
+}
+
+/* Hover effect */
+.slider:hover {
+    background-color: #94a3b8;
+}
+
+input:checked+.slider:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
+:global(html.dark) .slider {
+    background-color: #475569;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+:global(html.dark) .slider:before {
+    background-color: #f1f5f9;
+}
+
+:global(html.dark) input:checked+.slider {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+:global(html.dark) .slider:hover {
+    background-color: #64748b;
+}
+
+.lmiaNote {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 4px solid #3b82f6;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #1e40af;
+}
+
+:global(html.dark) .lmiaNote {
+    background: rgba(59, 130, 246, 0.15);
+    border-left-color: #60a5fa;
+    color: #93c5fd;
+}
+
+.infoIcon {
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+    color: #3b82f6;
+}
+
+:global(html.dark) .infoIcon {
+    color: #60a5fa;
+}
+
+.lmiaNote span {
+    flex: 1;
 }

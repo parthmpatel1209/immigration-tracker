@@ -1,0 +1,617 @@
+my-canadavisa-clone/
+├── app/
+│   ├── (auth)/                     # Route groups for auth pages
+│   │   ├── login/
+│   │   │   └── page.tsx
+│   │   ├── register/
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   │
+│   ├── forum/
+│   │   ├── page.tsx                # Forum homepage
+│   │   ├── category/
+│   │   │   ├── [slug]/
+│   │   │   │   ├── page.tsx
+│   │   │   │   └── layout.tsx
+│   │   ├── thread/
+│   │   │   └── [id]/
+│   │   │       └── page.tsx
+│   │   └── layout.tsx
+│   │
+│   ├── news/
+│   │   ├── page.tsx
+│   │   ├── [slug]/
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   │
+│   ├── immigrate/
+│   │   ├── page.tsx
+│   │   ├── express-entry/
+│   │   │   └── page.tsx
+│   │   ├── pnp/
+│   │   │   └── page.tsx
+│   │   ├── family-sponsorship/
+│   │   │   └── page.tsx
+│   │   ├── business/
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   │
+│   ├── work/
+│   │   ├── page.tsx
+│   │   ├── permits/
+│   │   │   └── page.tsx
+│   │   └── layout.tsx
+│   │
+│   ├── study/
+│   │   ├── page.tsx
+│   │   └── layout.tsx
+│   │
+│   ├── life-in-canada/
+│   │   ├── page.tsx
+│   │   └── layout.tsx
+│   │
+│   ├── inadmissibility/
+│   │   ├── page.tsx
+│   │   └── layout.tsx
+│   │
+│   ├── assessment/
+│   │   └── page.tsx                # Eligibility quiz/form
+│   │
+│   ├── contact/
+│   │   └── page.tsx
+│   │
+│   ├── about/
+│   │   └── page.tsx
+│   │
+│   ├── advertise/
+│   │   └── page.tsx
+│   │
+│   ├── layout.tsx                  # Root layout (with <html>, <body>)
+│   ├── page.tsx                    # Home page
+│   ├── globals.css
+│   └── favicon.ico
+│
+├── components/
+│   ├── ui/                         # Shadcn/ui or custom UI components
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── input.tsx
+│   │   └── ...
+│   │
+│   ├── layout/
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
+│   │   ├── Navbar.tsx
+│   │   ├── MegaMenu.tsx
+│   │   ├── MobileMenu.tsx
+│   │   └── Breadcrumb.tsx
+│   │
+│   ├── forum/
+│   │   ├── ThreadCard.tsx
+│   │   ├── ForumCategoryList.tsx
+│   │   ├── Post.tsx
+│   │   └── Pagination.tsx
+│   │
+│   ├── news/
+│   │   ├── NewsCard.tsx
+│   │   └── LatestDrawsTable.tsx
+│   │
+│   ├── forms/
+│   │   ├── AssessmentForm.tsx
+│   │   ├── NewsletterForm.tsx
+│   │   └── ContactForm.tsx
+│   │
+│   └── seo/
+│       └── Metadata.tsx
+│
+├── Extras/                         # ← Your main requested component folder
+│   ├── HeroSection.tsx
+│   ├── ImmigrationPathwaysGrid.tsx
+│   ├── SuccessStoriesCarousel.tsx
+│   ├── WhyChooseCanada.tsx
+│   ├── StatsCounter.tsx
+│   ├── FeaturedNews.tsx
+│   ├── ExpressEntryCalculator.tsx
+│   ├── VisaOfficeFinder.tsx
+│   ├── LanguageTestBanner.tsx
+│   ├── ClientTestimonials.tsx
+│   ├── CallToActionBanner.tsx
+│   ├── FloatingAssessmentButton.tsx
+│   ├── CookieConsent.tsx
+│   ├── BackToTopButton.tsx
+│   └── StructuredData.tsx         # JSON-LD for SEO
+│
+├── lib/
+│   ├── utils.ts
+│   ├── api.ts
+│   └── validations.ts
+│
+├── hooks/
+│   ├── useAuth.ts
+│   ├── useForum.ts
+│   └── useAssessment.ts
+│
+├── public/
+│   ├── images/
+│   │   ├── logos/
+│   │   ├── banners/
+│   │   └── icons/
+│   ├── flags/
+│   └── documents/
+│
+├── types/
+│   ├── forum.ts
+│   ├── news.ts
+│   └── immigration.ts
+│
+├── data/
+│   ├── provinces.ts
+│   ├── visa-offices.ts
+│   └── mock-threads.ts
+│
+├── styles/
+│   └── globals.css
+│
+├── middleware.ts                   # Auth, redirects, etc.
+├── next.config.mjs
+├── tailwind.config.ts
+├── postcss.config.js
+├── tsconfig.json
+├── package.json
+└── README.md
+
+
+
+project/
+├── app/
+│   ├── api/  # Optional: for API routes if needed
+│   │   └── route.ts
+│   ├── about/
+│   │   ├── canada-immigration-consulting/
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── forum/
+│   │   ├── express-entry-expression-of-interest/
+│   │   │   └── page.tsx
+│   │   ├── skilled-worker-professional-immigration/
+│   │   │   └── page.tsx
+│   │   ├── canadian-experience-class/
+│   │   │   └── page.tsx
+│   │   ├── provincial-nomination-program-immigration/
+│   │   │   └── page.tsx
+│   │   ├── family-class-sponsorship/
+│   │   │   └── page.tsx
+│   │   ├── caregiver-pathways/
+│   │   │   └── page.tsx
+│   │   ├── quebec-immigration/
+│   │   │   └── page.tsx
+│   │   ├── business-immigration/
+│   │   │   └── page.tsx
+│   │   ├── celpip-pte-ielts-tef-tcf-language-testing/
+│   │   │   └── page.tsx
+│   │   ├── refugees-and-asylum/
+│   │   │   └── page.tsx
+│   │   ├── general-all-canadian-immigration/
+│   │   │   └── page.tsx
+│   │   ├── permanent-residence-in-canada/
+│   │   │   └── page.tsx
+│   │   ├── temporary-residence-in-canada-work-study-visit/
+│   │   │   └── page.tsx
+│   │   ├── h-1b-holders-in-the-us/
+│   │   │   └── page.tsx
+│   │   ├── foreign-workers/
+│   │   │   └── page.tsx
+│   │   ├── international-students/
+│   │   │   └── page.tsx
+│   │   ├── visitors/
+│   │   │   └── page.tsx
+│   │   ├── settlement-issues/
+│   │   │   └── page.tsx
+│   │   ├── permanent-residency-obligations/
+│   │   │   └── page.tsx
+│   │   ├── citizenship/
+│   │   │   └── page.tsx
+│   │   ├── housing/
+│   │   │   └── page.tsx
+│   │   ├── education/
+│   │   │   └── page.tsx
+│   │   ├── health/
+│   │   │   └── page.tsx
+│   │   ├── finding-work-in-canada/
+│   │   │   └── page.tsx
+│   │   ├── canadian-finance-and-taxation/
+│   │   │   └── page.tsx
+│   │   ├── start-your-own-business-in-canada-self-employment/
+│   │   │   └── page.tsx
+│   │   ├── canadian-labour-legislation/
+│   │   │   └── page.tsx
+│   │   ├── resources-for-finding-a-canadian-job/
+│   │   │   └── page.tsx
+│   │   ├── looking-for-an-employer-in-canada/
+│   │   │   └── page.tsx
+│   │   ├── visa-offices-in-north-america/
+│   │   │   ├── costa-rica-san-jose/
+│   │   │   │   └── page.tsx
+│   │   │   ├── cuba-havana/
+│   │   │   │   └── page.tsx
+│   │   │   ├── dominican-republic-santo-domingo/
+│   │   │   │   └── page.tsx
+│   │   │   ├── el-salvador-san-salvador/
+│   │   │   │   └── page.tsx
+│   │   │   ├── guatemala-guatemala-city/
+│   │   │   │   └── page.tsx
+│   │   │   ├── haiti-port-au-prince/
+│   │   │   │   └── page.tsx
+│   │   │   ├── jamaica-kingston/
+│   │   │   │   └── page.tsx
+│   │   │   ├── mexico-mexico-city/
+│   │   │   │   └── page.tsx
+│   │   │   ├── trinidad-and-tobago-port-of-spain/
+│   │   │   │   └── page.tsx
+│   │   │   ├── united-states-buffalo-detroit-los-angeles-new-york-seattle-washington-dc/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── visa-offices-in-south-america/
+│   │   │   ├── argentina/
+│   │   │   │   └── page.tsx
+│   │   │   ├── brazil/
+│   │   │   │   └── page.tsx
+│   │   │   ├── chile/
+│   │   │   │   └── page.tsx
+│   │   │   ├── colombia/
+│   │   │   │   └── page.tsx
+│   │   │   ├── ecuador/
+│   │   │   │   └── page.tsx
+│   │   │   ├── guyana/
+│   │   │   │   └── page.tsx
+│   │   │   ├── peru/
+│   │   │   │   └── page.tsx
+│   │   │   ├── venezuela/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── visa-offices-in-europe/
+│   │   │   ├── austria/
+│   │   │   │   └── page.tsx
+│   │   │   ├── czech-republic/
+│   │   │   │   └── page.tsx
+│   │   │   ├── france/
+│   │   │   │   └── page.tsx
+│   │   │   ├── germany/
+│   │   │   │   └── page.tsx
+│   │   │   ├── hungary/
+│   │   │   │   └── page.tsx
+│   │   │   ├── italy/
+│   │   │   │   └── page.tsx
+│   │   │   ├── poland/
+│   │   │   │   └── page.tsx
+│   │   │   ├── romania/
+│   │   │   │   └── page.tsx
+│   │   │   ├── serbia/
+│   │   │   │   └── page.tsx
+│   │   │   ├── ukraine/
+│   │   │   │   └── page.tsx
+│   │   │   ├── united-kingdom/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── visa-offices-in-asia/
+│   │   │   ├── bangladesh/
+│   │   │   │   └── page.tsx
+│   │   │   ├── china/
+│   │   │   │   └── page.tsx
+│   │   │   ├── india/
+│   │   │   │   └── page.tsx
+│   │   │   ├── indonesia/
+│   │   │   │   └── page.tsx
+│   │   │   ├── iran/
+│   │   │   │   └── page.tsx
+│   │   │   ├── israel/
+│   │   │   │   └── page.tsx
+│   │   │   ├── japan/
+│   │   │   │   └── page.tsx
+│   │   │   ├── jordan/
+│   │   │   │   └── page.tsx
+│   │   │   ├── korea/
+│   │   │   │   └── page.tsx
+│   │   │   ├── lebanon/
+│   │   │   │   └── page.tsx
+│   │   │   ├── malaysia/
+│   │   │   │   └── page.tsx
+│   │   │   ├── pakistan/
+│   │   │   │   └── page.tsx
+│   │   │   ├── philippines/
+│   │   │   │   └── page.tsx
+│   │   │   ├── russia/
+│   │   │   │   └── page.tsx
+│   │   │   ├── saudi-arabia/
+│   │   │   │   └── page.tsx
+│   │   │   ├── singapore/
+│   │   │   │   └── page.tsx
+│   │   │   ├── sri-lanka/
+│   │   │   │   └── page.tsx
+│   │   │   ├── syria/
+│   │   │   │   └── page.tsx
+│   │   │   ├── taiwan/
+│   │   │   │   └── page.tsx
+│   │   │   ├── thailand/
+│   │   │   │   └── page.tsx
+│   │   │   ├── turkey/
+│   │   │   │   └── page.tsx
+│   │   │   ├── united-arab-emirates/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── visa-offices-in-africa/
+│   │   │   ├── algeria/
+│   │   │   │   └── page.tsx
+│   │   │   ├── burkina/
+│   │   │   │   └── page.tsx
+│   │   │   ├── cameroon/
+│   │   │   │   └── page.tsx
+│   │   │   ├── congo/
+│   │   │   │   └── page.tsx
+│   │   │   ├── egypt/
+│   │   │   │   └── page.tsx
+│   │   │   ├── eritrea/
+│   │   │   │   └── page.tsx
+│   │   │   ├── ethiopia/
+│   │   │   │   └── page.tsx
+│   │   │   ├── ghana/
+│   │   │   │   └── page.tsx
+│   │   │   ├── ivory-coast/
+│   │   │   │   └── page.tsx
+│   │   │   ├── kenya/
+│   │   │   │   └── page.tsx
+│   │   │   ├── madagascar/
+│   │   │   │   └── page.tsx
+│   │   │   ├── mali/
+│   │   │   │   └── page.tsx
+│   │   │   ├── morocco/
+│   │   │   │   └── page.tsx
+│   │   │   ├── nigeria/
+│   │   │   │   └── page.tsx
+│   │   │   ├── rwanda/
+│   │   │   │   └── page.tsx
+│   │   │   ├── senegal/
+│   │   │   │   └── page.tsx
+│   │   │   ├── south-africa/
+│   │   │   │   └── page.tsx
+│   │   │   ├── taiwan/
+│   │   │   │   └── page.tsx
+│   │   │   ├── tanzania/
+│   │   │   │   └── page.tsx
+│   │   │   ├── tunisia/
+│   │   │   │   └── page.tsx
+│   │   │   ├── uganda/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── news/
+│   │   ├── latest-immigration-news/
+│   │   │   └── page.tsx
+│   │   ├── express-entry-draw-results/
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── client-portal/
+│   │   └── page.tsx
+│   ├── contact/
+│   │   └── page.tsx
+│   ├── advertise/
+│   │   └── page.tsx
+│   ├── immigrate-to-canada/
+│   │   ├── overview/
+│   │   │   ├── express-entry/
+│   │   │   │   ├── federal-skilled-worker-program-fswp/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── canadian-experience-class-cec/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── provincial-nominee-program-pnp/
+│   │   │   │   └── page.tsx
+│   │   │   ├── quebec-immigration/
+│   │   │   │   ├── quebec-skilled-worker-program-qswp/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── quebec-experience-program-peq/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── quebec-business-immigration-programs/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── skilled-worker-immigration-pathways/
+│   │   │   ├── express-entry/
+│   │   │   │   └── page.tsx
+│   │   │   ├── provincial-nominee-program-pnp/
+│   │   │   │   ├── base-streams/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── enhanced-streams/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── quebec-immigration/
+│   │   │   │   └── page.tsx
+│   │   │   ├── atlantic-immigration-program-aip/
+│   │   │   │   └── page.tsx
+│   │   │   ├── other-federal-skilled-worker-programs/
+│   │   │   │   ├── rural-and-northern-immigration-pilot-rnip/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── agri-food-immigration-pilot/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── caregiver-programs/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── business-immigration/
+│   │   │   ├── federal-start-up-visa-program/
+│   │   │   │   └── page.tsx
+│   │   │   ├── federal-self-employed-persons-program/
+│   │   │   │   └── page.tsx
+│   │   │   ├── provincial-nominee-program-pnp-business-streams/
+│   │   │   │   └── page.tsx
+│   │   │   ├── quebec-business-immigration-programs/
+│   │   │   │   └── page.tsx
+│   │   │   ├── business-investor-programs/
+│   │   │   │   └── page.tsx
+│   │   │   ├── entrepreneur-immigration-programs/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── family-class-sponsorship/
+│   │   │   ├── spouses-or-common-law-partners/
+│   │   │   │   └── page.tsx
+│   │   │   ├── parents-and-grandparents/
+│   │   │   │   ├── super-visa-program/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── dependent-children/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── moving-to-canada-from-the-us/
+│   │   │   ├── work-options/
+│   │   │   │   ├── canada-us-mexico-agreement-cusma-permits/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── sponsorship-options/
+│   │   │   │   └── page.tsx
+│   │   │   ├── business-options/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── canadian-work-permits/
+│   │   ├── temporary-foreign-worker-program-tfwp/
+│   │   │   ├── labour-market-impact-assessment-lmia-required/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── international-mobility-program-imp/
+│   │   │   ├── lmia-exempt/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── cusma-formerly-nafta/
+│   │   │   └── page.tsx
+│   │   ├── intra-company-transfers/
+│   │   │   └── page.tsx
+│   │   ├── business-visitors/
+│   │   │   └── page.tsx
+│   │   ├── post-graduation-work-permits/
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── family-sponsorship/
+│   │   ├── sponsor-your-wife-husband-or-common-law-partner/
+│   │   │   ├── spouse-or-common-law-partner-sponsorship/
+│   │   │   │   ├── inland/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── outland/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── sponsor-your-dependent-children/
+│   │   │   ├── dependent-child-sponsorship/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── sponsor-your-parents-or-grandparents/
+│   │   │   ├── parents-and-grandparents-sponsorship/
+│   │   │   │   └── page.tsx
+│   │   │   ├── super-visa-program/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── business-immigration/
+│   │   ├── investors/
+│   │   │   ├── quebec-immigrant-investor-program-qiip/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── entrepreneurs/
+│   │   │   └── page.tsx
+│   │   ├── self-employed/
+│   │   │   └── page.tsx
+│   │   ├── start-up-visas/
+│   │   │   └── page.tsx
+│   │   ├── provincial-nomination/
+│   │   │   ├── provincial-nominee-program-pnp/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── work-permits/
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── study-in-canada/
+│   │   ├── steps-to-study-in-canada/
+│   │   │   ├── select-a-program/
+│   │   │   │   └── page.tsx
+│   │   │   ├── apply-to-a-canadian-designated-learning-institution-dli/
+│   │   │   │   └── page.tsx
+│   │   │   ├── apply-for-a-study-permit/
+│   │   │   │   └── page.tsx
+│   │   │   ├── explore-immigration-options/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── benefits-of-studying-in-canada/
+│   │   │   └── page.tsx
+│   │   ├── about-canadas-universities-and-colleges/
+│   │   │   ├── designated-learning-institutions-dlis/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   ├── study-pathways-to-permanent-residence-pr/
+│   │   │   ├── post-graduation-work-permit-pgwp/
+│   │   │   │   └── page.tsx
+│   │   │   ├── express-entry/
+│   │   │   │   ├── canadian-experience-class-cec/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   ├── provincial-nominee-program-pnp/
+│   │   │   │   └── page.tsx
+│   │   │   ├── quebec-immigration/
+│   │   │   │   └── page.tsx
+│   │   │   ├── other-federal-programs/
+│   │   │   │   ├── atlantic-immigration-program/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   ├── rural-and-northern-immigration-pilot/
+│   │   │   │   │   └── page.tsx
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── inadmissible-to-canada/
+│   │   ├── criminal-inadmissibility/
+│   │   │   └── page.tsx
+│   │   ├── overcoming-inadmissibility/
+│   │   │   ├── temporary-resident-permit-trp/
+│   │   │   │   └── page.tsx
+│   │   │   ├── criminal-rehabilitation/
+│   │   │   │   └── page.tsx
+│   │   │   ├── deemed-rehabilitated/
+│   │   │   │   └── page.tsx
+│   │   │   ├── legal-opinion-letter/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── life-in-canada/
+│   │   ├── settlement-and-integration-support/
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── legal-help/
+│   │   ├── cohen-immigration-law-firm/
+│   │   │   ├── expertise-areas/
+│   │   │   │   └── page.tsx
+│   │   │   ├── team-members/
+│   │   │   │   └── page.tsx
+│   │   │   └── page.tsx
+│   │   └── page.tsx
+│   ├── bank-in-canada/
+│   │   └── page.tsx
+│   ├── canadian-immigration-newsletter/
+│   │   └── page.tsx
+│   ├── canadian-immigration-assessment/
+│   │   └── page.tsx
+│   ├── components/
+│   │   └── Extras.tsx  # Main component called Extras (e.g., for shared UI like headers, footers, or custom elements)
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.tsx
+│   └── page.tsx  # Home page
+├── public/
+│   ├── images/
+│   │   └── (static images like logos, icons)
+│   └── (other static files like fonts, robots.txt)
+├── .eslintrc.json
+├── .gitignore
+├── next.config.mjs
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── README.md
+├── tailwind.config.js  # If using Tailwind CSS
+└── tsconfig.json  # If using TypeScript
