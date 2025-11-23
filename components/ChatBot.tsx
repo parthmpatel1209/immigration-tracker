@@ -1,10 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Send, MessageCircle, Loader2, X } from "lucide-react";
+import { Send, MessageCircle, X, Sparkles, ThumbsUp, ThumbsDown, Loader2 } from "lucide-react";
+import { getSuggestions } from "@/utils/rag";
 import styles from "./ChatBot.module.css";
 
-type Message = { role: "user" | "bot" | "error"; text: string };
+type Message = {
+  role: "user" | "bot" | "error" | "typing";
+  text: string;
+  feedback?: "helpful" | "not-helpful" | null;
+};
 
 /* ---------- Message Components ---------- */
 const UserMessage = ({ text }: { text: string }) => (
@@ -13,14 +18,76 @@ const UserMessage = ({ text }: { text: string }) => (
   </div>
 );
 
-const BotMessage = ({ text }: { text: string }) => (
-  <div className={styles.messageWrapper}>
-    <div className={styles.botMessage}>{text}</div>
-  </div>
-);
+const BotMessage = ({
+  text,
+  messageIndex,
+  onFeedback,
+  isComplete = true
+}: {
+  text: string;
+  messageIndex: number;
+  onFeedback: (index: number, type: "helpful" | "not-helpful") => void;
+  isComplete?: boolean;
+}) => {
+  const [feedback, setFeedback] = useState<"helpful" | "not-helpful" | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+
+  // Show feedback buttons after message is complete
+  useEffect(() => {
+    if (isComplete && text) {
+      const timer = setTimeout(() => {
+        setShowFeedback(true);
+      }, 500); // 500ms delay after completion
+      return () => clearTimeout(timer);
+    }
+  }, [isComplete, text]);
+
+  const handleFeedback = (type: "helpful" | "not-helpful") => {
+    setFeedback(type);
+    onFeedback(messageIndex, type);
+  };
+
+  return (
+    <div className={styles.messageWrapper}>
+      <div className={styles.botMessage}>
+        {text}
+        <div className={`${styles.feedbackButtons} ${showFeedback ? styles.show : ""}`}>
+          <button
+            className={`${styles.feedbackBtn} ${feedback === "helpful" ? `${styles.active} ${styles.helpful}` : ""}`}
+            onClick={() => handleFeedback("helpful")}
+            title="Helpful"
+          >
+            <ThumbsUp size={12} />
+            <span>Helpful</span>
+          </button>
+          <button
+            className={`${styles.feedbackBtn} ${feedback === "not-helpful" ? `${styles.active} ${styles.notHelpful}` : ""}`}
+            onClick={() => handleFeedback("not-helpful")}
+            title="Not helpful"
+          >
+            <ThumbsDown size={12} />
+            <span>Not helpful</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ErrorMessage = ({ text }: { text: string }) => (
   <div className={styles.errorMessage}>{text}</div>
+);
+
+const TypingIndicator = () => (
+  <div className={styles.messageWrapper}>
+    <div className={styles.botMessage}>
+      <div className={styles.typingIndicator}>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </div>
 );
 
 export default function ChatBot() {
@@ -29,20 +96,42 @@ export default function ChatBot() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [dynamicSuggestions, setDynamicSuggestions] = useState<string[]>([
+    "What is Express Entry and how does it work?",
+    "How can I improve my CRS score?",
+    "What are the language test requirements?",
+    "Tell me about Provincial Nominee Programs",
+    "Can I work while studying in Canada?",
+    "What is the processing time for PR?",
+  ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const suggestions = [
-    "How does Express Entry work?",
-    "What is a PNP and how do I apply?",
-    "Which sector is most popular for obtaining PR in Canada?",
-    "What are the requirements for a study permit?",
-    "How long does PR processing take?",
-    "Can learning French help me get PR in Canada?",
-  ];
+  /* ---------- Handle feedback ---------- */
+  const handleFeedback = (messageIndex: number, type: "helpful" | "not-helpful") => {
+    console.log(`Message ${messageIndex} marked as ${type}`);
+    // You can send this to an analytics service or database
+    setMessages((prev) =>
+      prev.map((msg, idx) =>
+        idx === messageIndex ? { ...msg, feedback: type } : msg
+      )
+    );
+  };
 
   /* ---------- Auto-scroll ---------- */
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  /* ---------- Update suggestions based on last bot message ---------- */
+  useEffect(() => {
+    const lastBotMessage = messages
+      .filter((m) => m.role === "bot")
+      .pop();
+
+    if (lastBotMessage) {
+      const newSuggestions = getSuggestions(lastBotMessage.text);
+      setDynamicSuggestions(newSuggestions);
+    }
   }, [messages]);
 
   /* ---------- Toggle animation ---------- */
@@ -58,7 +147,7 @@ export default function ChatBot() {
     }
   };
 
-  /* ---------- Send message ---------- */
+  /* ---------- Send message with streaming support ---------- */
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -67,28 +156,99 @@ export default function ChatBot() {
     setInput("");
     setIsLoading(true);
 
+    // Add typing indicator
+    setMessages((prev) => [...prev, { role: "typing", text: "" }]);
+
     try {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMsg }),
+        body: JSON.stringify({
+          message: userMsg,
+          history: messages, // Send conversation history
+        }),
       });
 
-      const data = await res.json();
-
-      if (data.error) {
-        setMessages((prev) => [
-          ...prev,
-          { role: "error", text: data.error || "Sorry, something went wrong." },
-        ]);
-      } else {
-        setMessages((prev) => [...prev, { role: "bot", text: data.reply }]);
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
       }
-    } catch {
-      setMessages((prev) => [
-        ...prev,
-        { role: "error", text: "Network error. Try again later." },
-      ]);
+
+      // Handle streaming response
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder();
+      let botReply = "";
+      let hasBotMessage = false;
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split("\n");
+
+          for (const line of lines) {
+            if (line.startsWith("data: ")) {
+              const data = line.slice(6);
+
+              if (data === "[DONE]") {
+                break;
+              }
+
+              try {
+                const parsed = JSON.parse(data);
+                if (parsed.content) {
+                  botReply += parsed.content;
+
+                  // Create or update bot message
+                  setMessages((prev) => {
+                    const filtered = prev.filter((m) => m.role !== "typing");
+
+                    // Check if we already have a bot message
+                    const lastMsg = filtered[filtered.length - 1];
+                    if (lastMsg && lastMsg.role === "bot") {
+                      // Update existing bot message
+                      const newMessages = [...filtered];
+                      newMessages[newMessages.length - 1] = {
+                        role: "bot",
+                        text: botReply,
+                      };
+                      return newMessages;
+                    } else {
+                      // Create new bot message
+                      return [...filtered, { role: "bot", text: botReply }];
+                    }
+                  });
+
+                  hasBotMessage = true;
+                }
+              } catch (e) {
+                // Skip invalid JSON
+              }
+            }
+          }
+        }
+      }
+
+      // If no reply was received, show error
+      if (!botReply || !hasBotMessage) {
+        setMessages((prev) => {
+          const filtered = prev.filter((m) => m.role !== "typing" && !(m.role === "bot" && !m.text));
+          return [
+            ...filtered,
+            { role: "error", text: "No response received. Please try again." },
+          ];
+        });
+      }
+    } catch (error) {
+      console.error("Chat error:", error);
+      setMessages((prev) => {
+        const filtered = prev.filter((m) => m.role !== "typing" && !(m.role === "bot" && !m.text));
+        return [
+          ...filtered,
+          { role: "error", text: "Network error. Please try again later." },
+        ];
+      });
     } finally {
       setIsLoading(false);
     }
@@ -98,11 +258,8 @@ export default function ChatBot() {
   const handleSuggestionClick = (suggestion: string) => {
     setInput(suggestion);
     setTimeout(() => {
-      const sendBtn = document.querySelector(
-        `.${styles.sendBtn}`
-      ) as HTMLButtonElement;
-      if (sendBtn && !sendBtn.disabled) sendBtn.click();
-    }, 300);
+      sendMessage();
+    }, 100);
   };
 
   return (
@@ -115,12 +272,14 @@ export default function ChatBot() {
       {/* Chat window */}
       {isOpen && (
         <div
-          className={`${styles.container} ${styles.chatWindow} ${
-            isClosing ? styles.closing : ""
-          }`}
+          className={`${styles.container} ${styles.chatWindow} ${isClosing ? styles.closing : ""
+            }`}
         >
           <div className={styles.header}>
-            <span>Canadian Immigration Assistant</span>
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              <span>Canadian Immigration Assistant</span>
+            </div>
             <button
               onClick={toggle}
               style={{
@@ -153,6 +312,7 @@ export default function ChatBot() {
               <X className="w-4 h-4" />
             </button>
           </div>
+
           <div className={styles.messages}>
             {messages.length === 0 ? (
               <div className={styles.suggestionsContainer}>
@@ -160,11 +320,10 @@ export default function ChatBot() {
                   <span className="flex flex-wrap items-center justify-center gap-x-1.5">
                     <span className="font-semibold">🤖 AI Chatbot Notice:</span>
                     <span>
-                      I provide estimates based on public data. Replies may be
-                      incorrect or outdated.
+                      Powered by Mistral 7B with RAG. Responses are based on IRCC documents.
                       <strong className="underline font-bold">
                         {" "}
-                        Always confirm with{" "}
+                        Always verify with{" "}
                         <a
                           href="https://www.canada.ca/en/immigration-refugees-citizenship.html"
                           target="_blank"
@@ -178,11 +337,11 @@ export default function ChatBot() {
                   </span>
                 </div>
                 <p className={styles.welcome2}>
-                  Ask about Express Entry, PNPs, work permits, etc.
+                  Ask about Express Entry, PNPs, work permits, study permits, and more!
                 </p>
 
                 <div className={styles.suggestions}>
-                  {suggestions.map((s, i) => (
+                  {dynamicSuggestions.map((s, i) => (
                     <button
                       key={i}
                       onClick={() => handleSuggestionClick(s)}
@@ -199,14 +358,31 @@ export default function ChatBot() {
                   if (m.role === "user")
                     return <UserMessage key={i} text={m.text} />;
                   if (m.role === "bot")
-                    return <BotMessage key={i} text={m.text} />;
+                    return (
+                      <BotMessage
+                        key={i}
+                        text={m.text}
+                        messageIndex={i}
+                        onFeedback={handleFeedback}
+                      />
+                    );
+                  if (m.role === "typing")
+                    return <TypingIndicator key={i} />;
                   return <ErrorMessage key={i} text={m.text} />;
                 })}
 
-                {isLoading && (
-                  <div className="flex items-center space-x-2 text-gray-500 text-xs">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Thinking…</span>
+                {/* Dynamic suggestions after conversation */}
+                {!isLoading && messages.length > 0 && (
+                  <div className={styles.suggestions} style={{ marginTop: "1rem" }}>
+                    {dynamicSuggestions.map((s, i) => (
+                      <button
+                        key={i}
+                        onClick={() => handleSuggestionClick(s)}
+                        className={styles.suggestionBtn}
+                      >
+                        {s}
+                      </button>
+                    ))}
                   </div>
                 )}
               </>
