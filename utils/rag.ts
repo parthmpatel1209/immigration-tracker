@@ -1,14 +1,15 @@
-// utils/rag.ts
-
 /**
- * RAG (Retrieval-Augmented Generation) utilities
- * This is a simplified version - in production, you'd use:
- * - Vector database (Pinecone, Supabase pgvector, FAISS)
- * - Embedding model (OpenAI, Mistral, or sentence-transformers)
- * - Pre-processed IRCC documents
+ * RAG (Retrieval-Augmented Generation) Utilities
+ * 
+ * Provides document retrieval and context-aware suggestions for the AI chatbot.
+ * Uses keyword-based matching - can be upgraded to vector similarity search.
  */
 
-// Mock IRCC knowledge base - replace with actual vector search
+/**
+ * IRCC Knowledge Base
+ * Contains official immigration information with topics, content, and keywords.
+ * TODO: Replace with vector database (Pinecone/Supabase) for production.
+ */
 const IRCC_KNOWLEDGE_BASE = [
     {
         topic: "Express Entry",
@@ -93,24 +94,23 @@ const IRCC_KNOWLEDGE_BASE = [
 ];
 
 /**
- * Simple keyword-based retrieval
- * In production, use vector similarity search with embeddings
+ * Retrieves relevant IRCC documents based on user query
+ * @param query - User's question or search term
+ * @param topK - Number of top documents to return (default: 3)
+ * @returns Array of relevant document content strings
  */
 export async function getRelevantDocs(query: string, topK: number = 3): Promise<string[]> {
     const queryLower = query.toLowerCase();
 
-    // Score each document based on keyword matches
     const scored = IRCC_KNOWLEDGE_BASE.map((doc) => {
         let score = 0;
 
-        // Check if any keywords match
         for (const keyword of doc.keywords) {
             if (queryLower.includes(keyword)) {
                 score += 2;
             }
         }
 
-        // Check if topic matches
         if (queryLower.includes(doc.topic.toLowerCase())) {
             score += 3;
         }
@@ -118,18 +118,18 @@ export async function getRelevantDocs(query: string, topK: number = 3): Promise<
         return { ...doc, score };
     });
 
-    // Sort by score and take top K
     const topDocs = scored
         .filter((doc) => doc.score > 0)
         .sort((a, b) => b.score - a.score)
         .slice(0, topK);
 
-    // Return content of top documents
     return topDocs.map((doc) => doc.content);
 }
 
 /**
- * Get dynamic suggestions based on conversation context
+ * Generates context-aware follow-up suggestions based on conversation
+ * @param lastMessage - The last bot message in the conversation
+ * @returns Array of suggested follow-up questions
  */
 export function getSuggestions(lastMessage: string): string[] {
     const msgLower = lastMessage.toLowerCase();

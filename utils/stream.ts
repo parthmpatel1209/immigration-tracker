@@ -1,8 +1,16 @@
-// utils/stream.ts
+/**
+ * Streaming Utilities for Server-Sent Events (SSE)
+ * 
+ * Handles streaming responses from OpenRouter API to the client,
+ * enabling real-time AI response display with typing effect.
+ */
+
 import { NextResponse } from "next/server";
 
 /**
- * Stream SSE (Server-Sent Events) responses from OpenRouter to the client
+ * Streams SSE responses from OpenRouter to the client
+ * @param openRouterResponse - Response from OpenRouter API
+ * @returns Response with SSE stream
  */
 export async function streamResponse(openRouterResponse: Response) {
     if (!openRouterResponse.body) {
@@ -43,8 +51,7 @@ export async function streamResponse(openRouterResponse: Response) {
                                     );
                                 }
                             } catch (e) {
-                                // Skip invalid JSON
-                                console.warn("Failed to parse SSE data:", data);
+                                // Skip invalid JSON chunks
                             }
                         }
                     }

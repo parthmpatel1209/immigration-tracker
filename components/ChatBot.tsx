@@ -11,13 +11,14 @@ type Message = {
   feedback?: "helpful" | "not-helpful" | null;
 };
 
-/* ---------- Message Components ---------- */
+/** User message bubble component */
 const UserMessage = ({ text }: { text: string }) => (
   <div className={styles.messageWrapper}>
     <div className={styles.userMessage}>{text}</div>
   </div>
 );
 
+/** Bot message bubble with feedback buttons */
 const BotMessage = ({
   text,
   messageIndex,
@@ -32,12 +33,10 @@ const BotMessage = ({
   const [feedback, setFeedback] = useState<"helpful" | "not-helpful" | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
 
-  // Show feedback buttons after message is complete
+  // Show feedback buttons 500ms after message completion
   useEffect(() => {
     if (isComplete && text) {
-      const timer = setTimeout(() => {
-        setShowFeedback(true);
-      }, 500); // 500ms delay after completion
+      const timer = setTimeout(() => setShowFeedback(true), 500);
       return () => clearTimeout(timer);
     }
   }, [isComplete, text]);
@@ -106,10 +105,9 @@ export default function ChatBot() {
   ]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  /* ---------- Handle feedback ---------- */
+  /** Track user feedback for analytics */
   const handleFeedback = (messageIndex: number, type: "helpful" | "not-helpful") => {
     console.log(`Message ${messageIndex} marked as ${type}`);
-    // You can send this to an analytics service or database
     setMessages((prev) =>
       prev.map((msg, idx) =>
         idx === messageIndex ? { ...msg, feedback: type } : msg
@@ -117,12 +115,12 @@ export default function ChatBot() {
     );
   };
 
-  /* ---------- Auto-scroll ---------- */
+  /** Auto-scroll to latest message */
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  /* ---------- Update suggestions based on last bot message ---------- */
+  /** Update suggestions based on last bot message */
   useEffect(() => {
     const lastBotMessage = messages
       .filter((m) => m.role === "bot")
@@ -134,7 +132,7 @@ export default function ChatBot() {
     }
   }, [messages]);
 
-  /* ---------- Toggle animation ---------- */
+  /** Toggle chat window with animation */
   const toggle = () => {
     if (isOpen) {
       setIsClosing(true);
@@ -147,7 +145,7 @@ export default function ChatBot() {
     }
   };
 
-  /* ---------- Send message with streaming support ---------- */
+  /** Send message and handle streaming response */
   const sendMessage = async () => {
     if (!input.trim() || isLoading) return;
 
@@ -254,12 +252,11 @@ export default function ChatBot() {
     }
   };
 
-  /* ---------- Suggestion click ---------- */
+
+  /** Handle suggestion button click */
   const handleSuggestionClick = (suggestion: string) => {
     setInput(suggestion);
-    setTimeout(() => {
-      sendMessage();
-    }, 100);
+    setTimeout(() => sendMessage(), 100);
   };
 
   return (

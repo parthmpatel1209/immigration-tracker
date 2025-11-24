@@ -1,4 +1,5 @@
 import React from "react";
+import { Info } from "lucide-react";
 import styles from "./Calculator.module.css";
 
 interface LanguageFieldsProps {
@@ -7,6 +8,7 @@ interface LanguageFieldsProps {
     onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     title?: string;
     tooltip?: string;
+    onViewChart?: (testType: string) => void;
 }
 
 // Test type configurations
@@ -54,6 +56,7 @@ export default function LanguageFields({
     onChange,
     title,
     tooltip,
+    onViewChart,
 }: LanguageFieldsProps) {
     const skills = ["listening", "reading", "writing", "speaking"] as const;
     const testTypeName = `${prefix}testType`;
@@ -69,19 +72,43 @@ export default function LanguageFields({
                 <label className={styles.label} htmlFor={testTypeName}>
                     Test Type
                 </label>
-                <select
-                    id={testTypeName}
-                    name={testTypeName}
-                    value={currentTestType}
-                    onChange={onChange}
-                    className={styles.select}
-                >
-                    {Object.entries(TEST_CONFIGS).map(([key, value]) => (
-                        <option key={key} value={key}>
-                            {value.label}
-                        </option>
-                    ))}
-                </select>
+                <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-end" }}>
+                    <select
+                        id={testTypeName}
+                        name={testTypeName}
+                        value={currentTestType}
+                        onChange={onChange}
+                        className={styles.select}
+                        style={{ flex: 1 }}
+                    >
+                        {Object.entries(TEST_CONFIGS).map(([key, value]) => (
+                            <option key={key} value={key}>
+                                {value.label}
+                            </option>
+                        ))}
+                    </select>
+
+                    {/* View CLB Chart Button */}
+                    {onViewChart && (
+                        <button
+                            type="button"
+                            onClick={() => onViewChart(currentTestType)}
+                            className={styles.clbChartButton}
+                            title="View CLB conversion chart"
+                        >
+                            <Info size={18} />
+                            <span>View CLB Chart</span>
+                        </button>
+                    )}
+                </div>
+                <p style={{
+                    fontSize: "0.8125rem",
+                    color: "#6b7280",
+                    marginTop: "0.5rem",
+                    marginBottom: "0"
+                }}>
+                    Enter your scores and click 'View CLB Chart' to check your CLB levels right away
+                </p>
             </div>
 
             {/* Score Inputs */}

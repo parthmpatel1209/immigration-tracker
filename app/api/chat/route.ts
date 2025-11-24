@@ -1,4 +1,10 @@
-// app/api/chat/route.ts
+/**
+ * Chat API Route - Handles AI chatbot requests with RAG and streaming
+ * 
+ * This endpoint processes user messages, retrieves relevant IRCC documents,
+ * and streams AI responses using Mistral 7B via OpenRouter.
+ */
+
 import { NextResponse } from "next/server";
 import { getRelevantDocs } from "@/utils/rag";
 import { streamResponse } from "@/utils/stream";
@@ -17,14 +23,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Empty message" }, { status: 400 });
     }
 
-    console.log("📩 User message:", message);
-    console.log("💬 History length:", history?.length || 0);
-
-    // 🔍 Retrieve relevant IRCC documents for context (RAG)
+    // Retrieve relevant IRCC documents using RAG
     const contextDocs = await getRelevantDocs(message, 3);
-    console.log("📚 Retrieved", contextDocs.length, "relevant documents");
 
-    // 🧠 Construct system prompt with RAG context
+    // Build system prompt with retrieved context
     const systemPrompt = `You are a professional Canadian immigration assistant with expertise in IRCC policies and procedures.
 
 IMPORTANT GUIDELINES:
@@ -40,15 +42,15 @@ ${contextDocs.length > 0 ? contextDocs.map((doc, i) => `\n[Document ${i + 1}]\n$
 
 Remember: You're providing general information, not legal advice.`;
 
-    // 📝 Prepare conversation history (keep last 6 messages for context)
+    // Prepare conversation history (sliding window of last 6 messages)
     const conversationHistory = (history || [])
-      .slice(-6) // Sliding window of last 6 messages
+      .slice(-6)
       .map((msg: any) => ({
         role: msg.role === "user" ? "user" : "assistant",
         content: msg.text,
       }));
 
-    // 🚀 Call OpenRouter API with streaming
+    // Call OpenRouter API with streaming enabled
     const res = await fetch(API_URL, {
       method: "POST",
       headers: {
@@ -67,25 +69,24 @@ Remember: You're providing general information, not legal advice.`;
         max_tokens: 400,
         temperature: 0.7,
         top_p: 0.9,
-        stream: true, // ✨ Enable streaming for better UX
+        stream: true,
       }),
     });
 
     if (!res.ok) {
       const errorData = await res.json().catch(() => ({}));
-      console.error("❌ OpenRouter Error:", errorData);
+      console.error("OpenRouter API Error:", errorData);
       return NextResponse.json(
         { error: `API error: ${res.status} - ${errorData.error?.message || "Unknown error"}` },
         { status: res.status }
       );
     }
 
-    // 📡 Stream the response back to client
-    console.log("✅ Streaming response to client");
+    // Stream response back to client
     return streamResponse(res);
 
   } catch (error: any) {
-    console.error("💥 Server error:", error);
+    console.error("Chat API Error:", error);
     return NextResponse.json(
       { error: "Internal server error. Please try again." },
       { status: 500 }

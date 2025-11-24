@@ -6,10 +6,15 @@ import {
     calculateCRS,
     BreakdownRow,
 } from "@/lib/crs";
+import { generateCRSSuggestions, CRSFormData } from "@/lib/crs-suggestions";
 import styles from "./Calculator.module.css";
 import LanguageFields from "./LanguageFields";
 import ResultsBreakdown from "./ResultsBreakdown";
+import CRSSuggestions from "./CRSSuggestions";
 import DisclaimerModal from "./DisclaimerModal";
+import CLBChartModal from "./CLBChartModal";
+import InfoTooltip from "./InfoTooltip";
+import { INFO_CONTENT } from "./info-content";
 
 export default function Calculator() {
     // -------------------------------------------------
@@ -19,11 +24,15 @@ export default function Calculator() {
     const [crsBreakdown, setCrsBreakdown] = useState<BreakdownRow[]>([]);
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
+    const [latestCutoff, setLatestCutoff] = useState<number | undefined>(undefined);
 
     // -------------------------------------------------
-    // 1.5 Disclaimer Modal
+    // 1.5 Modals
     // -------------------------------------------------
     const [showDisclaimer, setShowDisclaimer] = useState(true);
+    const [showCLBChart, setShowCLBChart] = useState(false);
+    const [clbChartTestType, setCLBChartTestType] = useState("");
+    const [clbChartPrefix, setCLBChartPrefix] = useState(""); // Track which language (first, spouse, second)
 
     // -------------------------------------------------
     // 2. Form state
@@ -91,21 +100,27 @@ export default function Calculator() {
     useEffect(() => {
         async function load() {
             try {
-                const [benchRes, crsRes] = await Promise.all([
+                const [benchRes, crsRes, drawsRes] = await Promise.all([
                     fetch("/api/language-benchmarks"),
                     fetch("/api/crs-breakdown"),
+                    fetch("/api/draws"),
                 ]);
 
                 if (!benchRes.ok) throw new Error(`Language benchmarks failed`);
                 if (!crsRes.ok) throw new Error(`CRS breakdown failed`);
 
-                const [benchJson, crsJson] = await Promise.all([
-                    benchRes.json(),
-                    crsRes.json(),
-                ]);
+                const benchData = await benchRes.json();
+                const crsData = await crsRes.json();
+                const drawsData = await drawsRes.json();
 
-                setIeltsBenchmarks(benchJson);
-                setCrsBreakdown(crsJson);
+                setIeltsBenchmarks(benchData);
+                setCrsBreakdown(crsData);
+
+                // Get latest draw cutoff score
+                if (drawsData && drawsData.length > 0) {
+                    setLatestCutoff(drawsData[0].crs_score);
+                }
+
             } catch (e: any) {
                 console.error(e);
                 setLoadError(e.message || "Failed to load data");
@@ -380,7 +395,10 @@ export default function Calculator() {
                 <div className={styles.sectionTitle}>Personal Details</div>
                 <div className={styles.compactGrid}>
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>Age</label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                            <label className={styles.label} style={{ marginBottom: 0 }}>Age</label>
+                            <InfoTooltip content={INFO_CONTENT.age} />
+                        </div>
                         <input
                             name="age"
                             placeholder="Age"
@@ -393,7 +411,10 @@ export default function Calculator() {
                     </div>
 
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>Education</label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                            <label className={styles.label} style={{ marginBottom: 0 }}>Education</label>
+                            <InfoTooltip content={INFO_CONTENT.education} />
+                        </div>
                         <select
                             name="education"
                             value={form.education}
@@ -434,11 +455,19 @@ export default function Calculator() {
 
             {/* ---------- LANGUAGE ---------- */}
             <div className={styles.section}>
-                <div className={styles.sectionTitle}>Official Languages</div>
+                <div className={styles.sectionTitle} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    Official Languages
+                    <InfoTooltip content={INFO_CONTENT.officialLanguages} />
+                </div>
                 <LanguageFields
                     title="First Official Language (IELTS)"
                     values={form}
                     onChange={handleChange}
+                    onViewChart={(testType) => {
+                        setCLBChartTestType(testType);
+                        setCLBChartPrefix(""); // First language has no prefix
+                        setShowCLBChart(true);
+                    }}
                 />
             </div>
 
@@ -476,10 +505,15 @@ export default function Calculator() {
                     </div>
 
                     <LanguageFields
-                        title="Spouse Language (IELTS)"
                         prefix="spouse_"
+                        title="Spouse Language Test"
                         values={form}
                         onChange={handleChange}
+                        onViewChart={(testType) => {
+                            setCLBChartTestType(testType);
+                            setCLBChartPrefix("spouse_");
+                            setShowCLBChart(true);
+                        }}
                     />
                 </div>
             )}
@@ -489,7 +523,10 @@ export default function Calculator() {
                 <div className={styles.sectionTitle}>Work Experience</div>
                 <div className={styles.compactGrid}>
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>Canadian Work Experience</label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                            <label className={styles.label} style={{ marginBottom: 0 }}>Canadian Work Experience</label>
+                            <InfoTooltip content={INFO_CONTENT.canadianWork} />
+                        </div>
                         <select
                             name="canadianWork"
                             value={form.canadianWork}
@@ -507,7 +544,10 @@ export default function Calculator() {
                     </div>
 
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>Foreign Work Experience</label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                            <label className={styles.label} style={{ marginBottom: 0 }}>Foreign Work Experience</label>
+                            <InfoTooltip content={INFO_CONTENT.foreignWork} />
+                        </div>
                         <select
                             name="foreignWork"
                             value={form.foreignWork}
@@ -545,6 +585,11 @@ export default function Calculator() {
                         values={form}
                         onChange={handleChange}
                         tooltip="IELTS/TEF equivalent band"
+                        onViewChart={(testType) => {
+                            setCLBChartTestType(testType);
+                            setCLBChartPrefix("second_");
+                            setShowCLBChart(true);
+                        }}
                     />
                 )}
             </div>
@@ -554,7 +599,10 @@ export default function Calculator() {
                 <div className={styles.sectionTitle}>Additional Points</div>
                 <div className={styles.compactGrid}>
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>Education in Canada</label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                            <label className={styles.label} style={{ marginBottom: 0 }}>Education in Canada</label>
+                            <InfoTooltip content={INFO_CONTENT.educationInCanada} />
+                        </div>
                         <select
                             name="educationInCanada"
                             value={form.educationInCanada}
@@ -571,7 +619,10 @@ export default function Calculator() {
                     </div>
 
                     <div className={styles.fieldGroup}>
-                        <label className={styles.label}>Arranged Employment</label>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                            <label className={styles.label} style={{ marginBottom: 0 }}>Arranged Employment</label>
+                            <InfoTooltip content={INFO_CONTENT.arrangedEmployment} />
+                        </div>
                         <select
                             name="arrangedEmployment"
                             value={form.arrangedEmployment}
@@ -590,8 +641,9 @@ export default function Calculator() {
                 <div className={styles.toggleSection}>
                     {/* Certificate of Qualification */}
                     <div className={styles.toggleRow}>
-                        <div className={styles.toggleLabel}>
+                        <div className={styles.toggleLabel} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                             Certificate of Qualification from a Canadian province
+                            <InfoTooltip content={INFO_CONTENT.certificate} />
                         </div>
                         <label className={styles.switch}>
                             <input
@@ -605,8 +657,9 @@ export default function Calculator() {
 
                     {/* Sibling in Canada */}
                     <div className={styles.toggleRow}>
-                        <div className={styles.toggleLabel}>
+                        <div className={styles.toggleLabel} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                             Sibling in Canada who is a citizen or PR
+                            <InfoTooltip content={INFO_CONTENT.sibling} />
                         </div>
                         <label className={styles.switch}>
                             <input
@@ -620,8 +673,9 @@ export default function Calculator() {
 
                     {/* Provincial Nomination */}
                     <div className={styles.toggleRow}>
-                        <div className={styles.toggleLabel}>
+                        <div className={styles.toggleLabel} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                             Valid Provincial Nomination
+                            <InfoTooltip content={INFO_CONTENT.nomination} />
                         </div>
                         <label className={styles.switch}>
                             <input
@@ -675,6 +729,49 @@ export default function Calculator() {
             {/* ---------- RESULTS ---------- */}
             {result && <ResultsBreakdown result={result} hasSpouse={form.spouse} />}
 
+            {/* ---------- CRS IMPROVEMENT SUGGESTIONS ---------- */}
+            {result && (
+                <CRSSuggestions
+                    suggestions={generateCRSSuggestions(
+                        {
+                            age: Number(form.age),
+                            maritalStatus: form.spouse ? "married" : "single",
+                            education: form.education,
+                            canadianEducation: form.educationInCanada,
+                            firstLanguage: {
+                                listening: clb?.listening || 0,
+                                reading: clb?.reading || 0,
+                                writing: clb?.writing || 0,
+                                speaking: clb?.speaking || 0,
+                            },
+                            secondLanguage: form.secondLanguage && secondClb ? {
+                                listening: secondClb.listening || 0,
+                                reading: secondClb.reading || 0,
+                                writing: secondClb.writing || 0,
+                                speaking: secondClb.speaking || 0,
+                            } : undefined,
+                            workExperience: Number(form.foreignWork),
+                            canadianWorkExperience: Number(form.canadianWork),
+                            certificate: form.certificate,
+                            sibling: form.sibling,
+                            nomination: form.nomination,
+                            hasLMIA: form.hasLMIA,
+                            spouseEducation: form.spouse ? form.spouse_education : undefined,
+                            spouseLanguage: form.spouse && spouseClb ? {
+                                listening: spouseClb.listening || 0,
+                                reading: spouseClb.reading || 0,
+                                writing: spouseClb.writing || 0,
+                                speaking: spouseClb.speaking || 0,
+                            } : undefined,
+                        } as CRSFormData,
+                        result.total,
+                        latestCutoff
+                    )}
+                    currentScore={result.total}
+                    targetScore={latestCutoff}
+                />
+            )}
+
             {/* ---------- CLB LEVELS (for verification) ---------- */}
             {clb && (
                 <div className={styles.section} style={{ marginTop: "1rem" }}>
@@ -704,6 +801,29 @@ export default function Calculator() {
             {showDisclaimer && (
                 <DisclaimerModal onClose={() => setShowDisclaimer(false)} />
             )}
+
+            {/* ---------- CLB CHART MODAL ---------- */}
+            {showCLBChart && (() => {
+                // Get scores based on prefix (first language, spouse, or second language)
+                const listeningKey = `${clbChartPrefix}listening` as keyof typeof form;
+                const readingKey = `${clbChartPrefix}reading` as keyof typeof form;
+                const writingKey = `${clbChartPrefix}writing` as keyof typeof form;
+                const speakingKey = `${clbChartPrefix}speaking` as keyof typeof form;
+
+                return (
+                    <CLBChartModal
+                        testType={clbChartTestType}
+                        benchmarks={ieltsBenchmarks}
+                        onClose={() => setShowCLBChart(false)}
+                        userScores={{
+                            listening: form[listeningKey] ? Number(form[listeningKey]) : undefined,
+                            reading: form[readingKey] ? Number(form[readingKey]) : undefined,
+                            writing: form[writingKey] ? Number(form[writingKey]) : undefined,
+                            speaking: form[speakingKey] ? Number(form[speakingKey]) : undefined,
+                        }}
+                    />
+                );
+            })()}
         </div>
     );
 }
