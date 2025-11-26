@@ -39,6 +39,8 @@ export default function ImmigrationNews() {
   const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [translating, setTranslating] = useState(false);
 
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE); // ✅ initial 30 items
 
@@ -64,8 +66,9 @@ export default function ImmigrationNews() {
     let mounted = true;
 
     const fetchNews = async () => {
+      setTranslating(true);
       try {
-        const res = await fetch("/api/news");
+        const res = await fetch(`/api/news?language=${selectedLanguage}`);
         if (!res.ok) throw new Error("Failed to fetch");
 
         const data = await res.json();
@@ -74,7 +77,10 @@ export default function ImmigrationNews() {
         console.error("Failed to load news:", err);
         if (mounted) setNews([]);
       } finally {
-        if (mounted) setLoading(false);
+        if (mounted) {
+          setLoading(false);
+          setTranslating(false);
+        }
       }
     };
 
@@ -82,12 +88,16 @@ export default function ImmigrationNews() {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [selectedLanguage]);
 
   // Reset visible items when filters change
   useEffect(() => {
     setVisibleCount(ITEMS_PER_PAGE);
   }, [filterProps.month, filterProps.year]);
+
+  const handleLanguageChange = (langCode: string) => {
+    setSelectedLanguage(langCode);
+  };
 
   const visibleNews = filtered.slice(0, visibleCount);
 
@@ -109,6 +119,9 @@ export default function ImmigrationNews() {
         theme={theme}
         showFilters={showFilters}
         onToggleFilters={() => setShowFilters(!showFilters)}
+        selectedLanguage={selectedLanguage}
+        onLanguageChange={handleLanguageChange}
+        translating={translating}
       />
 
       <NewsFilters show={showFilters} theme={theme} {...filterProps} />
@@ -144,3 +157,4 @@ export default function ImmigrationNews() {
     </div>
   );
 }
+

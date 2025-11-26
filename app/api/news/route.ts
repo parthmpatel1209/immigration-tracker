@@ -6,8 +6,11 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY!
 );
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const { searchParams } = new URL(request.url);
+    const language = searchParams.get('language') || 'en';
+
     const { data, error } = await supabase
       .from("news")
       .select("*")
@@ -42,6 +45,31 @@ export async function GET() {
       };
     });
 
+    // Translate if not English
+    if (language !== 'en' && transformedData) {
+      const translatedData = await Promise.all(
+        transformedData.map(async (news) => {
+          try {
+            const [title_text, summary] = await Promise.all([
+              news.title_text ? translateText(news.title_text, language) : null,
+              news.summary ? translateText(news.summary, language) : null,
+            ]);
+
+            return {
+              ...news,
+              title_text: title_text || news.title_text,
+              summary: summary || news.summary,
+            };
+          } catch (err) {
+            console.error('Translation error for news:', news.id, err);
+            return news; // Return original if translation fails
+          }
+        })
+      );
+
+      return Response.json(translatedData);
+    }
+
     return Response.json(transformedData); // always 200 + valid JSON
   } catch (err: any) {
     console.error("Unexpected news API error:", err);
@@ -49,5 +77,20 @@ export async function GET() {
       { error: err?.message || "Internal Server Error" },
       { status: 500 }
     );
+  }
+}
+
+async function translateText(text: string, targetLang: string): Promise<string> {
+  if (!text || targetLang === 'en') return text;
+
+  try {
+    const response = await fetch(
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`
+    );
+    const data = await response.json();
+    return data[0]?.map((item: any) => item[0]).join('') || text;
+  } catch (error) {
+    console.error('Translation error:', error);
+    return text;
   }
 }
