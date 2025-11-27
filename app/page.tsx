@@ -9,7 +9,7 @@ import PRPathways from "@/components/pr-pathways/PRPathways";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DrawCardsGrid from "@/components/DrawCardsGrid";
-import FAQs from "@/components/FAQs";
+//import FAQs from "@/components/FAQs";
 import Donate from "@/components/Donate";
 import ContactForm from "@/components/ContactForm";
 import Calculator from "@/components/calculator/Calculator";
@@ -19,11 +19,11 @@ export default function HomePage() {
   const tabs = [
     { label: "Latest Draw", content: <DrawCardsGrid /> },
     { label: "CRS Scores", content: <DrawsTable /> },
-    { label: "Calculator", content: <Calculator /> },
-    { label: "What Is...?", content: <ImmigrationFAQComponent /> },
+    { label: "Calculator", content: <Calculator />, badge: "New" },
+    { label: "What Is...?", content: <ImmigrationFAQComponent />, badge: "New" },
     { label: "News", content: <ImmigrationNews /> },
     { label: "PR Pathways", content: <PRPathways /> },
-    { label: "FAQs", content: <FAQs /> },
+    //{ label: "FAQs", content: <FAQs /> },
     { label: "Support", content: <Donate /> },
     { label: "Contact", content: <ContactForm /> },
   ];

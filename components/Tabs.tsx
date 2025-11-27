@@ -6,6 +6,7 @@ import { Sun, Moon } from "lucide-react";
 interface Tab {
   label: string;
   content: ReactNode;
+  badge?: string;
 }
 interface TabsProps {
   tabs: Tab[];
@@ -191,6 +192,7 @@ export default function Tabs({ tabs }: TabsProps) {
                     scrollToTab(i);
                   }}
                   style={{
+                    position: "relative", // Needed for badge positioning
                     flexShrink: 0,
                     padding: "0.5rem 1rem",
                     fontSize,
@@ -200,8 +202,8 @@ export default function Tabs({ tabs }: TabsProps) {
                         ? "#c7d2fe"
                         : "#4f46e5"
                       : isDark
-                      ? "#9ca3af"
-                      : "#6b7280",
+                        ? "#9ca3af"
+                        : "#6b7280",
                     backgroundColor: isActive
                       ? isDark
                         ? "#312e81"
@@ -217,6 +219,7 @@ export default function Tabs({ tabs }: TabsProps) {
                     transform: `scale(${scale})`,
                     transformOrigin: "center",
                     whiteSpace: "nowrap",
+                    overflow: "visible", // Allow badge to overflow
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive)
@@ -230,6 +233,46 @@ export default function Tabs({ tabs }: TabsProps) {
                   }}
                 >
                   {tab.label}
+                  {tab.badge && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        top: "-5px",
+                        right: "-4px",
+                        background: isDark
+                          ? "linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(79, 70, 229, 0.95))"
+                          : "linear-gradient(135deg, rgba(129, 140, 248, 0.95), rgba(99, 102, 241, 0.95))",
+                        color: "white",
+                        fontSize: "0.55rem",
+                        fontWeight: "700",
+                        padding: "1px 5px",
+                        borderRadius: "9999px",
+                        boxShadow: isDark
+                          ? "0 2px 4px rgba(79, 70, 229, 0.3)"
+                          : "0 2px 4px rgba(99, 102, 241, 0.3)",
+                        border: "1px solid rgba(255, 255, 255, 0.4)",
+                        backdropFilter: "blur(4px)",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                        zIndex: 10,
+                        animation: "pulse-badge 2.5s infinite",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {tab.badge}
+                      {/* Shine effect */}
+                      <span style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: "linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)",
+                        borderRadius: "9999px",
+                        pointerEvents: "none",
+                      }}></span>
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -319,6 +362,11 @@ export default function Tabs({ tabs }: TabsProps) {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+        @keyframes pulse-badge {
+          0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
+          70% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
+          100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
         }
         .no-scrollbar::-webkit-scrollbar {
           display: none;

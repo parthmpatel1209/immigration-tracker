@@ -3,287 +3,287 @@
 import { useState, useEffect } from 'react';
 
 interface FAQ {
-    id: number;
-    category: string;
-    question: string;
-    answer: string;
-    key_detail: string | null;
-    image: string | null;
+  id: number;
+  category: string;
+  question: string;
+  answer: string;
+  key_detail: string | null;
+  image: string | null;
 }
 
 const languages = [
-    { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'en', name: 'English', flag: '🇬🇧' },
 
-    // Indian Languages
-    { code: 'hi', name: 'हिन्दी (Hindi)', flag: '🇮🇳' },
-    { code: 'pa', name: 'ਪੰਜਾਬੀ (Punjabi)', flag: '🇮🇳' },
-    { code: 'gu', name: 'ગુજરાતી (Gujarati)', flag: '🇮🇳' },
-    { code: 'mr', name: 'मराठी (Marathi)', flag: '🇮🇳' },
-    { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳' },
-    { code: 'te', name: 'తెలుగు (Telugu)', flag: '🇮🇳' },
-    { code: 'bn', name: 'বাংলা (Bengali)', flag: '🇮🇳' },
-    { code: 'kn', name: 'ಕನ್ನಡ (Kannada)', flag: '🇮🇳' },
-    { code: 'ml', name: 'മലയാളം (Malayalam)', flag: '🇮🇳' },
-    { code: 'ur', name: 'اردو (Urdu)', flag: '🇵🇰' },
+  // Indian Languages
+  { code: 'hi', name: 'हिन्दी (Hindi)', flag: '🇮🇳' },
+  { code: 'pa', name: 'ਪੰਜਾਬੀ (Punjabi)', flag: '🇮🇳' },
+  { code: 'gu', name: 'ગુજરાતી (Gujarati)', flag: '🇮🇳' },
+  { code: 'mr', name: 'मराठी (Marathi)', flag: '🇮🇳' },
+  { code: 'ta', name: 'தமிழ் (Tamil)', flag: '🇮🇳' },
+  { code: 'te', name: 'తెలుగు (Telugu)', flag: '🇮🇳' },
+  { code: 'bn', name: 'বাংলা (Bengali)', flag: '🇮🇳' },
+  { code: 'kn', name: 'ಕನ್ನಡ (Kannada)', flag: '🇮🇳' },
+  { code: 'ml', name: 'മലയാളം (Malayalam)', flag: '🇮🇳' },
+  { code: 'ur', name: 'اردو (Urdu)', flag: '🇵🇰' },
 
-    // European Languages
-    { code: 'fr', name: 'Français', flag: '🇫🇷' },
-    { code: 'es', name: 'Español', flag: '🇪🇸' },
-    { code: 'pt', name: 'Português', flag: '🇧🇷' },
-    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-    { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-    { code: 'uk', name: 'Українська', flag: '🇺🇦' },
-    { code: 'pl', name: 'Polski', flag: '🇵🇱' },
-    { code: 'ro', name: 'Română', flag: '🇷🇴' },
-    { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
-    { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
-    { code: 'no', name: 'Norsk', flag: '🇳🇴' },
-    { code: 'da', name: 'Dansk', flag: '🇩🇰' },
-    { code: 'fi', name: 'Suomi', flag: '🇫🇮' },
-    { code: 'el', name: 'Ελληνικά', flag: '🇬🇷' },
+  // European Languages
+  { code: 'fr', name: 'Français', flag: '🇫🇷' },
+  { code: 'es', name: 'Español', flag: '🇪🇸' },
+  { code: 'pt', name: 'Português', flag: '🇧🇷' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+  { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+  { code: 'uk', name: 'Українська', flag: '🇺🇦' },
+  { code: 'pl', name: 'Polski', flag: '🇵🇱' },
+  { code: 'ro', name: 'Română', flag: '🇷🇴' },
+  { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
+  { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
+  { code: 'no', name: 'Norsk', flag: '🇳🇴' },
+  { code: 'da', name: 'Dansk', flag: '🇩🇰' },
+  { code: 'fi', name: 'Suomi', flag: '🇫🇮' },
+  { code: 'el', name: 'Ελληνικά', flag: '🇬🇷' },
 
-    // East Asian Languages
-    { code: 'zh', name: '中文 (Chinese)', flag: '🇨🇳' },
-    { code: 'ja', name: '日本語 (Japanese)', flag: '🇯🇵' },
-    { code: 'ko', name: '한국어 (Korean)', flag: '🇰🇷' },
+  // East Asian Languages
+  { code: 'zh', name: '中文 (Chinese)', flag: '🇨🇳' },
+  { code: 'ja', name: '日本語 (Japanese)', flag: '🇯🇵' },
+  { code: 'ko', name: '한국어 (Korean)', flag: '🇰🇷' },
 
-    // Southeast Asian Languages
-    { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
-    { code: 'th', name: 'ไทย (Thai)', flag: '🇹🇭' },
-    { code: 'tl', name: 'Tagalog', flag: '🇵🇭' },
-    { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
-    { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾' },
+  // Southeast Asian Languages
+  { code: 'vi', name: 'Tiếng Việt', flag: '🇻🇳' },
+  { code: 'th', name: 'ไทย (Thai)', flag: '🇹🇭' },
+  { code: 'tl', name: 'Tagalog', flag: '🇵🇭' },
+  { code: 'id', name: 'Bahasa Indonesia', flag: '🇮🇩' },
+  { code: 'ms', name: 'Bahasa Melayu', flag: '🇲🇾' },
 
-    // Middle Eastern & African Languages
-    { code: 'ar', name: 'العربية (Arabic)', flag: '🇸🇦' },
-    { code: 'fa', name: 'فارسی (Persian)', flag: '🇮🇷' },
-    { code: 'tr', name: 'Türkçe (Turkish)', flag: '🇹🇷' },
-    { code: 'he', name: 'עברית (Hebrew)', flag: '🇮🇱' },
-    { code: 'sw', name: 'Kiswahili', flag: '🇰🇪' },
-    { code: 'am', name: 'አማርኛ (Amharic)', flag: '🇪🇹' },
-    { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
-    { code: 'yo', name: 'Yorùbá', flag: '🇳🇬' },
-    { code: 'ig', name: 'Igbo', flag: '🇳🇬' },
-    { code: 'so', name: 'Soomaali', flag: '🇸🇴' },
+  // Middle Eastern & African Languages
+  { code: 'ar', name: 'العربية (Arabic)', flag: '🇸🇦' },
+  { code: 'fa', name: 'فارسی (Persian)', flag: '🇮🇷' },
+  { code: 'tr', name: 'Türkçe (Turkish)', flag: '🇹🇷' },
+  { code: 'he', name: 'עברית (Hebrew)', flag: '🇮🇱' },
+  { code: 'sw', name: 'Kiswahili', flag: '🇰🇪' },
+  { code: 'am', name: 'አማርኛ (Amharic)', flag: '🇪🇹' },
+  { code: 'ha', name: 'Hausa', flag: '🇳🇬' },
+  { code: 'yo', name: 'Yorùbá', flag: '🇳🇬' },
+  { code: 'ig', name: 'Igbo', flag: '🇳🇬' },
+  { code: 'so', name: 'Soomaali', flag: '🇸🇴' },
 ];
 
 const categories = [
-    { id: 'Student', icon: '🎓', title: 'Student' },
-    { id: 'Worker', icon: '💼', title: 'Worker' },
-    { id: 'Visitor', icon: '✈️', title: 'Visitor' },
-    { id: 'Refugee', icon: '🛡️', title: 'Refugee' },
-    { id: 'Permanent Resident (PR)', icon: '🏡', title: 'PR' },
-    { id: 'Citizen', icon: '🍁', title: 'Citizen' },
-    { id: 'Family Sponsorship', icon: '👨‍👩‍👧‍👦', title: 'Family' },
-    { id: 'General', icon: '📋', title: 'General' },
+  { id: 'Student', icon: '🎓', title: 'Student' },
+  { id: 'Worker', icon: '💼', title: 'Worker' },
+  { id: 'Visitor', icon: '✈️', title: 'Visitor' },
+  { id: 'Refugee', icon: '🛡️', title: 'Refugee' },
+  { id: 'Permanent Resident (PR)', icon: '🏡', title: 'PR' },
+  { id: 'Citizen', icon: '🍁', title: 'Citizen' },
+  { id: 'Family Sponsorship', icon: '👨‍👩‍👧‍👦', title: 'Family' },
+  { id: 'General', icon: '📋', title: 'General' },
 ];
 
 export default function ImmigrationFAQComponent() {
-    const [selectedCategory, setSelectedCategory] = useState<string>('Student');
-    const [faqs, setFaqs] = useState<FAQ[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedLanguage, setSelectedLanguage] = useState('en');
-    const [translating, setTranslating] = useState(false);
-    const [openFAQId, setOpenFAQId] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('Student');
+  const [faqs, setFaqs] = useState<FAQ[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [translating, setTranslating] = useState(false);
+  const [openFAQId, setOpenFAQId] = useState<number | null>(null);
 
-    useEffect(() => {
-        fetchFAQs(selectedCategory, selectedLanguage);
-    }, [selectedCategory, selectedLanguage]);
+  useEffect(() => {
+    fetchFAQs(selectedCategory, selectedLanguage);
+  }, [selectedCategory, selectedLanguage]);
 
-    const fetchFAQs = async (category: string, language: string) => {
-        setLoading(true);
-        setTranslating(true);
-        try {
-            const response = await fetch(`/api/immigration-faq?category=${category}&language=${language}`);
-            const result = await response.json();
-            setFaqs(result.data || []);
-        } catch (error) {
-            console.error('Error fetching FAQs:', error);
-            setFaqs([]);
-        } finally {
-            setLoading(false);
-            setTranslating(false);
-        }
-    };
+  const fetchFAQs = async (category: string, language: string) => {
+    setLoading(true);
+    setTranslating(true);
+    try {
+      const response = await fetch(`/api/immigration-faq?category=${category}&language=${language}`);
+      const result = await response.json();
+      setFaqs(result.data || []);
+    } catch (error) {
+      console.error('Error fetching FAQs:', error);
+      setFaqs([]);
+    } finally {
+      setLoading(false);
+      setTranslating(false);
+    }
+  };
 
-    const toggleFAQ = (id: number) => {
-        setOpenFAQId(openFAQId === id ? null : id);
-    };
+  const toggleFAQ = (id: number) => {
+    setOpenFAQId(openFAQId === id ? null : id);
+  };
 
-    return (
-        <div style={{ padding: '1rem', maxWidth: '100%' }} className="faq-container">
-            {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-                <div style={{ flex: '1 1 auto', minWidth: '200px' }}>
-                    <h2 className="faq-title">
-                        What is...?
-                    </h2>
-                    <p style={{ fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', color: 'var(--foreground)', opacity: 0.6, marginTop: '0.25rem' }}>
-                        Immigration FAQ & Information
-                    </p>
-                </div>
+  return (
+    <div style={{ padding: '1rem', maxWidth: '100%' }} className="faq-container">
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+        <div style={{ flex: '1 1 auto', minWidth: '200px' }}>
+          <h2 className="faq-title">
+            What is...?
+          </h2>
+          <p style={{ fontSize: 'clamp(0.75rem, 2vw, 0.875rem)', color: 'var(--foreground)', opacity: 0.6, marginTop: '0.25rem' }}>
+            Immigration FAQ & Information
+          </p>
+        </div>
 
-                {/* Language Selector - Responsive */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '180px', flex: '0 1 auto' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                        <span style={{
-                            fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
-                            fontWeight: '500',
-                            color: 'var(--foreground)',
-                            opacity: 0.8,
-                        }}>
-                            Translate to
-                        </span>
-                        {translating && (
-                            <span style={{
-                                fontSize: '0.7rem',
-                                color: '#2563eb',
-                                fontWeight: '500',
-                                animation: 'pulse 2s infinite',
-                            }}>
-                                (Translating...)
-                            </span>
-                        )}
-                    </div>
-                    <select
-                        value={selectedLanguage}
-                        onChange={(e) => setSelectedLanguage(e.target.value)}
-                        disabled={translating}
-                        style={{
-                            padding: '0.625rem 2.5rem 0.625rem 1rem',
-                            borderRadius: '0.5rem',
-                            background: 'var(--background)',
-                            color: 'var(--foreground)',
-                            fontWeight: '500',
-                            fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
-                            border: '1px solid var(--hover)',
-                            cursor: translating ? 'not-allowed' : 'pointer',
-                            opacity: translating ? 0.6 : 1,
-                            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                            transition: 'all 0.2s',
-                            appearance: 'none',
-                            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'right 0.75rem center',
-                            backgroundSize: '12px',
-                            width: '100%',
-                        }}
-                        onMouseEnter={(e) => {
-                            if (!translating) {
-                                e.currentTarget.style.borderColor = '#2563eb';
-                                e.currentTarget.style.boxShadow = '0 2px 6px rgba(37, 99, 235, 0.2)';
-                            }
-                        }}
-                        onMouseLeave={(e) => {
-                            if (!translating) {
-                                e.currentTarget.style.borderColor = 'var(--hover)';
-                                e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-                            }
-                        }}
-                    >
-                        {languages.map((lang) => (
-                            <option key={lang.code} value={lang.code} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
-                                {lang.flag} {lang.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-            </div>
-
-            {/* Category Tabs - Futuristic Design */}
-            <div style={{
-                display: 'flex',
-                overflowX: 'auto',
-                gap: '0.75rem',
-                marginBottom: '2rem',
-                padding: '0.5rem 0.25rem 1rem 0.25rem',
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-            }} className="no-scrollbar">
-                {categories.map((category) => {
-                    const isActive = selectedCategory === category.id;
-                    return (
-                        <button
-                            key={category.id}
-                            onClick={() => setSelectedCategory(category.id)}
-                            className={`category-btn ${isActive ? 'active' : ''}`}
-                        >
-                            {isActive && (
-                                <span className="shimmer"></span>
-                            )}
-                            <span className="category-icon">
-                                {category.icon}
-                            </span>
-                            <span className="category-title">
-                                {category.title}
-                            </span>
-                        </button>
-                    );
-                })}
-            </div>
-
-            {/* FAQ List */}
-            {loading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '4rem 0' }}>
-                    <div className="spinner"></div>
-                </div>
-            ) : faqs.length === 0 ? (
-                <div className="empty-state">
-                    <p>No FAQs available for this category yet.</p>
-                </div>
-            ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    {faqs.map((faq) => (
-                        <div key={faq.id} className={`faq-card ${openFAQId === faq.id ? 'open' : ''}`}>
-                            <button
-                                onClick={() => toggleFAQ(faq.id)}
-                                className="faq-question-btn"
-                            >
-                                <span className={`faq-chevron ${openFAQId === faq.id ? 'rotated' : ''}`}>
-                                    ▸
-                                </span>
-                                <span className="faq-question-text">
-                                    {faq.question}
-                                </span>
-                            </button>
-
-                            {openFAQId === faq.id && (
-                                <div className="faq-answer-container">
-                                    <p className="faq-answer-text">
-                                        {faq.answer}
-                                    </p>
-
-                                    {faq.key_detail && (
-                                        <div className="key-detail-box">
-                                            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                                                <span className="key-detail-icon">
-                                                    🔑 Key Detail:
-                                                </span>
-                                                <span className="key-detail-text">
-                                                    {faq.key_detail}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {faq.image && (
-                                        <div style={{ marginTop: '1.25rem' }}>
-                                            <img
-                                                src={faq.image}
-                                                alt={faq.question}
-                                                className="faq-image"
-                                            />
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
+        {/* Language Selector - Responsive */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', minWidth: '180px', flex: '0 1 auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <span style={{
+              fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
+              fontWeight: '500',
+              color: 'var(--foreground)',
+              opacity: 0.8,
+            }}>
+              Translate to
+            </span>
+            {translating && (
+              <span style={{
+                fontSize: '0.7rem',
+                color: '#2563eb',
+                fontWeight: '500',
+                animation: 'pulse 2s infinite',
+              }}>
+                (Translating...)
+              </span>
             )}
+          </div>
+          <select
+            value={selectedLanguage}
+            onChange={(e) => setSelectedLanguage(e.target.value)}
+            disabled={translating}
+            style={{
+              padding: '0.625rem 2.5rem 0.625rem 1rem',
+              borderRadius: '0.5rem',
+              background: 'var(--background)',
+              color: 'var(--foreground)',
+              fontWeight: '500',
+              fontSize: 'clamp(0.75rem, 2vw, 0.875rem)',
+              border: '1px solid var(--hover)',
+              cursor: translating ? 'not-allowed' : 'pointer',
+              opacity: translating ? 0.6 : 1,
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              transition: 'all 0.2s',
+              appearance: 'none',
+              backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+              backgroundRepeat: 'no-repeat',
+              backgroundPosition: 'right 0.75rem center',
+              backgroundSize: '12px',
+              width: '100%',
+            }}
+            onMouseEnter={(e) => {
+              if (!translating) {
+                e.currentTarget.style.borderColor = '#2563eb';
+                e.currentTarget.style.boxShadow = '0 2px 6px rgba(37, 99, 235, 0.2)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!translating) {
+                e.currentTarget.style.borderColor = 'var(--hover)';
+                e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+              }
+            }}
+          >
+            {languages.map((lang) => (
+              <option key={lang.code} value={lang.code} style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+                {lang.flag} {lang.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
-            <style jsx>{`
+      {/* Category Tabs - Futuristic Design */}
+      <div style={{
+        display: 'flex',
+        overflowX: 'auto',
+        gap: '0.75rem',
+        marginBottom: '2rem',
+        padding: '0.5rem 0.25rem 1rem 0.25rem',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none',
+      }} className="no-scrollbar">
+        {categories.map((category) => {
+          const isActive = selectedCategory === category.id;
+          return (
+            <button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={`category-btn ${isActive ? 'active' : ''}`}
+            >
+              {isActive && (
+                <span className="shimmer"></span>
+              )}
+              <span className="category-icon">
+                {category.icon}
+              </span>
+              <span className="category-title">
+                {category.title}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* FAQ List */}
+      {loading ? (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '4rem 0' }}>
+          <div className="spinner"></div>
+        </div>
+      ) : faqs.length === 0 ? (
+        <div className="empty-state">
+          <p>No FAQs available for this category yet.</p>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {faqs.map((faq) => (
+            <div key={faq.id} className={`faq-card ${openFAQId === faq.id ? 'open' : ''}`}>
+              <button
+                onClick={() => toggleFAQ(faq.id)}
+                className="faq-question-btn"
+              >
+                <span className={`faq-chevron ${openFAQId === faq.id ? 'rotated' : ''}`}>
+                  ▸
+                </span>
+                <span className="faq-question-text">
+                  {faq.question}
+                </span>
+              </button>
+
+              {openFAQId === faq.id && (
+                <div className="faq-answer-container">
+                  <p className="faq-answer-text">
+                    {faq.answer}
+                  </p>
+
+                  {faq.key_detail && (
+                    <div className="key-detail-box">
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <span className="key-detail-icon">
+                          🔑 Key Detail:
+                        </span>
+                        <span className="key-detail-text">
+                          {faq.key_detail}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  {faq.image && (
+                    <div style={{ marginTop: '1.25rem' }}>
+                      <img
+                        src={faq.image}
+                        alt={faq.question}
+                        className="faq-image"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+
+      <style jsx>{`
         .faq-container {
           padding: clamp(0.75rem, 3vw, 1.5rem);
           background: linear-gradient(to bottom right, #eff6ff, #ffffff, #eef2ff);
@@ -603,6 +603,6 @@ export default function ImmigrationFAQComponent() {
           }
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 }
