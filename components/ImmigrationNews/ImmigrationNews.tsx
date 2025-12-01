@@ -9,6 +9,7 @@ import { NewsFilters } from "./NewsFilters";
 import { NewsGrid } from "./NewsGrid";
 import { NewsFooter } from "./NewsFooter";
 import { NewsTicker } from "./NewsTicker";
+import { NewsModal } from "./NewsModal";
 
 const ITEMS_PER_PAGE = 30; // ✅ REQUIRED CONSTANT
 
@@ -41,6 +42,7 @@ export default function ImmigrationNews() {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('en');
   const [translating, setTranslating] = useState(false);
+  const [selectedNewsItem, setSelectedNewsItem] = useState<NewsItem | null>(null);
 
   const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE); // ✅ initial 30 items
 
@@ -99,6 +101,24 @@ export default function ImmigrationNews() {
     setSelectedLanguage(langCode);
   };
 
+  const handleNewsItemClick = (item: NewsItem) => {
+    setSelectedNewsItem(item);
+  };
+
+  const handleCloseModal = () => {
+    setSelectedNewsItem(null);
+  };
+
+  const handleNavigateModal = (direction: "prev" | "next") => {
+    if (!selectedNewsItem) return;
+    const currentIndex = news.findIndex((n) => n.id === selectedNewsItem.id);
+    if (direction === "prev" && currentIndex > 0) {
+      setSelectedNewsItem(news[currentIndex - 1]);
+    } else if (direction === "next" && currentIndex < news.length - 1) {
+      setSelectedNewsItem(news[currentIndex + 1]);
+    }
+  };
+
   const visibleNews = filtered.slice(0, visibleCount);
 
   if (loading) {
@@ -127,10 +147,9 @@ export default function ImmigrationNews() {
       <NewsFilters show={showFilters} theme={theme} {...filterProps} />
 
       <NewsTicker
-        items={news.map((n) => ({
-          title: n.title_text || n.title,
-          published_at: n.published_at,
-        }))}
+        items={news}
+        onItemClick={handleNewsItemClick}
+        onDateFilter={filterProps.setSpecificDate}
       />
 
       {/* Visible news only */}
@@ -154,6 +173,14 @@ export default function ImmigrationNews() {
           </button>
         </div>
       )}
+
+      {/* News Modal */}
+      <NewsModal
+        item={selectedNewsItem}
+        allItems={news}
+        onClose={handleCloseModal}
+        onNavigate={handleNavigateModal}
+      />
     </div>
   );
 }

@@ -1,0 +1,269 @@
+/* ================================================
+   DATE CALENDAR - Modern Professional Design
+   ================================================ */
+
+.calendar {
+    position: fixed;
+    z-index: 10000;
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+        0 10px 10px -5px rgba(0, 0, 0, 0.04),
+        0 0 0 1px rgba(99, 102, 241, 0.1);
+    min-width: 320px;
+    animation: calendarSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+:global(html.dark) .calendar {
+    background: #1e293b;
+    box-shadow:
+        0 20px 25px -5px rgba(0, 0, 0, 0.4),
+        0 10px 10px -5px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(99, 102, 241, 0.2);
+}
+
+@keyframes calendarSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Header */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+}
+
+:global(html.dark) .header {
+    border-bottom-color: rgba(99, 102, 241, 0.2);
+}
+
+.monthYear {
+    font-size: 1.125rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+}
+
+:global(html.dark) .monthYear {
+    background: linear-gradient(135deg, #818cf8, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.navButton {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(99, 102, 241, 0.08);
+    color: #4f46e5;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.navButton:hover {
+    background: rgba(99, 102, 241, 0.15);
+    transform: scale(1.05);
+}
+
+.navButton:active {
+    transform: scale(0.98);
+}
+
+:global(html.dark) .navButton {
+    background: rgba(99, 102, 241, 0.15);
+    color: #818cf8;
+}
+
+:global(html.dark) .navButton:hover {
+    background: rgba(99, 102, 241, 0.25);
+}
+
+/* Weekdays */
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.weekdays>div {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #6b7280;
+    padding: 0.5rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+:global(html.dark) .weekdays>div {
+    color: #94a3b8;
+}
+
+/* Days Grid */
+.daysGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+}
+
+.emptyDay {
+    aspect-ratio: 1;
+}
+
+.day {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: #374151;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.day:hover:not(.disabled) {
+    background: rgba(99, 102, 241, 0.1);
+    color: #4f46e5;
+    transform: scale(1.05);
+}
+
+.day:active:not(.disabled) {
+    transform: scale(0.95);
+}
+
+:global(html.dark) .day {
+    color: #cbd5e1;
+}
+
+:global(html.dark) .day:hover:not(.disabled) {
+    background: rgba(99, 102, 241, 0.2);
+    color: #818cf8;
+}
+
+/* Today */
+.day.today {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.day.today:hover {
+    background: linear-gradient(135deg, #4338ca, #6d28d9);
+    color: white;
+    transform: scale(1.08);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+:global(html.dark) .day.today {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+:global(html.dark) .day.today:hover {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+/* Disabled (future dates) */
+.day.disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.day.disabled:hover {
+    background: transparent;
+    transform: none;
+}
+
+:global(html.dark) .day.disabled {
+    color: #475569;
+}
+
+/* Footer */
+.footer {
+    display: flex;
+    justify-content: center;
+    padding-top: 0.75rem;
+    border-top: 2px solid rgba(99, 102, 241, 0.1);
+}
+
+:global(html.dark) .footer {
+    border-top-color: rgba(99, 102, 241, 0.2);
+}
+
+.todayButton {
+    padding: 0.5rem 1.5rem;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+}
+
+.todayButton:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.todayButton:active {
+    transform: translateY(0);
+}
+
+:global(html.dark) .todayButton {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+/* Mobile adjustments */
+@media (max-width: 640px) {
+    .calendar {
+        min-width: 280px;
+        padding: 1rem;
+    }
+
+    .monthYear {
+        font-size: 1rem;
+    }
+
+    .navButton {
+        width: 32px;
+        height: 32px;
+    }
+
+    .day {
+        font-size: 0.8125rem;
+    }
+}

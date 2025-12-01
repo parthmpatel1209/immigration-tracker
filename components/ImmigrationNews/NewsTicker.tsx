@@ -1,13 +1,18 @@
 "use client";
 
 import { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import styles from "./ImmigrationNews.module.css";
+import { NewsItem } from "./types";
+import { DateCalendar } from "./DateCalendar";
 
 interface NewsTickerProps {
-  items: { title: string; published_at?: string }[];
+  items: NewsItem[];
+  onItemClick?: (item: NewsItem) => void;
+  onDateFilter?: (date: Date | null) => void;
 }
 
-export function NewsTicker({ items }: NewsTickerProps) {
+export function NewsTicker({ items, onItemClick, onDateFilter }: NewsTickerProps) {
   if (!items || items.length === 0) return null;
 
   const getRelativeDate = (dateStr?: string): string => {
@@ -34,13 +39,17 @@ export function NewsTicker({ items }: NewsTickerProps) {
   });
 
   // Create flattened array with date separators
-  const tickerElements: Array<{ type: 'date' | 'news'; content: string; item?: typeof items[0] }> = [];
+  const tickerElements: Array<{ type: 'date' | 'news'; content: string; item?: NewsItem }> = [];
   groupedByDate.forEach((group) => {
     if (group.date) {
       tickerElements.push({ type: 'date', content: group.date });
     }
     group.items.forEach((item) => {
-      tickerElements.push({ type: 'news', content: item.title, item });
+      tickerElements.push({
+        type: 'news',
+        content: item.title_text || item.title,
+        item
+      });
     });
   });
 
@@ -53,6 +62,11 @@ export function NewsTicker({ items }: NewsTickerProps) {
   const [isDragging, setDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollX, setScrollX] = useState(0);
+  const [isPaused, setPaused] = useState(false);
+
+  // Calendar state
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [calendarPosition, setCalendarPosition] = useState({ x: 0, y: 0 });
 
   // --- TOUCH HANDLERS ---
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -83,8 +97,6 @@ export function NewsTicker({ items }: NewsTickerProps) {
   const handleMouseLeave = () => {
     if (isDragging) endDrag();
   };
-
-  const [isPaused, setPaused] = useState(false);
 
   // --- SHARED LOGIC ---
   const startDrag = (clientX: number) => {
@@ -126,11 +138,53 @@ export function NewsTicker({ items }: NewsTickerProps) {
     }
   };
 
+  const handleDateClick = (e: React.MouseEvent, dateStr: string) => {
+    e.stopPropagation();
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    setCalendarPosition({ x: rect.left, y: rect.bottom + 10 });
+    setShowCalendar(true);
+
+    // Pause the ticker when calendar is open
+    setPaused(true);
+    if (trackRef.current) {
+      trackRef.current.style.animationPlayState = "paused";
+    }
+  };
+
+  const handleDateSelect = (date: Date) => {
+    if (onDateFilter) {
+      onDateFilter(date);
+    }
+    setShowCalendar(false);
+    // Resume ticker
+    setPaused(false);
+    if (trackRef.current) {
+      trackRef.current.style.animationPlayState = "running";
+    }
+  };
+
   return (
     <div className={styles.tickerModernWrapper}>
       {/* Fades */}
       <div className={styles.tickerFadeLeft}></div>
       <div className={styles.tickerFadeRight}></div>
+
+      {/* Calendar Popup - Rendered via Portal to escape overflow/backdrop-filter context */}
+      {showCalendar && createPortal(
+        <DateCalendar
+          onDateSelect={handleDateSelect}
+          onClose={() => {
+            setShowCalendar(false);
+            setPaused(false);
+            if (trackRef.current) {
+              trackRef.current.style.animationPlayState = "running";
+            }
+          }}
+          position={calendarPosition}
+          maxDate={new Date()} // Cannot select future dates
+        />,
+        document.body
+      )}
 
       {/* Ticker Track */}
       <div
@@ -149,13 +203,30 @@ export function NewsTicker({ items }: NewsTickerProps) {
         {loopedElements.map((element, index) => {
           if (element.type === 'date') {
             return (
-              <span key={`date-${index}`} className={styles.tickerDateLabel}>
+              <span
+                key={`date-${index}`}
+                className={`${styles.tickerDateLabel} ${styles.clickableDate}`}
+                onClick={(e) => handleDateClick(e, element.content)}
+              >
                 {element.content}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" style={{ marginLeft: '4px', opacity: 0.7 }}>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
               </span>
             );
           } else {
             return (
-              <span key={`news-${index}`} className={styles.tickerModernItem}>
+              <span
+                key={`news-${index}`}
+                className={styles.tickerModernItem}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!isDragging && element.item && onItemClick) {
+                    onItemClick(element.item);
+                  }
+                }}
+                style={{ cursor: onItemClick ? 'pointer' : 'grab' }}
+              >
                 <span className={styles.liveDot}></span>
                 <span className={styles.tickerItemTitle}>{element.content}</span>
               </span>

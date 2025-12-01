@@ -1152,6 +1152,16 @@ cardBack .footer {
   box-shadow: 0 4px 12px rgba(129, 140, 248, 0.25);
 }
 
+.clickableDate {
+  cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+.clickableDate:active {
+  transform: scale(0.95);
+}
+
 /* LIVE pulse dot */
 .liveDot {
   width: 7px;
