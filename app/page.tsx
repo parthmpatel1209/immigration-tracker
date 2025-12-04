@@ -2,7 +2,7 @@
 "use client";
 
 import Tabs from "@/components/Tabs";
-import DrawsTable from "@/components/DrawsTable";
+import CRSScoresEnhanced from "@/components/CRSScoresEnhanced";
 import CRSFilter from "@/components/CRSFilter";
 import ImmigrationNews from "@/components/ImmigrationNews/ImmigrationNews";
 import PRPathways from "@/components/pr-pathways/PRPathways";
@@ -18,7 +18,7 @@ import ImmigrationFAQComponent from "@/components/ImmigrationFAQComponent";
 export default function HomePage() {
   const tabs = [
     { label: "Latest Draw", content: <DrawCardsGrid /> },
-    { label: "CRS Scores", content: <DrawsTable /> },
+    { label: "CRS Scores", content: <CRSScoresEnhanced /> },
     { label: "Calculator", content: <Calculator />, badge: "New" },
     { label: "What Is...?", content: <ImmigrationFAQComponent />, badge: "New" },
     { label: "News", content: <ImmigrationNews /> },
