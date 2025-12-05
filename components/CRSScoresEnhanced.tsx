@@ -34,6 +34,8 @@ import {
     Award,
     Table,
     LineChart as LineChartIcon,
+    Filter,
+    SlidersHorizontal,
 } from "lucide-react";
 import styles from "./CRSScoresEnhanced.module.css";
 
@@ -198,6 +200,9 @@ function CRSScoresEnhanced() {
     const [lineChartFilter, setLineChartFilter] = useState("CEC");
     const [lineChartYear, setLineChartYear] = useState("All");
     const [viewMode, setViewMode] = useState<"table" | "analytics">("table");
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [sortBy, setSortBy] = useState<"date" | "crs" | "invitations">("date");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
     // Detect dark mode
     useEffect(() => {
@@ -348,11 +353,25 @@ function CRSScoresEnhanced() {
             );
         }
 
-        return filtered.sort(
-            (a, b) =>
-                dayjs(b.draw_date).valueOf() - dayjs(a.draw_date).valueOf()
-        );
-    }, [draws, selectedFilter, selectedYear, viewMode]);
+        // Apply sorting
+        return filtered.sort((a, b) => {
+            let comparison = 0;
+
+            if (sortBy === "date") {
+                comparison = dayjs(a.draw_date).valueOf() - dayjs(b.draw_date).valueOf();
+            } else if (sortBy === "crs") {
+                const crsA = Number(a.crs_cutoff) || 0;
+                const crsB = Number(b.crs_cutoff) || 0;
+                comparison = crsA - crsB;
+            } else if (sortBy === "invitations") {
+                const invA = Number(a.invitations) || 0;
+                const invB = Number(b.invitations) || 0;
+                comparison = invA - invB;
+            }
+
+            return sortOrder === "asc" ? comparison : -comparison;
+        });
+    }, [draws, selectedFilter, selectedYear, viewMode, sortBy, sortOrder]);
 
     // Generate trend data
     const trendData = useMemo(() => {
@@ -503,7 +522,7 @@ function CRSScoresEnhanced() {
             </div>
 
             {/* View Toggle */}
-            <div className={styles.viewToggleContainer}>
+            <div className={styles.viewToggleContainer} data-active={viewMode}>
                 <button
                     onClick={() => setViewMode("table")}
                     className={`${styles.viewToggleBtn} ${viewMode === "table" ? styles.viewToggleBtnActive : ""} `}
@@ -560,22 +579,82 @@ function CRSScoresEnhanced() {
                     <div className={styles.tableSection}>
                         <div className={styles.tableHeaderRow}>
                             <h3 className={styles.tableTitle}>
-                                Complete Draw History ({filteredDraws.length} results)
+                                Draw History ({filteredDraws.length} results)
                             </h3>
-                            <div className={styles.rowsPerPage}>
-                                <span className={styles.rowsLabel}>Rows per page:</span>
-                                <select
-                                    value={itemsPerPage}
-                                    onChange={(e) => {
-                                        setItemsPerPage(Number(e.target.value));
-                                        setCurrentPage(1);
-                                    }}
-                                    className={styles.rowsSelect}
-                                >
-                                    <option value={20}>20</option>
-                                    <option value={50}>50</option>
-                                    <option value={100}>100</option>
-                                </select>
+                            <div className={styles.tableHeaderActions}>
+                                {/* Filter/Sort Button */}
+                                <div className={styles.filterDropdownContainer}>
+                                    <button
+                                        onClick={() => setFilterOpen(!filterOpen)}
+                                        className={styles.filterDropdownBtn}
+                                        aria-label="Filter and sort options"
+                                    >
+                                        <SlidersHorizontal className={styles.filterDropdownIcon} />
+                                    </button>
+
+                                    {filterOpen && (
+                                        <div className={styles.filterDropdownMenu}>
+                                            <div className={styles.filterDropdownSection}>
+                                                <h4 className={styles.filterDropdownTitle}>Sort By</h4>
+                                                <button
+                                                    onClick={() => {
+                                                        setSortBy("date");
+                                                        setSortOrder(sortBy === "date" && sortOrder === "desc" ? "asc" : "desc");
+                                                    }}
+                                                    className={`${styles.filterDropdownOption} ${sortBy === "date" ? styles.filterDropdownOptionActive : ""}`}
+                                                >
+                                                    <Calendar className={styles.filterDropdownOptionIcon} />
+                                                    <span>Date</span>
+                                                    <span className={styles.filterDropdownSortIndicator}>
+                                                        {sortBy === "date" && (sortOrder === "desc" ? "↓" : "↑")}
+                                                    </span>
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setSortBy("crs");
+                                                        setSortOrder(sortBy === "crs" && sortOrder === "desc" ? "asc" : "desc");
+                                                    }}
+                                                    className={`${styles.filterDropdownOption} ${sortBy === "crs" ? styles.filterDropdownOptionActive : ""}`}
+                                                >
+                                                    <Target className={styles.filterDropdownOptionIcon} />
+                                                    <span>CRS Score</span>
+                                                    <span className={styles.filterDropdownSortIndicator}>
+                                                        {sortBy === "crs" && (sortOrder === "desc" ? "↓" : "↑")}
+                                                    </span>
+                                                </button>
+                                                <button
+                                                    onClick={() => {
+                                                        setSortBy("invitations");
+                                                        setSortOrder(sortBy === "invitations" && sortOrder === "desc" ? "asc" : "desc");
+                                                    }}
+                                                    className={`${styles.filterDropdownOption} ${sortBy === "invitations" ? styles.filterDropdownOptionActive : ""}`}
+                                                >
+                                                    <Users className={styles.filterDropdownOptionIcon} />
+                                                    <span>Invitations</span>
+                                                    <span className={styles.filterDropdownSortIndicator}>
+                                                        {sortBy === "invitations" && (sortOrder === "desc" ? "↓" : "↑")}
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className={styles.rowsPerPage}>
+                                    <span className={styles.rowsLabel}>Rows per page:</span>
+                                    <select
+                                        value={itemsPerPage}
+                                        onChange={(e) => {
+                                            setItemsPerPage(Number(e.target.value));
+                                            setCurrentPage(1);
+                                        }}
+                                        className={styles.rowsSelect}
+                                    >
+                                        <option value={20}>20</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <div className={styles.tableContainer}>
