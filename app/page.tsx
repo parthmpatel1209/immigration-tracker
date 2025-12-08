@@ -1,6 +1,7 @@
-// app/page.tsx or app/HomePage.tsx
+// app/page.tsx
 "use client";
 
+import { useState } from "react";
 import Tabs from "@/components/Tabs";
 import CRSScoresEnhanced from "@/components/CRSScoresEnhanced";
 import CRSFilter from "@/components/CRSFilter";
@@ -9,13 +10,15 @@ import PRPathways from "@/components/pr-pathways/PRPathways";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import DrawCardsGrid from "@/components/DrawCardsGrid";
-//import FAQs from "@/components/FAQs";
 import Donate from "@/components/Donate";
 import ContactForm from "@/components/ContactForm";
 import Calculator from "@/components/calculator/Calculator";
 import ImmigrationFAQComponent from "@/components/ImmigrationFAQComponent";
+import WaitlistForm from "@/components/waitlist/WaitlistForm";
 
 export default function HomePage() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
   const tabs = [
     { label: "Latest Draw", content: <DrawCardsGrid /> },
     { label: "CRS Scores", content: <CRSScoresEnhanced /> },
@@ -23,25 +26,41 @@ export default function HomePage() {
     { label: "What Is...?", content: <ImmigrationFAQComponent />, badge: "New" },
     { label: "News", content: <ImmigrationNews /> },
     { label: "PR Pathways", content: <PRPathways /> },
-    //{ label: "FAQs", content: <FAQs /> },
+    {
+      label: "Early Access",
+      content: <WaitlistForm />,
+      badge: "Free",
+    },
     { label: "Support", content: <Donate /> },
     { label: "Contact", content: <ContactForm /> },
   ];
 
+  const handleContactClick = () => {
+    const contactIndex = tabs.findIndex((t) => t.label === "Contact");
+    if (contactIndex !== -1) {
+      setActiveIndex(contactIndex);
+      const tabsSection = document.getElementById("tabs-section");
+      if (tabsSection) {
+        tabsSection.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black transition-all duration-500">
-      {/* Header */}
       <Header />
 
-      {/* Main Tabbed Content */}
-      <section className="max-w-7xl mx-auto px-4 pb-16">
+      <section id="tabs-section" className="max-w-7xl mx-auto px-4 pb-16">
         <div className="backdrop-blur-xl bg-white/80 dark:bg-gray-900/90 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-          <Tabs tabs={tabs} />
+          <Tabs
+            tabs={tabs}
+            activeIndex={activeIndex}
+            onTabChange={setActiveIndex}
+          />
         </div>
       </section>
 
-      {/* Footer */}
-      <Footer />
+      <Footer onNavigateToContact={handleContactClick} />
     </main>
   );
 }

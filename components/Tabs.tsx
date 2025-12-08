@@ -10,11 +10,18 @@ interface Tab {
 }
 interface TabsProps {
   tabs: Tab[];
+  activeIndex?: number;
+  onTabChange?: (index: number) => void;
 }
 
 /* --------------------------------------------------------------- */
-export default function Tabs({ tabs }: TabsProps) {
-  const [activeIndex, setActiveIndex] = useState(0);
+export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange }: TabsProps) {
+  const [localActiveIndex, setLocalActiveIndex] = useState(0);
+
+  // Determine if controlled or uncontrolled
+  const isControlled = controlledIndex !== undefined;
+  const activeIndex = isControlled ? controlledIndex : localActiveIndex;
+
   const [isDark, setIsDark] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -188,7 +195,8 @@ export default function Tabs({ tabs }: TabsProps) {
                     tabRefs.current[i] = el;
                   }}
                   onClick={() => {
-                    setActiveIndex(i);
+                    if (onTabChange) onTabChange(i);
+                    if (!isControlled) setLocalActiveIndex(i);
                     scrollToTab(i);
                   }}
                   style={{

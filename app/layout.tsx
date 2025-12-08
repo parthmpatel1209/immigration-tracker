@@ -5,7 +5,7 @@ import "./globals.css";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/react";
 import DisclaimerBanner from "@/components/DisclaimerBanner"; // We'll create this
-import FooterDisclaimer from "@/components/FooterDisclaimer"; // Optional but recommended
+
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
@@ -39,7 +39,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
 
         {/* Permanent small footer notice (extra safety) */}
-        <FooterDisclaimer />
+
 
         <Analytics />
       </body>

@@ -4,10 +4,15 @@ import { useEffect, useState, useRef } from "react";
 import styles from "./Footer.module.css";
 import Policy from "./Policy";
 import Terms from "./Terms";
+import Accessibility from "./Accessibility";
 
-type ModalType = "policy" | "terms" | null;
+type ModalType = "policy" | "terms" | "accessibility" | null;
 
-export default function Footer() {
+interface FooterProps {
+  onNavigateToContact?: () => void;
+}
+
+export default function Footer({ onNavigateToContact }: FooterProps) {
   const [isDark, setIsDark] = useState(false);
   const [modal, setModal] = useState<ModalType>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -57,34 +62,45 @@ export default function Footer() {
       {/* ------------------- FOOTER ------------------- */}
       <footer className={`${styles.footer} ${isDark ? styles.dark : ""}`}>
         <div className={styles.container}>
-          {/* Copyright */}
-          <div className={styles.info}>
-            <p className={styles.copyright}>
-              © {currentYear} Canada Express Entry Tracker. All rights reserved.
-            </p>
-          </div>
 
-          {/* Links */}
-          <nav className={styles.links}>
-            <button
-              onClick={() => setModal("policy")}
-              className={styles.linkButton} // ← use the new class
-            >
+          {/* Navigation Links - Centered & One Line */}
+          <nav className={styles.navBar}>
+            <button onClick={() => setModal("policy")} className={styles.linkButton}>
               Privacy Policy
             </button>
-
-            <button
-              onClick={() => setModal("terms")}
-              className={styles.linkButton} // ← same class
-            >
+            <span className={styles.separator}>•</span>
+            <button onClick={() => setModal("terms")} className={styles.linkButton}>
               Terms of Use
+            </button>
+            <span className={styles.separator}>•</span>
+            <button onClick={() => setModal("accessibility")} className={styles.linkButton}>
+              Accessibility Statement
+            </button>
+            <span className={styles.separator}>•</span>
+            <button onClick={onNavigateToContact} className={styles.linkButton}>
+              Contact
             </button>
           </nav>
 
-          {/* Made with love */}
-          <p className={styles.love}>
-            Made with ❤️ in Canada for Canadian immigrants
-          </p>
+          {/* Meta Info: Copyright & Love */}
+          <div className={styles.metaInfo}>
+            <p className={styles.copyright}>
+              © {currentYear} Canada Immigration Data Tracker.
+            </p>
+            <span className="hidden sm:inline mx-2 opacity-50">|</span>
+            <p className={styles.love}>
+              Made with ❤️ in Canada
+            </p>
+          </div>
+
+          {/* Disclaimer */}
+          <div className={styles.disclaimerSection}>
+            <div className={styles.disclaimerLabel}>⚠️ Disclaimer</div>
+            <div className={styles.disclaimerText}>
+              This website is NOT affiliated with IRCC. All data is for informational purposes only and may be outdated.
+              Verify all details at <a href="https://www.canada.ca/en/immigration-refugees-citizenship.html" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-500">IRCC</a> and consult an RCIC or lawyer before making immigration decisions.
+            </div>
+          </div>
         </div>
       </footer>
 
@@ -113,12 +129,22 @@ export default function Footer() {
 
             {/* Title */}
             <h2 id="modal-title" className="text-2xl font-bold mb-4 px-6 pt-10">
-              {modal === "policy" ? "Privacy Policy" : "Terms of Use"}
+              {modal === "policy"
+                ? "Privacy Policy"
+                : modal === "terms"
+                  ? "Terms of Use"
+                  : "Accessibility Statement"}
             </h2>
 
             {/* Content */}
             <div className={styles.policyContent}>
-              {modal === "policy" ? <Policy /> : <Terms />}
+              {modal === "policy" ? (
+                <Policy />
+              ) : modal === "terms" ? (
+                <Terms />
+              ) : (
+                <Accessibility />
+              )}
             </div>
           </div>
         </div>

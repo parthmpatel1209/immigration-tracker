@@ -1,213 +1,219 @@
-/* Footer.module.css – Modern, responsive, dark-mode ready */
+/* Footer.module.css – Compact & Modern */
 
 .footer {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid rgba(0, 0, 0, 0.08);
   font-family: system-ui, -apple-system, sans-serif;
-  margin-top: 2rem;
+  padding: 1.5rem 0;
+  /* COMPACTED from 2.5rem */
+  margin-top: 1rem;
+  /* COMPACTED from 3rem */
+  background-color: rgb(249, 250, 251);
 }
 
 .footer.dark {
   border-top-color: rgba(255, 255, 255, 0.12);
+  background-color: rgba(17, 24, 39, 0.8);
 }
 
 .container {
-  max-width: 1100px;
+  max-width: 1000px;
   margin: 0 auto;
+  padding: 0 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem;
+  /* COMPACTED from 1.5rem */
   text-align: center;
 }
 
-/* Info Section */
-.info {
+/* --- Navigation Bar --- */
+.navBar {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   gap: 0.5rem;
-  font-size: 0.875rem;
-  color: #6b7280;
+  /* COMPACTED */
 }
-.info.dark { color: #9ca3af; }
 
-.updated span {
-  font-weight: 600;
-  color: #4f46e5;
+.linkButton {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.8125rem;
+  /* Slightly smaller for professionalism */
+  font-weight: 500;
+  color: #4b5563;
+  cursor: pointer;
+  transition: color 0.2s;
+  text-decoration: none;
 }
-.updated.dark span { color: #a5b4fc; }
 
-.copyright {
+.linkButton:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.footer.dark .linkButton {
+  color: #9ca3af;
+}
+
+.footer.dark .linkButton:hover {
+  color: #60a5fa;
+}
+
+.separator {
+  color: #d1d5db;
   font-size: 0.75rem;
 }
 
-/* Navigation Links */
-.links {
+.footer.dark .separator {
+  color: #4b5563;
+}
+
+/* --- Meta Info (Copyright + Love) --- */
+.metaInfo {
   display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-.link {
-  font-size: 0.875rem;
-  color: #6366f1;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s ease;
-  position: relative;
-}
-.link:hover {
-  color: #4f46e5;
-}
-.link.dark { color: #a5b4fc; }
-.link.dark:hover { color: #c7d2fe; }
-
-/* Hover underline effect */
-.link::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 1.5px;
-  bottom: -4px;
-  left: 50%;
-  background: currentColor;
-  transition: width 0.3s ease, left 0.3s ease;
-}
-.link:hover::after {
-  width: 100%;
-  left: 0;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
-/* Love line */
-.love {
-  font-size: 0.8125rem;
+.footer.dark .metaInfo {
   color: #9ca3af;
+}
+
+.love {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.25rem;
 }
-.love.dark { color: #94a3b8; }
 
-/* Responsive */
-@media (min-width: 640px) {
-  .container {
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
+/* --- Disclaimer (10-90 Grid Layout) --- */
+.disclaimerSection {
+  margin-top: 0.5rem;
+  width: 100%;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  /* Label takes space needed, Text takes rest. Approx 10/90 visual */
+  gap: 1.5rem;
+  text-align: left;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: #9ca3af;
+  opacity: 0.85;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding-top: 1rem;
+}
+
+.disclaimerLabel {
+  font-weight: 700;
+  color: #ef4444;
+  /* Optional: Make warning icon/text pop slightly or keep neutral */
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.disclaimerText {
+  color: inherit;
+}
+
+.footer.dark .disclaimerSection {
+  color: #6b7280;
+  border-top-color: rgba(255, 255, 255, 0.05);
+}
+
+.footer.dark .disclaimerLabel {
+  color: #9ca3af;
+}
+
+/* On very small mobile, stack them? User requested grid, but 10-90 on 300px width is bad. */
+@media (max-width: 640px) {
+  .disclaimerSection {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    text-align: center;
   }
-  .info { text-align: left; }
-  .links { justify-content: flex-end; }
+
+  .disclaimerLabel {
+    margin-bottom: 0.1rem;
+  }
 }
 
-/* ---------- Overlay (covers whole screen) ---------- */
+
+/* --- Modal Overlay --- */
 .policyOverlay {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);        /* This blurs everything behind */
-  -webkit-backdrop-filter: blur(8px); /* Safari support */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  overflow: auto;
 }
 
-/* ---------- Modal box (centered pop-up) ---------- */
 .policyModal {
   position: relative;
-  background: var(--bg, #ffffff89);   /* respects dark mode if you set --bg */
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  max-width: 90vw;
+  background: var(--bg, #ffffff);
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  max-width: 95vw;
   max-height: 90vh;
-  width: 600px;                  /* adjust as you like */
-  padding: 1.5rem;
+  width: 700px;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   animation: fadeIn 0.2s ease-out;
 }
 
-/* Scrollable content inside modal */
-.policyContent {
-  max-height: calc(90vh - 4rem); /* leave space for close button + padding */
-  overflow-y: auto;
-  padding-right: 0.5rem;         /* tiny gutter for scrollbar */
-}
-
-/* Close button */
-.closeButton {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: none;
-  border: none;
-  font-size: 1.75rem;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--text, #333);
-}
-
-/* Dark-mode overrides (optional) */
-.dark .policyModal {
+:global(.dark) .policyModal {
   --bg: #1f2937;
   --text: #e5e7eb;
 }
-.dark .closeButton {
+
+.policyContent {
+  padding: 2rem;
+  overflow-y: auto;
+  color: var(--text, #1f2937);
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: inherit;
+  cursor: pointer;
+  z-index: 10;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+:global(.dark) .closeButton {
   color: #e5e7eb;
 }
 
-/* Fade-in animation */
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-}
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
 
-/* SR-only for screen-reader heading */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-  white-space: nowrap;
-  border: 0;
-}
-
-/* --------------------------------------------------------------
-   LINK-BUTTONS (Privacy Policy / Terms of Use)
-   -------------------------------------------------------------- */
-.linkButton {
-  @apply font-medium text-sm text-indigo-600 hover:text-indigo-500
-         dark:text-indigo-400 dark:hover:text-indigo-300
-         transition-colors duration-200 cursor-pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  text-decoration: none;
-  position: relative;
-}
-
-/* Underline hover effect – identical to .link */
-.linkButton::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 1.5px;
-  bottom: -4px;
-  left: 50%;
-  background: currentColor;
-  transition: width 0.3s ease, left 0.3s ease;
-}
-.linkButton:hover::after {
-  width: 100%;
-  left: 0;
-}
-
-/* Optional focus style for accessibility */
-.linkButton:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 2px;
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
