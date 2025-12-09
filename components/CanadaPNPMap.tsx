@@ -54,10 +54,10 @@ export default function CanadaPNPMap() {
   );
 
   const getProgressColor = (ratio: number) => {
-    if (ratio >= 0.9) return "bg-red-500";
-    if (ratio >= 0.7) return "bg-orange-500";
-    if (ratio >= 0.5) return "bg-yellow-500";
-    return "bg-green-500";
+    if (ratio >= 0.9) return styles.progRed;
+    if (ratio >= 0.7) return styles.progOrange;
+    if (ratio >= 0.5) return styles.progYellow;
+    return styles.progGreen;
   };
 
   /* ------------------- LOADING ------------------- */
@@ -98,7 +98,7 @@ export default function CanadaPNPMap() {
         className="max-w-7xl mx-auto"
       >
         {/* Header */}
-        <header className="text-center mb-10">
+        <header className="text-center mb-6">
           <h1 className={styles.headerTitle}>Canada PNP Quotas 2025</h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Latest Provincial Nominee Program allocations
@@ -180,85 +180,94 @@ export default function CanadaPNPMap() {
                 transition={{ delay: idx * 0.05 }}
                 className={styles.card}
               >
-                {/* Bonus badge */}
-                {p.bonus_points > 0 && (
-                  <div className={styles.bonusBadge}>
-                    <Rocket size={14} />+{p.bonus_points}
+                {/* Header: Name + Code + Status */}
+                <div className={styles.cardHeader}>
+                  <div className="flex items-center gap-2">
+                    <h3 className={styles.provinceName}>{p.name}</h3>
+                    <span className={styles.codeBadge}>{p.code}</span>
                   </div>
-                )}
-
-                <div className={styles.cardBody}>
-                  <div className={styles.cardTitle}>
-                    <div>
-                      <h3>{p.name}</h3>
-                      <span className={styles.cardCode}>{p.code}</span>
-                    </div>
+                  <div className="flex items-center gap-2">
+                    {p.bonus_points > 0 && (
+                      <div className={styles.bonusBadge} title={`Bonus: +${p.bonus_points}`}>
+                        <Rocket size={12} />
+                        <span>+{p.bonus_points}</span>
+                      </div>
+                    )}
                     {isFull && <span className={styles.fullBadge}>FULL</span>}
                   </div>
+                </div>
 
+                <div className={styles.cardBody}>
                   {p.total === 0 ? (
                     <div className={styles.noPnp}>
                       {p.note || "No PNP Program"}
                     </div>
                   ) : (
                     <>
-                      {/* Progress */}
-                      <div className={styles.progressWrapper}>
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: `${filledRatio * 100}%` }}
-                          transition={{ duration: 1.2, ease: "easeOut" }}
-                          className={`${styles.progressFill} ${getProgressColor(
-                            filledRatio
-                          )}`}
-                        />
-                        <div className={styles.progressPercent}>
-                          {Math.round(filledRatio * 100)}%
+                      {/* Stats Row: Total | Filled | Remaining */}
+                      <div className={styles.statsRow}>
+                        <div className={styles.statItem}>
+                          <span className={styles.statLabel}>Total</span>
+                          <span className={styles.statValueCompact}>{p.total.toLocaleString()}</span>
                         </div>
-                      </div>
-
-                      {/* Stats */}
-                      <div className={styles.cardStats}>
-                        <div>
-                          <div className={styles.statNumber}>
-                            {p.filled.toLocaleString()}
-                          </div>
-                          <div className={styles.statLabel}>Filled</div>
+                        <div className={styles.statItem}>
+                          <span className={styles.statLabel}>Filled</span>
+                          <span className={styles.statValueCompact}>{p.filled.toLocaleString()}</span>
                         </div>
-                        <div>
-                          <div
-                            className={`${styles.statNumber} ${styles.remainingNumber}`}
-                          >
+                        <div className={styles.statItem}>
+                          <span className={styles.statLabel}>Remaining</span>
+                          <span className={`${styles.statValueCompact} ${styles.textGreen}`}>
                             {p.remaining.toLocaleString()}
-                          </div>
-                          <div className={styles.statLabel}>Remaining</div>
+                          </span>
                         </div>
                       </div>
 
-                      <div className={styles.totalLine}>
-                        Total:{" "}
-                        <strong className={styles.totalNumber}>
-                          {p.total.toLocaleString()}
-                        </strong>
+                      {/* "Reveal" Gradient Progress Bar */}
+                      <div className="mt-4 mb-3">
+                        <div className="flex justify-between text-xs font-medium" style={{ marginBottom: '0.75rem' }}>
+                          <span className="text-gray-500 dark:text-gray-400">Quota Usage</span>
+                          <span className="text-gray-700 dark:text-gray-200">
+                            {Math.round(filledRatio * 100)}%
+                          </span>
+                        </div>
+                        <div className={styles.revealProgressTrack}>
+                          {/* The Full Gradient (Fixed underneath) */}
+                          <div className={styles.revealProgressGradient} />
+
+                          {/* The Mask (Slides from left to right to reveal gradient? No, slides from Right to Left to un-cover) */}
+                          {/* Actually, it's easier to just animate the Width of a container that Holds the Gradient, 
+                              and the Gradient inside that container is W-Full of the PARENT (Track). 
+                              No, that squeezes. 
+                              The 'Mask' approach: Overlay a gray div on the right. */}
+                          <motion.div
+                            className={styles.revealProgressMask}
+                            initial={{ width: "100%" }}
+                            animate={{ width: `${100 - (filledRatio * 100)}%` }}
+                            transition={{ duration: 1.2, ease: "easeOut" }}
+                          />
+                        </div>
                       </div>
 
-                      {/* Bonus note */}
-                      {p.bonus_note && (
-                        <div className={styles.bonusNote}>
-                          {p.bonus_note} + {p.note}
+                      {/* Streams / Target Draws Note */}
+                      {(p.bonus_note || p.note) && (
+                        <div className={styles.streamNote}>
+                          {p.bonus_note && p.note
+                            ? `${p.bonus_note} + ${p.note}`
+                            : p.bonus_note || p.note
+                          }
                         </div>
                       )}
-
-                      {/* Source */}
                       {p.source_url && (
-                        <a
-                          href={p.source_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.sourceLink}
-                        >
-                          Official Source <ExternalLink size={14} />
-                        </a>
+                        <div className="mt-3 text-right">
+                          <a
+                            href={p.source_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.sourceLink}
+                          >
+                            Source <ExternalLink size={12} className="ml-1" />
+                          </a>
+                        </div>
                       )}
                     </>
                   )}
