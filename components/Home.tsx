@@ -2,20 +2,21 @@
 
 import { useEffect, useState } from "react";
 import {
-    TrendingUp,
+    Newspaper,
     Calculator,
-    Globe,
-    Bell,
-    CheckCircle2,
+    TrendingUp,
+    GraduationCap,
     ArrowRight,
-    MapPin,
+    Share2,
+    CheckCircle2,
+    Globe,
     Users,
-    FileText,
-    Sparkles,
-    BarChart3,
-    Compass,
+    MapPin,
+    Activity,
+    Bell,
 } from "lucide-react";
 import styles from "./Home.module.css";
+import CLBConverter from './CLBConverter';
 
 interface HomeProps {
     onNavigateToTab?: (tabName: string) => void;
@@ -24,6 +25,7 @@ interface HomeProps {
 export default function Home({ onNavigateToTab }: HomeProps) {
     const [isDark, setIsDark] = useState(false);
     const [statsVisible, setStatsVisible] = useState(false);
+    const [isConverterOpen, setIsConverterOpen] = useState(false);
 
     // Sync dark mode
     useEffect(() => {
@@ -61,7 +63,7 @@ export default function Home({ onNavigateToTab }: HomeProps) {
             action: "Latest Draw",
         },
         {
-            icon: BarChart3,
+            icon: Activity,
             title: "CRS Score Analytics",
             description: "Track historical CRS trends and understand your chances with detailed analytics",
             color: "from-purple-500 to-pink-500",
@@ -82,14 +84,14 @@ export default function Home({ onNavigateToTab }: HomeProps) {
             action: "PR Pathways",
         },
         {
-            icon: FileText,
+            icon: Newspaper,
             title: "Immigration News",
             description: "Stay informed with the latest immigration policy updates and announcements",
             color: "from-indigo-500 to-blue-500",
             action: "News",
         },
         {
-            icon: Compass,
+            icon: GraduationCap,
             title: "Expert Guidance",
             description: "Access comprehensive FAQs and step-by-step immigration guides",
             color: "from-pink-500 to-rose-500",
@@ -133,7 +135,7 @@ export default function Home({ onNavigateToTab }: HomeProps) {
             <section className={styles.hero}>
                 <div className={styles.heroContent}>
                     <div className={styles.badge}>
-                        <Sparkles size={16} />
+                        <Activity size={16} />
                         <span>Your Immigration Journey Starts Here</span>
                     </div>
 
@@ -178,7 +180,39 @@ export default function Home({ onNavigateToTab }: HomeProps) {
                         </div>
                     ))}
                 </div>
+
+
+
+                {/* Toolkit Section */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4rem' }} className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                    <button
+                        onClick={() => setIsConverterOpen(true)}
+                        className="group flex items-center gap-3 px-6 py-3 !bg-white dark:!bg-gray-800 !rounded-full shadow-lg border border-blue-100 dark:border-gray-700 hover:scale-105 hover:shadow-xl transition-all duration-300 cursor-pointer relative z-10"
+                        style={{
+                            borderRadius: '9999px',
+                            backgroundColor: isDark ? '#1f2937' : 'white',
+                            display: 'flex',
+                            alignItems: 'center',
+                            padding: '12px 24px',
+                            position: 'relative',
+                            zIndex: 10,
+                            cursor: 'pointer',
+                            border: isDark ? '1px solid #374151' : '1px solid #dbeafe',
+                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+                        }}
+                    >
+                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400 group-hover:rotate-12 transition-transform">
+                            <Globe size={20} color={isDark ? '#60a5fa' : '#2563eb'} /> &nbsp;
+                        </div>
+                        <div className="text-left">
+                            {/* <div className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase tracking-wider">New Tool</div> */}
+                            <div className="text-sm font-bold text-gray-900 dark:text-white" style={{ color: isDark ? 'white' : '#111827' }}>CLB Language Converter</div>
+                        </div>
+                    </button>
+                </div>
             </section>
+
+            <CLBConverter isOpen={isConverterOpen} onClose={() => setIsConverterOpen(false)} isDark={isDark} />
 
             {/* Features Grid */}
             <section className={styles.featuresSection}>
@@ -287,6 +321,6 @@ export default function Home({ onNavigateToTab }: HomeProps) {
                     </div>
                 </div>
             </section>
-        </div>
+        </div >
     );
 }

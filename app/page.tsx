@@ -15,7 +15,7 @@ import ContactForm from "@/components/ContactForm";
 import Calculator from "@/components/calculator/Calculator";
 import ImmigrationFAQComponent from "@/components/ImmigrationFAQComponent";
 import WaitlistForm from "@/components/waitlist/WaitlistForm";
-import Home from "@/components/Home"; // Add Home import
+import Home from "@/components/Home";
 
 export default function HomePage() {
   const [activeIndex, setActiveIndex] = useState(0);
