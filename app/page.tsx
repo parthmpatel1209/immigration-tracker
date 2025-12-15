@@ -15,11 +15,25 @@ import ContactForm from "@/components/ContactForm";
 import Calculator from "@/components/calculator/Calculator";
 import ImmigrationFAQComponent from "@/components/ImmigrationFAQComponent";
 import WaitlistForm from "@/components/waitlist/WaitlistForm";
+import Home from "@/components/Home"; // Add Home import
 
 export default function HomePage() {
   const [activeIndex, setActiveIndex] = useState(0);
 
+  // Helper to find tab index by name and switch
+  const handleTabNavigation = (tabName: string) => {
+    const index = tabs.findIndex((t) => t.label === tabName || (t.label.includes(tabName)));
+    if (index !== -1) {
+      setActiveIndex(index);
+      const tabsSection = document.getElementById("tabs-section");
+      if (tabsSection) {
+        tabsSection.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   const tabs = [
+    { label: "Home", content: <Home onNavigateToTab={handleTabNavigation} /> },
     { label: "Latest Draw", content: <DrawCardsGrid /> },
     { label: "CRS Scores", content: <CRSScoresEnhanced /> },
     { label: "Calculator", content: <Calculator />, badge: "New" },
@@ -36,14 +50,8 @@ export default function HomePage() {
   ];
 
   const handleContactClick = () => {
-    const contactIndex = tabs.findIndex((t) => t.label === "Contact");
-    if (contactIndex !== -1) {
-      setActiveIndex(contactIndex);
-      const tabsSection = document.getElementById("tabs-section");
-      if (tabsSection) {
-        tabsSection.scrollIntoView({ behavior: "smooth" });
-      }
-    }
+    // Re-use logic for contact button in footer
+    handleTabNavigation("Contact");
   };
 
   return (

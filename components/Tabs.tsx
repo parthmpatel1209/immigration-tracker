@@ -73,9 +73,11 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange }
     [isMobile]
   );
 
+
   useEffect(() => {
     scrollToTab(activeIndex);
   }, [activeIndex, scrollToTab]);
+
 
   /* ---- Fade gradients (mobile only) --------------------------- */
   useEffect(() => {
@@ -114,6 +116,7 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange }
       window.removeEventListener("resize", update);
     };
   }, [isMobile, tabs]);
+
 
   /* ---- Scale & opacity (mobile only – **all tabs** treated equally) */
   const getScaleAndOpacity = (idx: number) => {
@@ -178,6 +181,7 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange }
               minWidth: isMobile ? "max-content" : "auto",
               alignItems: "center",
               height: "3rem",
+              position: "relative",
             }}
           >
             {tabs.map((tab, i) => {
@@ -200,23 +204,19 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange }
                     scrollToTab(i);
                   }}
                   style={{
-                    position: "relative", // Needed for badge positioning
+                    position: "relative",
                     flexShrink: 0,
                     padding: "0.5rem 1rem",
                     fontSize,
-                    fontWeight: isActive ? "600" : "500",
+                    fontWeight: isActive ? "700" : "500",
                     color: isActive
                       ? isDark
-                        ? "#c7d2fe"
-                        : "#4f46e5"
+                        ? "#ffffff"
+                        : "#2563eb"
                       : isDark
                         ? "#9ca3af"
                         : "#6b7280",
-                    backgroundColor: isActive
-                      ? isDark
-                        ? "#312e81"
-                        : "#e0e7ff"
-                      : "transparent",
+                    backgroundColor: "transparent",
                     borderRadius: "9999px",
                     border: "none",
                     cursor: "pointer",
@@ -227,19 +227,60 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange }
                     transform: `scale(${scale})`,
                     transformOrigin: "center",
                     whiteSpace: "nowrap",
-                    overflow: "visible", // Allow badge to overflow
+                    overflow: "visible",
+                    zIndex: 1,
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive)
                       e.currentTarget.style.backgroundColor = isDark
-                        ? "#374151"
-                        : "#f3f4f6";
+                        ? "rgba(55, 65, 81, 0.3)"
+                        : "rgba(243, 244, 246, 0.5)";
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive)
                       e.currentTarget.style.backgroundColor = "transparent";
                   }}
                 >
+                  {/* Individual Liquid Glass Layer - Fades In/Out */}
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background: isDark
+                        ? "linear-gradient(135deg, rgba(79, 70, 229, 0.4), rgba(124, 58, 237, 0.4))"
+                        : "linear-gradient(135deg, rgba(219, 234, 254, 1), rgba(239, 246, 255, 1))",
+                      borderRadius: "9999px",
+                      backdropFilter: "blur(12px)",
+                      WebkitBackdropFilter: "blur(12px)",
+                      boxShadow: isDark
+                        ? "0 4px 20px rgba(124, 58, 237, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
+                        : "0 4px 12px rgba(37, 99, 235, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
+                      border: isDark
+                        ? "1px solid rgba(139, 92, 246, 0.4)"
+                        : "1px solid rgba(191, 219, 254, 0.8)",
+                      opacity: isActive ? 1 : 0,
+                      transition: "opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                      pointerEvents: "none",
+                      zIndex: -1,
+                      overflow: "hidden",
+                    }}
+                  >
+                    {/* Shine overlay - only visible when active */}
+                    {isActive && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: "-100%",
+                          width: "200%",
+                          height: "100%",
+                          background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
+                          animation: "shine 3s infinite",
+                        }}
+                      />
+                    )}
+                  </div>
+
                   {tab.label}
                   {tab.badge && (
                     <span
@@ -375,6 +416,14 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange }
           0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
           70% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
           100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+        }
+        @keyframes shine {
+          0% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(100%);
+          }
         }
         .no-scrollbar::-webkit-scrollbar {
           display: none;
