@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { motion } from "framer-motion";
-import { Calendar, Users, Hash, MapPin } from "lucide-react";
+import { Calendar, Users, Hash, MapPin, Activity } from "lucide-react";
 import styles from "./DrawCardsGrid.module.css";
 import CanadaPNPMap from "./CanadaPNPMap";
 import ChatBot from "@/components/ChatBot";
@@ -19,6 +19,10 @@ interface Draw {
   crs_cutoff?: string | null;
   invitations?: string | null;
   draw_date: string;
+}
+
+interface DrawCardsGridProps {
+  onNavigateToTab?: (tabName: string) => void;
 }
 
 // ──────────────────────────────────────────────────────────────
@@ -128,7 +132,8 @@ function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.04 }}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className={styles.card}
       style={
@@ -228,9 +233,18 @@ function SkeletonCard() {
 // ──────────────────────────────────────────────────────────────
 // Main Component: DrawCardsGrid – fetches & sorts like table
 // ──────────────────────────────────────────────────────────────
-export default function DrawCardsGrid() {
+export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
   const [draws, setDraws] = useState<Draw[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    const checkDarkMode = () => setIsDark(document.documentElement.classList.contains("dark"));
+    checkDarkMode();
+    const observer = new MutationObserver(checkDarkMode);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const fetchDraws = async () => {
@@ -283,6 +297,21 @@ export default function DrawCardsGrid() {
             ))
           )}
         </div>
+      </div>
+
+      {/* More Data / Analytics Button */}
+      <div className={styles.moreButtonContainer}>
+        <button
+          onClick={() => onNavigateToTab?.("CRS Scores")}
+          className={styles.moreButton}
+        >
+          <div className={styles.moreButtonGlow} />
+          <Activity size={20} className={styles.moreButtonIcon} />
+          <span className={styles.moreButtonText}>More Analytics & Historical Data</span>
+          <div className={styles.moreButtonBadge}>
+            <Hash size={14} />
+          </div>
+        </button>
       </div>
 
       {/* Canada PNP Map */}

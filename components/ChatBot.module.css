@@ -604,9 +604,9 @@
 /* ================================================== */
 /* Responsive Design */
 /* ================================================== */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
   .toggleBtn {
-    bottom: 20px;
+    bottom: 90px;
     right: 20px;
     width: 56px;
     height: 56px;
@@ -614,9 +614,9 @@
 
   .container {
     width: calc(100vw - 32px);
-    height: calc(100vh - 120px);
+    height: calc(100vh - 180px);
     max-height: 650px;
-    bottom: 92px;
+    bottom: 160px;
     right: 16px;
   }
 

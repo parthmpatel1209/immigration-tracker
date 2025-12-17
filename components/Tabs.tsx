@@ -12,10 +12,11 @@ interface TabsProps {
   tabs: Tab[];
   activeIndex?: number;
   onTabChange?: (index: number) => void;
+  hideHeaderOnMobile?: boolean;
 }
 
 /* --------------------------------------------------------------- */
-export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange }: TabsProps) {
+export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, hideHeaderOnMobile }: TabsProps) {
   const [localActiveIndex, setLocalActiveIndex] = useState(0);
 
   // Determine if controlled or uncontrolled
@@ -149,7 +150,7 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange }
       {/* Header ----------------------------------------------------- */}
       <div
         style={{
-          display: "flex",
+          display: isMobile && hideHeaderOnMobile ? "none" : "flex",
           alignItems: "center",
           borderBottom: `1px solid ${isDark ? "#374151" : "#e5e7eb"}`,
           paddingBottom: "0.75rem",

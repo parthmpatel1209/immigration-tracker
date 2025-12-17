@@ -100,10 +100,10 @@ export default function Home({ onNavigateToTab }: HomeProps) {
     ];
 
     const quickStats = [
-        { label: "Active PNP Streams", value: "80+", icon: Globe },
-        { label: "Weekly Draws", value: "~12", icon: TrendingUp },
+        { label: "Active PNP Streams", value: "50+", icon: Globe },
+        { label: "Weekly Draws", value: "~6", icon: TrendingUp },
         { label: "Provinces Tracked", value: "13", icon: MapPin },
-        { label: "Daily Users", value: "10K+", icon: Users },
+        { label: "Daily Users", value: "100+", icon: Users },
     ];
 
     const steps = [

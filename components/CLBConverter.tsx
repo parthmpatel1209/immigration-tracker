@@ -140,6 +140,16 @@ export default function CLBConverter({ isOpen, onClose, isDark = false }: CLBCon
                 display: 'flex', flexDirection: 'column',
                 border: `1px solid ${colors.border}`
             }}>
+                <style jsx global>{`
+                    input[type=number]::-webkit-inner-spin-button, 
+                    input[type=number]::-webkit-outer-spin-button { 
+                        -webkit-appearance: none; 
+                        margin: 0; 
+                    }
+                    input[type=number] {
+                        -moz-appearance: textfield;
+                    }
+                `}</style>
                 {/* Header */}
                 <div style={{
                     padding: '20px 24px',
@@ -190,8 +200,8 @@ export default function CLBConverter({ isOpen, onClose, isDark = false }: CLBCon
 
                 {/* Inputs Grid */}
                 <div style={{
-                    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-                    gap: '20px', padding: '0 24px 24px', overflowY: 'auto'
+                    display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+                    gap: '24px', padding: '0 24px 24px', overflowY: 'auto', flex: 1
                 }}>
                     {(['Reading', 'Writing', 'Listening', 'Speaking'] as const).map((f, i) => {
                         const keyMap = { Reading: 'r', Writing: 'w', Listening: 'l', Speaking: 's' } as const;
@@ -210,12 +220,13 @@ export default function CLBConverter({ isOpen, onClose, isDark = false }: CLBCon
                                             value={scores[field]}
                                             onChange={e => setScores({ ...scores, [field]: e.target.value })}
                                             style={{
-                                                width: '100%', padding: '12px', borderRadius: '8px',
+                                                width: '100%', padding: '0 12px', height: '48px', borderRadius: '8px',
                                                 border: `1px solid ${colors.inputBorder}`,
                                                 fontSize: '16px', fontWeight: '600',
                                                 backgroundColor: colors.inputBg,
                                                 color: colors.inputText, outline: 'none',
-                                                appearance: 'none'
+                                                appearance: 'none',
+                                                boxSizing: 'border-box'
                                             }}
                                         >
                                             {(test === "CELPIP" ? CELPIP_OPTS : IELTS_OPTS).map(o => (
@@ -230,11 +241,12 @@ export default function CLBConverter({ isOpen, onClose, isDark = false }: CLBCon
                                         value={scores[field]}
                                         onChange={e => setScores({ ...scores, [field]: e.target.value })}
                                         style={{
-                                            width: '100%', padding: '12px', borderRadius: '8px',
+                                            width: '100%', padding: '0 12px', height: '48px', borderRadius: '8px',
                                             border: `1px solid ${colors.inputBorder}`,
                                             fontSize: '16px', fontWeight: '600',
                                             backgroundColor: colors.inputBg,
-                                            color: colors.inputText, outline: 'none'
+                                            color: colors.inputText, outline: 'none',
+                                            boxSizing: 'border-box'
                                         }}
                                         placeholder="Score"
                                     />

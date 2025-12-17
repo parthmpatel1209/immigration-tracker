@@ -16,6 +16,7 @@ import Calculator from "@/components/calculator/Calculator";
 import ImmigrationFAQComponent from "@/components/ImmigrationFAQComponent";
 import WaitlistForm from "@/components/waitlist/WaitlistForm";
 import Home from "@/components/Home";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 export default function HomePage() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -34,7 +35,7 @@ export default function HomePage() {
 
   const tabs = [
     { label: "Home", content: <Home onNavigateToTab={handleTabNavigation} /> },
-    { label: "Latest Draw", content: <DrawCardsGrid /> },
+    { label: "Latest Draw", content: <DrawCardsGrid onNavigateToTab={handleTabNavigation} /> },
     { label: "CRS Scores", content: <CRSScoresEnhanced /> },
     { label: "Calculator", content: <Calculator />, badge: "New" },
     { label: "What Is...?", content: <ImmigrationFAQComponent />, badge: "New" },
@@ -45,7 +46,7 @@ export default function HomePage() {
       content: <WaitlistForm />,
       badge: "Free",
     },
-    { label: "Support", content: <Donate /> },
+    { label: "Support", content: <Donate />, badge: "Help" },
     { label: "Contact", content: <ContactForm /> },
   ];
 
@@ -55,7 +56,10 @@ export default function HomePage() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black transition-all duration-500">
+    <main
+      className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black transition-all duration-500 pb-20 md:pb-0"
+      style={{ paddingBottom: '80px' }}
+    >
       <Header />
 
       <section id="tabs-section" className="max-w-7xl mx-auto px-4 pb-16">
@@ -64,11 +68,18 @@ export default function HomePage() {
             tabs={tabs}
             activeIndex={activeIndex}
             onTabChange={setActiveIndex}
+            hideHeaderOnMobile={true}
           />
         </div>
       </section>
 
       <Footer onNavigateToContact={handleContactClick} />
+
+      <MobileBottomNav
+        tabs={tabs}
+        activeIndex={activeIndex}
+        onTabChange={setActiveIndex}
+      />
     </main>
   );
 }
