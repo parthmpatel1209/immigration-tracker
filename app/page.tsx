@@ -63,7 +63,7 @@ export default function HomePage() {
       <Header />
 
       <section id="tabs-section" className="max-w-7xl mx-auto px-4 pb-16">
-        <div className="backdrop-blur-xl bg-white/80 dark:bg-gray-900/90 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <div className="backdrop-blur-xl bg-white/80 dark:bg-transparent rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 overflow-hidden">
           <Tabs
             tabs={tabs}
             activeIndex={activeIndex}

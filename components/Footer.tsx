@@ -5,6 +5,7 @@ import styles from "./Footer.module.css";
 import Policy from "./Policy";
 import Terms from "./Terms";
 import Accessibility from "./Accessibility";
+import { Instagram, Facebook, Mail } from "lucide-react";
 
 type ModalType = "policy" | "terms" | "accessibility" | null;
 
@@ -81,6 +82,37 @@ export default function Footer({ onNavigateToContact }: FooterProps) {
               Contact
             </button>
           </nav>
+
+          {/* Social Links & Email */}
+          <div className={styles.socialLinks}>
+            <a
+              href="https://www.instagram.com/immigtrackerca/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialIcon}
+              title="Instagram"
+            >
+              <Instagram size={18} />
+            </a>
+            <a
+              href="https://www.facebook.com/profile.php?id=61584209194080"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.socialIcon}
+              title="Facebook"
+            >
+              <Facebook size={18} />
+            </a>
+            <span className={styles.verticalSeparator}></span>
+            <a
+              href="mailto:immigrationdatacanada@gmail.com"
+              className={styles.emailLink}
+              title="Email Us"
+            >
+              <Mail size={16} />
+              <span>immigrationdatacanada@gmail.com</span>
+            </a>
+          </div>
 
           {/* Meta Info: Copyright & Love */}
           <div className={styles.metaInfo}>

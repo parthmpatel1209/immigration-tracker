@@ -152,11 +152,41 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
         style={{
           display: isMobile && hideHeaderOnMobile ? "none" : "flex",
           alignItems: "center",
-          borderBottom: `1px solid ${isDark ? "#374151" : "#e5e7eb"}`,
-          paddingBottom: "0.75rem",
-          marginBottom: "1rem",
+          paddingBottom: "1.25rem",
+          marginBottom: "0",
+          position: "relative",
+          zIndex: 10,
         }}
       >
+        {/* Subtle Gradient Fade-out at the bottom */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-24px',
+            left: 0,
+            right: 0,
+            height: '24px',
+            background: isDark
+              ? 'transparent'
+              : 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9), transparent)',
+            pointerEvents: 'none',
+            zIndex: 5,
+          }}
+        />
+        {/* Subtle Ambient Line */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '0',
+            left: '5%',
+            right: '5%',
+            height: '1px',
+            background: isDark
+              ? 'linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent)'
+              : 'linear-gradient(to right, transparent, rgba(0,0,0,0.08), transparent)',
+            zIndex: 11,
+          }}
+        />
         {/* Scrollable area (mobile) / static (desktop) ------------- */}
         <div
           ref={scrollContainerRef}
@@ -397,7 +427,13 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
       </div>
 
       {/* Content ---------------------------------------------------- */}
-      <div style={{ animation: "fadeIn 0.3s ease-in-out" }}>
+      <div
+        style={{
+          animation: "fadeIn 0.3s ease-in-out",
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 40px, black 100%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 40px, black 100%)',
+        }}
+      >
         {tabs[activeIndex].content}
       </div>
 
