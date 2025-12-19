@@ -216,6 +216,7 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
             }}
           >
             {tabs.map((tab, i) => {
+              if ((tab as any).hidden) return null;
               const isActive = i === activeIndex;
               const { scale, opacity } = isActive
                 ? { scale: 1, opacity: 1 }

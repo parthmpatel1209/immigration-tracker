@@ -1,4 +1,3 @@
-/* ───── ROOT CONTAINER ───── */
 .root {
   display: flex;
   justify-content: center;
@@ -6,16 +5,32 @@
   box-sizing: border-box;
   overflow: hidden;
   /* Prevent horizontal scroll from cards scaling */
-  padding: 0 0.5rem;
+  padding: 2rem 1.25rem 2rem;
+}
+
+@media (min-width: 768px) {
+  .root {
+    padding: 2rem 1.5rem 2rem;
+  }
+}
+
+.resultsContainer {
+  background: rgba(249, 250, 251, 0.7);
+  /* Seamless subtle backdrop */
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  width: 100%;
+}
+
+:global(.dark) .resultsContainer {
+  background: transparent;
+  border-top: none;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-  /* Reduced min-width */
   gap: 1.5rem;
-  /* Slightly reduced gap */
-  max-width: 82rem;
+  max-width: 1600px;
   width: 100%;
   margin: 0 auto;
 }
@@ -32,17 +47,24 @@
 
 .glass {
   position: relative;
-  padding: var(--gap);
+  padding: 1.25rem;
   border-radius: var(--radius);
   backdrop-filter: blur(var(--blur));
   -webkit-backdrop-filter: blur(var(--blur));
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  /* More defined border in light mode */
   box-shadow:
-    0 12px 32px rgba(0, 0, 0, 0.12),
-    0 2px 6px rgba(0, 0, 0, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 10px 15px -3px rgba(0, 0, 0, 0.1);
   transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .glass {
+    padding: var(--gap);
+  }
 }
 
 /* ───── DARK MODE GLASS ───── */
@@ -278,28 +300,40 @@
 .moreButtonContainer {
   display: flex;
   justify-content: center;
-  margin-top: 3rem;
-  margin-bottom: 2rem;
-  padding: 0 1rem;
+  padding: 2rem 1.25rem 3rem;
+}
+
+@media (min-width: 768px) {
+  .moreButtonContainer {
+    padding: 2rem 1rem 5rem;
+  }
 }
 
 .moreButton {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1.2rem;
-  padding: 1rem 2.5rem;
+  gap: 1rem;
+  padding: 0.9rem 1.5rem;
   background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
   color: white;
-  border-radius: 1.5rem;
+  border-radius: 9999px;
   border: none;
   font-weight: 800;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 12px 28px -6px rgba(37, 99, 235, 0.45);
+  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
   overflow: hidden;
   z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .moreButton {
+    gap: 1.2rem;
+    padding: 1.1rem 2.8rem;
+    font-size: 1.1rem;
+  }
 }
 
 :global(.dark) .moreButton {

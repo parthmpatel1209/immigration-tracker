@@ -17,6 +17,7 @@ import ImmigrationFAQComponent from "@/components/ImmigrationFAQComponent";
 import WaitlistForm from "@/components/waitlist/WaitlistForm";
 import Home from "@/components/Home";
 import MobileBottomNav from "@/components/MobileBottomNav";
+import MoreHub from "@/components/MoreHub";
 
 export default function HomePage() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -37,17 +38,15 @@ export default function HomePage() {
     { label: "Home", content: <Home onNavigateToTab={handleTabNavigation} /> },
     { label: "Latest Draw", content: <DrawCardsGrid onNavigateToTab={handleTabNavigation} /> },
     { label: "CRS Scores", content: <CRSScoresEnhanced /> },
-    { label: "Calculator", content: <Calculator />, badge: "New" },
-    { label: "What Is...?", content: <ImmigrationFAQComponent />, badge: "New" },
+    { label: "Calculator", content: <Calculator />, badge: "Popular" },
     { label: "News", content: <ImmigrationNews /> },
-    { label: "PR Pathways", content: <PRPathways /> },
-    {
-      label: "Early Access",
-      content: <WaitlistForm />,
-      badge: "Free",
-    },
-    { label: "Support", content: <Donate />, badge: "Help" },
-    { label: "Contact", content: <ContactForm /> },
+    { label: "More", content: <MoreHub onNavigateToTab={handleTabNavigation} /> },
+    // Hidden tabs for direct navigation
+    { label: "PR Pathways", content: <PRPathways />, hidden: true },
+    { label: "What Is...?", content: <ImmigrationFAQComponent />, hidden: true },
+    { label: "Early Access", content: <WaitlistForm />, hidden: true },
+    { label: "Support", content: <Donate />, hidden: true },
+    { label: "Contact", content: <ContactForm />, hidden: true },
   ];
 
   const handleContactClick = () => {
@@ -57,12 +56,11 @@ export default function HomePage() {
 
   return (
     <main
-      className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black transition-all duration-500 pb-20 md:pb-0"
-      style={{ paddingBottom: '80px' }}
+      className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black transition-all duration-500 pb-[80px] md:pb-0"
     >
       <Header />
 
-      <section id="tabs-section" className="max-w-7xl mx-auto px-4 pb-16">
+      <section id="tabs-section" className="max-w-[1600px] mx-auto px-0 md:px-4 pb-8 mt-4 md:mt-8">
         <div className="backdrop-blur-xl bg-white/80 dark:bg-transparent rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 overflow-hidden">
           <Tabs
             tabs={tabs}

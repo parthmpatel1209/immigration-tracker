@@ -2,21 +2,32 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #2563eb; /* blue-600 */
-  --hover: #e5e7eb; /* gray-200 */
+  --primary: #2563eb;
+  /* blue-600 */
+  --hover: #e5e7eb;
+  /* gray-200 */
+}
+
+html,
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .dark body {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --primary: #3b82f6; /* lighter blue for dark mode */
+  --primary: #3b82f6;
+  /* lighter blue for dark mode */
   --hover: #1f1f1f;
 }
 
@@ -42,9 +53,12 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
 .no-scrollbar {
-  -ms-overflow-style: none; /* IE/Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* app/globals.css (or any global stylesheet) */
@@ -54,13 +68,12 @@ body {
   padding: 2rem;
   color: #374151;
 }
+
 .pr-loading.dark,
 .pr-empty.dark {
   color: #d1d5db;
 }
+
 .pr-empty.dark {
   color: #9ca3af;
 }
-
-
-

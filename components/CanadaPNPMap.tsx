@@ -95,7 +95,7 @@ export default function CanadaPNPMap() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-7xl mx-auto"
+        className="w-full"
       >
         {/* Header */}
         <header className="text-center mb-6">
@@ -225,9 +225,8 @@ export default function CanadaPNPMap() {
                       {/* "Reveal" Gradient Progress Bar */}
                       <div className="mt-4 mb-3">
                         <div className="flex justify-between text-xs font-medium" style={{ marginBottom: '0.75rem' }}>
-                          <span className="text-gray-500 dark:text-gray-400">Quota Usage</span>
                           <span className="text-gray-700 dark:text-gray-200">
-                            {Math.round(filledRatio * 100)}%
+                            Quota Usage {Math.round(filledRatio * 100)}%
                           </span>
                         </div>
                         <div className={styles.revealProgressTrack}>

@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dayjs from "dayjs";
 import {
-    Newspaper,
-    Calculator,
-    TrendingUp,
-    GraduationCap,
+    Heart,
     ArrowRight,
-    Share2,
-    CheckCircle2,
     Globe,
     Users,
-    MapPin,
+    TrendingUp,
     Activity,
+    Calculator,
+    Newspaper,
+    MapPin,
+    GraduationCap,
+    CheckCircle2,
     Bell,
 } from "lucide-react";
 import styles from "./Home.module.css";
@@ -24,7 +25,6 @@ interface HomeProps {
 
 export default function Home({ onNavigateToTab }: HomeProps) {
     const [isDark, setIsDark] = useState(false);
-    const [statsVisible, setStatsVisible] = useState(false);
     const [isConverterOpen, setIsConverterOpen] = useState(false);
 
     // Sync dark mode
@@ -42,11 +42,6 @@ export default function Home({ onNavigateToTab }: HomeProps) {
         return () => observer.disconnect();
     }, []);
 
-    // Trigger stats animation
-    useEffect(() => {
-        const timer = setTimeout(() => setStatsVisible(true), 300);
-        return () => clearTimeout(timer);
-    }, []);
 
     const handleNavigate = (tabName: string) => {
         if (onNavigateToTab) {
@@ -57,76 +52,80 @@ export default function Home({ onNavigateToTab }: HomeProps) {
     const features = [
         {
             icon: TrendingUp,
-            title: "Live Draw Updates",
-            description: "Get real-time updates on Express Entry and Provincial Nominee Program draws",
-            color: "from-blue-500 to-cyan-500",
+            title: "Latest Draws",
+            description: "Real-time updates on Express Entry and PNP draws",
+            color: "from-blue-600 to-indigo-600",
             action: "Latest Draw",
-        },
-        {
-            icon: Activity,
-            title: "CRS Score Analytics",
-            description: "Track historical CRS trends and understand your chances with detailed analytics",
-            color: "from-purple-500 to-pink-500",
-            action: "CRS Scores",
+            stats: "Updated 2h ago"
         },
         {
             icon: Calculator,
             title: "CRS Calculator",
-            description: "Calculate your Comprehensive Ranking System score accurately in seconds",
-            color: "from-green-500 to-emerald-500",
+            description: "Calculate your score accurately in seconds",
+            color: "from-emerald-600 to-teal-600",
             action: "Calculator",
+            badge: "Popular"
         },
         {
-            icon: MapPin,
-            title: "PR Pathways",
-            description: "Explore all available immigration pathways and find the best fit for you",
-            color: "from-orange-500 to-red-500",
-            action: "PR Pathways",
+            icon: Activity,
+            title: "Score Analytics",
+            description: "Historical trends and cutoff predictions",
+            color: "from-purple-600 to-indigo-600",
+            action: "CRS Scores",
         },
         {
             icon: Newspaper,
-            title: "Immigration News",
-            description: "Stay informed with the latest immigration policy updates and announcements",
-            color: "from-indigo-500 to-blue-500",
+            title: "Pathways & News",
+            description: "Latest policy changes and immigration routes",
+            color: "from-orange-600 to-amber-600",
             action: "News",
-        },
-        {
-            icon: GraduationCap,
-            title: "Expert Guidance",
-            description: "Access comprehensive FAQs and step-by-step immigration guides",
-            color: "from-pink-500 to-rose-500",
-            action: "What Is...?",
-        },
+        }
     ];
+
+    const secondaryActions = [
+        { icon: MapPin, label: "PR Pathways", action: "PR Pathways" },
+        { icon: GraduationCap, label: "FAQ & Guides", action: "What Is...?" },
+        { icon: Bell, label: "Early Access", action: "Early Access" },
+        { icon: Heart, label: "Support Us", action: "Support" },
+    ];
+
+    const [drawStats, setDrawStats] = useState({ score: "...", invitations: "...", date: "..." });
+
+    useEffect(() => {
+        const fetchLatestDraw = async () => {
+            try {
+                const res = await fetch("/api/draws");
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.length > 0) {
+                        // Sort by date to ensure we get the latest
+                        const sorted = data
+                            .filter((d: any) => dayjs(d.draw_date, "MM/DD/YYYY", true).isValid())
+                            .sort((a: any, b: any) =>
+                                dayjs(b.draw_date, "MM/DD/YYYY").valueOf() -
+                                dayjs(a.draw_date, "MM/DD/YYYY").valueOf()
+                            );
+
+                        if (sorted.length > 0) {
+                            setDrawStats({
+                                score: sorted[0].crs_cutoff || "N/A",
+                                invitations: sorted[0].invitations ? Number(sorted[0].invitations).toLocaleString() : "N/A",
+                                date: sorted[0].draw_date
+                            });
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Error fetching hero stats:", err);
+            }
+        };
+        fetchLatestDraw();
+    }, []);
 
     const quickStats = [
-        { label: "Active PNP Streams", value: "50+", icon: Globe },
-        { label: "Weekly Draws", value: "~6", icon: TrendingUp },
-        { label: "Provinces Tracked", value: "13", icon: MapPin },
-        { label: "Daily Users", value: "100+", icon: Users },
-    ];
-
-    const steps = [
-        {
-            number: "01",
-            title: "Calculate Your Score",
-            description: "Use our CRS calculator to determine your eligibility score",
-        },
-        {
-            number: "02",
-            title: "Track Draw Trends",
-            description: "Monitor latest draws and historical CRS score patterns",
-        },
-        {
-            number: "03",
-            title: "Choose Your Pathway",
-            description: "Explore provincial programs and find the best immigration route",
-        },
-        {
-            number: "04",
-            title: "Stay Updated",
-            description: "Get real-time notifications on draws and policy changes",
-        },
+        { label: "Last Draw", value: drawStats.score, sub: "CRS Score", icon: TrendingUp },
+        { label: "Invitations", value: drawStats.invitations, sub: "Express Entry", icon: Users },
+        { label: "Frequency", value: "Bi-Weekly", sub: "Average", icon: Activity },
     ];
 
     return (
@@ -135,110 +134,60 @@ export default function Home({ onNavigateToTab }: HomeProps) {
             <section className={styles.hero}>
                 <div className={styles.heroContent}>
                     <div className={styles.badge}>
-                        <Activity size={16} />
-                        <span>Your Immigration Journey Starts Here</span>
+                        <div className={styles.badgePulse}></div>
+                        <span>Live Immigration Tracker</span>
                     </div>
 
                     <h1 className={styles.heroTitle}>
-                        Navigate Your Path to <br />
-                        <span className={styles.gradient}>Canadian PR</span>
+                        Your Path to <span className={styles.gradient}>Canada</span> <br />
+                        Starts Here
                     </h1>
 
                     <p className={styles.heroSubtitle}>
-                        Comprehensive, real-time immigration data and tools to help you achieve
-                        your Canadian dream. Track draws, calculate scores, and explore pathways—all in one place.
+                        Track latest draws, calculate your CRS score, and explore immigration pathways with Canada's most accurate real-time tracker.
                     </p>
 
-                    <div className={styles.heroActions}>
-                        <button
-                            className={styles.primaryButton}
-                            onClick={() => handleNavigate("Calculator")}
-                        >
-                            Calculate CRS Score
-                            <ArrowRight size={18} />
-                        </button>
-                        <button
-                            className={styles.secondaryButton}
-                            onClick={() => handleNavigate("Latest Draw")}
-                        >
-                            View Latest Draws
-                        </button>
+                    {/* Quick Stats Banner */}
+                    <div className={styles.heroStats}>
+                        {quickStats.map((stat, idx) => (
+                            <div key={idx} className={styles.heroStatItem}>
+                                <div className={styles.heroStatIcon}>
+                                    <stat.icon size={18} />
+                                </div>
+                                <div className={styles.heroStatText}>
+                                    <div className={styles.heroStatValue}>{stat.value}</div>
+                                    <div className={styles.heroStatLabel}>{stat.label}</div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                </div>
-
-                {/* Floating Stats Cards */}
-                <div className={`${styles.statsGrid} ${statsVisible ? styles.statsVisible : ""}`}>
-                    {quickStats.map((stat, idx) => (
-                        <div key={idx} className={styles.statCard} style={{ animationDelay: `${idx * 100}ms` }}>
-                            <div className={styles.statIcon}>
-                                <stat.icon size={24} />
-                            </div>
-                            <div className={styles.statContent}>
-                                <div className={styles.statValue}>{stat.value}</div>
-                                <div className={styles.statLabel}>{stat.label}</div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-
-
-                {/* Toolkit Section */}
-                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '4rem' }} className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-                    <button
-                        onClick={() => setIsConverterOpen(true)}
-                        className="group flex items-center gap-3 px-6 py-3 !bg-white dark:!bg-gray-800 !rounded-full shadow-lg border border-blue-100 dark:border-gray-700 hover:scale-105 hover:shadow-xl transition-all duration-300 cursor-pointer relative z-10"
-                        style={{
-                            borderRadius: '9999px',
-                            backgroundColor: isDark ? '#1f2937' : 'white',
-                            display: 'flex',
-                            alignItems: 'center',
-                            padding: '12px 24px',
-                            position: 'relative',
-                            zIndex: 10,
-                            cursor: 'pointer',
-                            border: isDark ? '1px solid #374151' : '1px solid #dbeafe',
-                            boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
-                        }}
-                    >
-                        <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-full text-blue-600 dark:text-blue-400 group-hover:rotate-12 transition-transform">
-                            <Globe size={20} color={isDark ? '#60a5fa' : '#2563eb'} /> &nbsp;
-                        </div>
-                        <div className="text-left">
-                            {/* <div className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase tracking-wider">New Tool</div> */}
-                            <div className="text-sm font-bold text-gray-900 dark:text-white" style={{ color: isDark ? 'white' : '#111827' }}>CLB Language Converter</div>
-                        </div>
-                    </button>
                 </div>
             </section>
 
-            <CLBConverter isOpen={isConverterOpen} onClose={() => setIsConverterOpen(false)} isDark={isDark} />
-
-            {/* Features Grid */}
-            <section className={styles.featuresSection}>
-                <div className={styles.sectionHeader}>
-                    <h2 className={styles.sectionTitle}>Everything You Need</h2>
-                    <p className={styles.sectionSubtitle}>
-                        Powerful tools and comprehensive data to simplify your immigration journey
-                    </p>
-                </div>
-
-                <div className={styles.featuresGrid}>
+            {/* Main Hub Section */}
+            <section className={styles.hubSection}>
+                <div className={styles.hubGrid}>
                     {features.map((feature, idx) => {
                         const Icon = feature.icon;
                         return (
                             <div
                                 key={idx}
-                                className={styles.featureCard}
+                                className={styles.hubCard}
                                 onClick={() => handleNavigate(feature.action)}
                             >
-                                <div className={`${styles.featureIcon} ${styles[`gradient${idx}`]}`}>
-                                    <Icon size={28} />
+                                <div className={`${styles.hubIcon} ${styles[`gradient${idx}`]}`}>
+                                    <Icon size={32} />
                                 </div>
-                                <h3 className={styles.featureTitle}>{feature.title}</h3>
-                                <p className={styles.featureDescription}>{feature.description}</p>
-                                <div className={styles.featureAction}>
-                                    Explore <ArrowRight size={16} />
+                                <div className={styles.hubContent}>
+                                    <div className={styles.hubHeader}>
+                                        <h3 className={styles.hubTitle}>{feature.title}</h3>
+                                        {feature.badge && <span className={styles.hubBadge}>{feature.badge}</span>}
+                                    </div>
+                                    <p className={styles.hubDescription}>{feature.description}</p>
+                                    {feature.stats && <div className={styles.hubStats}>{feature.stats}</div>}
+                                </div>
+                                <div className={styles.hubArrow}>
+                                    <ArrowRight size={20} />
                                 </div>
                             </div>
                         );
@@ -246,81 +195,64 @@ export default function Home({ onNavigateToTab }: HomeProps) {
                 </div>
             </section>
 
-            {/* How It Works */}
-            <section className={styles.howItWorks}>
+            {/* Secondary Tools Area */}
+            <section className={styles.secondarySection}>
                 <div className={styles.sectionHeader}>
-                    <h2 className={styles.sectionTitle}>How It Works</h2>
-                    <p className={styles.sectionSubtitle}>
-                        Your step-by-step guide to maximizing your PR chances
-                    </p>
+                    <h2 className={styles.sectionTitle}>More Resources</h2>
                 </div>
-
-                <div className={styles.stepsGrid}>
-                    {steps.map((step, idx) => (
-                        <div key={idx} className={styles.stepCard}>
-                            <div className={styles.stepNumber}>{step.number}</div>
-                            <div className={styles.stepContent}>
-                                <h3 className={styles.stepTitle}>{step.title}</h3>
-                                <p className={styles.stepDescription}>{step.description}</p>
-                            </div>
-                            {idx < steps.length - 1 && (
-                                <div className={styles.stepConnector}>
-                                    <ArrowRight size={20} />
-                                </div>
-                            )}
-                        </div>
+                <div className={styles.secondaryGrid}>
+                    {secondaryActions.map((item, idx) => (
+                        <button
+                            key={idx}
+                            className={styles.secondaryActionCard}
+                            onClick={() => handleNavigate(item.action)}
+                        >
+                            <item.icon size={20} className={styles.secondaryIcon} />
+                            <span>{item.label}</span>
+                        </button>
                     ))}
                 </div>
             </section>
 
-            {/* Why Choose Us */}
-            <section className={styles.whySection}>
-                <div className={styles.whyContent}>
-                    <h2 className={styles.sectionTitle}>Why Thousands Trust Us</h2>
-                    <div className={styles.benefitsList}>
-                        {[
-                            "Real-time data updated daily from official sources",
-                            "Accurate CRS calculator with detailed breakdowns",
-                            "Comprehensive provincial program tracking",
-                            "Expert insights and immigration guides",
-                            "100% free with no hidden costs",
-                            "Mobile-friendly interface for on-the-go access",
-                        ].map((benefit, idx) => (
-                            <div key={idx} className={styles.benefitItem}>
-                                <CheckCircle2 className={styles.checkIcon} size={20} />
-                                <span>{benefit}</span>
-                            </div>
-                        ))}
+            {/* Interactive Tools */}
+            <section className={styles.toolsSection}>
+                <button
+                    onClick={() => setIsConverterOpen(true)}
+                    className={styles.converterBar}
+                >
+                    <div className={styles.converterIcon}>
+                        <Globe size={20} />
                     </div>
-                </div>
+                    <div className={styles.converterText}>
+                        <span className={styles.converterLabel}>New Tool</span>
+                        <span className={styles.converterTitle}>CLB Language Converter</span>
+                    </div>
+                    <ArrowRight size={20} className={styles.converterArrow} />
+                </button>
             </section>
+
+            <CLBConverter isOpen={isConverterOpen} onClose={() => setIsConverterOpen(false)} isDark={isDark} />
 
             {/* CTA Section */}
             <section className={styles.ctaSection}>
                 <div className={styles.ctaContent}>
-                    <Bell className={styles.ctaIcon} size={48} />
-                    <h2 className={styles.ctaTitle}>Ready to Start Your Journey?</h2>
-                    <p className={styles.ctaText}>
-                        Join thousands of aspiring immigrants who use our platform to track their progress
-                        and make informed decisions about their Canadian PR application.
-                    </p>
-                    <div className={styles.ctaButtons}>
-                        <button
-                            className={styles.ctaPrimary}
-                            onClick={() => handleNavigate("Calculator")}
-                        >
-                            Get Started Now
-                            <ArrowRight size={18} />
-                        </button>
-                        <button
-                            className={styles.ctaSecondary}
-                            onClick={() => handleNavigate("Early Access")}
-                        >
-                            Join Waitlist for Premium Features
-                        </button>
+                    <div className={styles.ctaGraphics}>
+                        <div className={styles.ctaCircle1}></div>
+                        <div className={styles.ctaCircle2}></div>
                     </div>
+                    <h2 className={styles.ctaTitle}>Stay Ahead of the Curve</h2>
+                    <p className={styles.ctaText}>
+                        Join the waitlist for premium features including real-time alerts and personalized immigration roadmaps.
+                    </p>
+                    <button
+                        className={styles.ctaButton}
+                        onClick={() => handleNavigate("Early Access")}
+                    >
+                        Join the Waitlist
+                        <ArrowRight size={18} />
+                    </button>
                 </div>
             </section>
-        </div >
+        </div>
     );
 }

@@ -1,0 +1,126 @@
+.container {
+    padding: 2rem;
+    min-height: 400px;
+}
+
+.sectionsGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+    .sectionsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.sectionTitle {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+:global(.dark) .sectionTitle {
+    color: #9ca3af;
+}
+
+.itemsGrid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.itemCard {
+    background: white;
+    padding: 1rem;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+@media (min-width: 640px) {
+    .itemCard {
+        padding: 1.25rem;
+        border-radius: 1.25rem;
+        gap: 1.25rem;
+    }
+}
+
+:global(.dark) .itemCard {
+    background: rgba(31, 41, 55, 0.4);
+    border-color: rgba(75, 85, 99, 0.4);
+}
+
+.itemCard:hover {
+    transform: translateX(8px);
+    border-color: #3b82f6;
+    background: #f9fafb;
+}
+
+:global(.dark) .itemCard:hover {
+    background: rgba(55, 65, 81, 0.4);
+}
+
+.iconWrapper {
+    width: 48px;
+    height: 48px;
+    background: #eff6ff;
+    color: #2563eb;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+:global(.dark) .iconWrapper {
+    background: rgba(37, 99, 235, 0.15);
+    color: #60a5fa;
+}
+
+.content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.label {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #111827;
+}
+
+:global(.dark) .label {
+    color: white;
+}
+
+.description {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+:global(.dark) .description {
+    color: #9ca3af;
+}
+
+.arrow {
+    color: #d1d5db;
+    transition: transform 0.2s ease;
+}
+
+.itemCard:hover .arrow {
+    transform: translateX(4px);
+    color: #3b82f6;
+}

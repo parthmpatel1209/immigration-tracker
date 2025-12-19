@@ -275,43 +275,45 @@ export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
   }, []);
 
   return (
-    <div>
-      {/* Cards Grid */}
-      <div className={styles.root}>
-        <div className={styles.grid}>
-          {loading ? (
-            <>
-              <SkeletonCard />
-              <SkeletonCard />
-              <SkeletonCard />
-            </>
-          ) : draws.length === 0 ? (
-            <p className={styles.empty}>No draw data available.</p>
-          ) : (
-            draws.map((draw, index) => (
-              <DrawCard
-                key={draw.id}
-                draw={draw}
-                rank={(index + 1) as 1 | 2 | 3}
-              />
-            ))
-          )}
-        </div>
-      </div>
-
-      {/* More Data / Analytics Button */}
-      <div className={styles.moreButtonContainer}>
-        <button
-          onClick={() => onNavigateToTab?.("CRS Scores")}
-          className={styles.moreButton}
-        >
-          <div className={styles.moreButtonGlow} />
-          <Activity size={20} className={styles.moreButtonIcon} />
-          <span className={styles.moreButtonText}>More Analytics & Historical Data</span>
-          <div className={styles.moreButtonBadge}>
-            <Hash size={14} />
+    <div className={styles.pageWrapper}>
+      {/* Top Section with seamless background */}
+      <div className={styles.resultsContainer}>
+        <div className={styles.root}>
+          <div className={styles.grid}>
+            {loading ? (
+              <>
+                <SkeletonCard />
+                <SkeletonCard />
+                <SkeletonCard />
+              </>
+            ) : draws.length === 0 ? (
+              <p className={styles.empty}>No draw data available.</p>
+            ) : (
+              draws.map((draw, index) => (
+                <DrawCard
+                  key={draw.id}
+                  draw={draw}
+                  rank={(index + 1) as 1 | 2 | 3}
+                />
+              ))
+            )}
           </div>
-        </button>
+        </div>
+
+        {/* More Data / Analytics Button */}
+        <div className={styles.moreButtonContainer}>
+          <button
+            onClick={() => onNavigateToTab?.("CRS Scores")}
+            className={styles.moreButton}
+          >
+            <div className={styles.moreButtonGlow} />
+            <Activity size={20} className={styles.moreButtonIcon} />
+            <span className={styles.moreButtonText}>More Analytics & Historical Data</span>
+            <div className={styles.moreButtonBadge}>
+              <Hash size={14} />
+            </div>
+          </button>
+        </div>
       </div>
 
       {/* Canada PNP Map */}

@@ -80,11 +80,12 @@ export default function MobileBottomNav({
     // Tabs configuration
     const moreTabsInfo = [
         { index: 2, icon: <Activity size={18} /> },
+        { index: 4, icon: <Newspaper size={18} /> },
         { index: 6, icon: <MapPin size={18} /> },
-        { index: 4, icon: <GraduationCap size={18} /> },
-        { index: 7, icon: <Bell size={18} /> },
-        { index: 8, icon: <Heart size={18} /> },
-        { index: 9, icon: <Mail size={18} /> },
+        { index: 7, icon: <GraduationCap size={18} /> },
+        { index: 8, icon: <Bell size={18} /> },
+        { index: 9, icon: <Heart size={18} /> },
+        { index: 10, icon: <Mail size={18} /> },
     ];
 
     const handleTabClick = (index: number) => {
@@ -275,8 +276,8 @@ export default function MobileBottomNav({
                 <TabButton
                     icon={<Newspaper size={22} />}
                     label="News"
-                    isActive={activeIndex === 5}
-                    onClick={() => handleTabClick(5)}
+                    isActive={activeIndex === 4}
+                    onClick={() => handleTabClick(4)}
                     isDark={isDark}
                 />
                 <button

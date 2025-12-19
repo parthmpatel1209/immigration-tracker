@@ -1,6 +1,7 @@
 "use client";
 import styles from "./Donate.module.css";
 import ShareSupportCard from "./ShareSupportCard";
+import { Heart, Coffee, CreditCard, Send } from "lucide-react";
 
 // Load public display email from .env.local
 const DISPLAY_EMAIL =
@@ -12,8 +13,8 @@ export default function Donate() {
     navigator.clipboard.writeText(DISPLAY_EMAIL);
     alert(
       `Copied: ${DISPLAY_EMAIL}\n\n` +
-        `Send Interac e-Transfer to this email.\n` +
-        `Autodeposit enabled — money arrives instantly and securely!`
+      `Send Interac e-Transfer to this email.\n` +
+      `Autodeposit enabled — money arrives instantly and securely!`
     );
   };
 
@@ -38,6 +39,7 @@ export default function Donate() {
               rel="noopener noreferrer"
               className={styles.paypalBtn}
             >
+              <Send size={18} />
               Donate via PayPal
             </a>
 
@@ -48,11 +50,13 @@ export default function Donate() {
               rel="noopener noreferrer"
               className={styles.coffeeBtn}
             >
+              <Coffee size={18} />
               Buy Me a Coffee
             </a>
 
             {/* Interac e-Transfer */}
             <button onClick={handleInteracClick} className={styles.otherBtn}>
+              <Heart size={18} className={styles.heartIcon} />
               Interac e-Transfer (🇨🇦)
             </button>
           </div>

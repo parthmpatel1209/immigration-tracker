@@ -1,11 +1,20 @@
-/* ───── GLOBAL CONTAINER ───── */
 .container {
   min-height: 100vh;
-  /* More vibrant gradient */
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0.75rem;
+  box-sizing: border-box;
+  overflow-x: hidden;
   background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 50%, #fce7f3 100%);
-  padding: 1rem;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   border-radius: 1rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
 }
 
 :global(html.dark) .container {
@@ -17,13 +26,19 @@
   display: inline-block;
   padding: 0 0.5rem;
   font-weight: 800;
-  font-size: 2.25rem;
+  font-size: 1.75rem;
   background: linear-gradient(to right, #2563eb, #9333ea);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   margin-bottom: 0.5rem;
   letter-spacing: -0.02em;
+}
+
+@media (min-width: 768px) {
+  .headerTitle {
+    font-size: 2.25rem;
+  }
 }
 
 :global(html.dark) .headerTitle {
@@ -35,8 +50,18 @@
 /* ───── SEARCH ───── */
 .searchWrapper {
   position: relative;
-  max-width: 32rem;
-  margin: 0 auto 2rem;
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto 1.5rem;
+  padding: 0 0.5rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .searchWrapper {
+    max-width: 32rem;
+    padding: 0;
+  }
 }
 
 .searchInput {
@@ -93,25 +118,39 @@
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 @media (min-width: 768px) {
   .statsGrid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
   }
 }
 
 .statCard {
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 1.25rem;
-  padding: 1.25rem;
+  border-radius: 1rem;
+  padding: 0.75rem;
   text-align: center;
   backdrop-filter: blur(8px);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .statCard {
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+  }
 }
 
 .statCard:hover {
@@ -124,12 +163,18 @@
 }
 
 .statValue {
-  font-size: 1.75rem;
+  font-size: 1.25rem;
   font-weight: 800;
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+@media (min-width: 768px) {
+  .statValue {
+    font-size: 2rem;
+  }
 }
 
 :global(html.dark) .statValue {
@@ -139,12 +184,18 @@
 }
 
 .statLabel {
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   color: #64748b;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: 600;
   margin-top: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .statLabel {
+    font-size: 0.75rem;
+  }
 }
 
 :global(html.dark) .statLabel {
@@ -166,13 +217,17 @@
 /* ───── PROVINCE CARDS GRID ───── */
 .cardsGrid {
   display: grid;
-  gap: 1.25rem;
-  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .cardsGrid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
   }
 }
 
@@ -184,7 +239,7 @@
 
 @media (min-width: 1280px) {
   .cardsGrid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
   }
 }
 
@@ -199,6 +254,9 @@
   box-shadow:
     0 1px 2px 0 rgba(0, 0, 0, 0.05),
     0 1px 3px 0 rgba(0, 0, 0, 0.02);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .card:hover {
@@ -224,17 +282,30 @@
 }
 
 .cardHeader {
-  padding: 1.25rem 1.25rem 0.5rem;
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .cardHeader {
+    padding: 1.25rem 1.25rem 0.5rem;
+  }
 }
 
 .provinceName {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 700;
   color: #0f172a;
   letter-spacing: -0.01em;
+}
+
+@media (min-width: 768px) {
+  .provinceName {
+    font-size: 1.125rem;
+  }
 }
 
 :global(html.dark) .provinceName {
@@ -288,7 +359,14 @@
 }
 
 .cardBody {
-  padding: 1rem 1.25rem 1.25rem;
+  padding: 0.75rem 1rem 1rem;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .cardBody {
+    padding: 1rem 1.25rem 1.25rem;
+  }
 }
 
 .statsRow {
