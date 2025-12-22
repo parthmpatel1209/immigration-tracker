@@ -10,8 +10,9 @@ import { NewsGrid } from "./NewsGrid";
 import { NewsFooter } from "./NewsFooter";
 import { NewsTicker } from "./NewsTicker";
 import { NewsModal } from "./NewsModal";
+import { MobileNewsFeed } from "./MobileNewsFeed";
 
-const ITEMS_PER_PAGE = 30; // ✅ REQUIRED CONSTANT
+const ITEMS_PER_PAGE = 20;
 
 const LIGHT = {
   bgPrimary: "#ffffff",
@@ -44,7 +45,11 @@ export default function ImmigrationNews() {
   const [translating, setTranslating] = useState(false);
   const [selectedNewsItem, setSelectedNewsItem] = useState<NewsItem | null>(null);
 
-  const [visibleCount, setVisibleCount] = useState(ITEMS_PER_PAGE); // ✅ initial 30 items
+  const [isMobile, setIsMobile] = useState(false);
+  // Pagination state
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [fetchingMore, setFetchingMore] = useState(false);
 
   const theme = darkMode ? DARK : LIGHT;
 
@@ -63,39 +68,57 @@ export default function ImmigrationNews() {
     return () => obs.disconnect();
   }, []);
 
-  // Fetch news
+  // Mobile detection
   useEffect(() => {
-    let mounted = true;
+    setIsMobile(window.innerWidth < 768);
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    const fetchNews = async () => {
+  const fetchNews = async (pageNum: number, reset: boolean = false) => {
+    if (reset) {
+      setLoading(true);
       setTranslating(true);
-      try {
-        const res = await fetch(`/api/news?language=${selectedLanguage}`);
-        if (!res.ok) throw new Error("Failed to fetch");
+    } else {
+      setFetchingMore(true);
+    }
 
-        const data = await res.json();
-        if (mounted) setNews(data || []);
-      } catch (err) {
-        console.error("Failed to load news:", err);
-        if (mounted) setNews([]);
-      } finally {
-        if (mounted) {
-          setLoading(false);
-          setTranslating(false);
-        }
+    try {
+      const res = await fetch(`/api/news?language=${selectedLanguage}&page=${pageNum}&limit=${ITEMS_PER_PAGE}`);
+      if (!res.ok) throw new Error("Failed to fetch");
+
+      const data = await res.json();
+      const newItems = data || [];
+
+      if (reset) {
+        setNews(newItems);
+      } else {
+        setNews((prev) => [...prev, ...newItems]);
       }
-    };
 
-    fetchNews();
-    return () => {
-      mounted = false;
-    };
+      setHasMore(newItems.length === ITEMS_PER_PAGE);
+      setPage(pageNum);
+
+    } catch (err) {
+      console.error("Failed to load news:", err);
+      if (reset) setNews([]);
+    } finally {
+      setLoading(false);
+      setTranslating(false);
+      setFetchingMore(false);
+    }
+  };
+
+  // Initial fetch using the function
+  useEffect(() => {
+    fetchNews(1, true);
   }, [selectedLanguage]);
 
-  // Reset visible items when filters change
-  useEffect(() => {
-    setVisibleCount(ITEMS_PER_PAGE);
-  }, [filterProps.month, filterProps.year]);
+  // Handler for Load More
+  const handleLoadMore = () => {
+    fetchNews(page + 1, false);
+  };
 
   const handleLanguageChange = (langCode: string) => {
     setSelectedLanguage(langCode);
@@ -119,7 +142,9 @@ export default function ImmigrationNews() {
     }
   };
 
-  const visibleNews = filtered.slice(0, visibleCount);
+  // We show all filtered items now, as pagination is server-side (kind of) + client side append
+  // But wait, if we filter by Year/Month on client side, it only filters loaded items.
+  // The 'filtered' array is what we show.
 
   if (loading) {
     return (
@@ -146,30 +171,50 @@ export default function ImmigrationNews() {
 
       <NewsFilters show={showFilters} theme={theme} {...filterProps} />
 
-      <NewsTicker
-        items={news}
-        onItemClick={handleNewsItemClick}
-        onDateFilter={filterProps.setSpecificDate}
-      />
+      {!isMobile && (
+        <NewsTicker
+          items={news}
+          onItemClick={handleNewsItemClick}
+          onDateFilter={filterProps.setSpecificDate}
+        />
+      )}
 
-      {/* Visible news only */}
-      <NewsGrid news={visibleNews} darkMode={darkMode} theme={theme} />
+      {/* Conditional Rendering based on Device Type */}
+      {!isMobile ? (
+        <div className={styles.desktopGridWrapper}>
+          <NewsGrid news={filtered} darkMode={darkMode} theme={theme} />
+        </div>
+      ) : (
+        <div className={styles.mobileFeedWrapper}>
+          <MobileNewsFeed
+            news={filtered}
+            darkMode={darkMode}
+            theme={theme}
+            onItemClick={handleNewsItemClick}
+          />
+        </div>
+      )}
 
       {/* Footer: Showing X of Y */}
       <NewsFooter
-        total={filtered.length}
-        shown={visibleNews.length}
+        total={filtered.length} // This shows total LOADED and FILTERED
+        shown={filtered.length}
         theme={theme}
       />
 
       {/* Load More Button */}
-      {visibleCount < filtered.length && (
+      {hasMore && !filterProps.hasActiveFilters && (
         <div className={styles.loadMoreWrapper}>
           <button
             className={styles.loadMoreModern}
-            onClick={() => setVisibleCount((v) => v + ITEMS_PER_PAGE)}
+            onClick={handleLoadMore}
+            disabled={fetchingMore}
           >
-            <span>Load More</span>
+            {fetchingMore ? (
+              <span className={styles.loaderSmall}></span>
+            ) : (
+              <span>Load More</span>
+            )}
           </button>
         </div>
       )}

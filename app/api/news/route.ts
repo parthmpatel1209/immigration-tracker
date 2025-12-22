@@ -10,12 +10,16 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const language = searchParams.get('language') || 'en';
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
 
     const { data, error } = await supabase
       .from("news")
       .select("*")
       .order("published_at", { ascending: false })
-      .limit(500);
+      .range(from, to);
 
     if (error) {
       console.error("Supabase error:", error);

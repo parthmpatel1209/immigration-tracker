@@ -21,6 +21,25 @@
   }
 }
 
+/* Responsive Toggles */
+.mobileFeedWrapper {
+  display: block;
+}
+
+.desktopGridWrapper {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobileFeedWrapper {
+    display: none;
+  }
+
+  .desktopGridWrapper {
+    display: block;
+  }
+}
+
 /* Header ------------------------------------------------- */
 .header {
   display: flex;
@@ -108,6 +127,28 @@
   background: white;
   color: #374151;
   padding: 0.5rem;
+}
+
+/* Ticker Modern */
+.tickerModernWrapper {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  display: none;
+  /* Hidden by default on mobile */
+  margin-bottom: 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 768px) {
+  .tickerModernWrapper {
+    display: block;
+    /* Show on desktop */
+  }
 }
 
 .translatingBadge {
