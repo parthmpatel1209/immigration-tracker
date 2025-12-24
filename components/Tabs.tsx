@@ -135,7 +135,8 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
     const tabCenter = tRect.left + tRect.width / 2;
     const containerCenter = cRect.left + cRect.width / 2;
     const distance = Math.abs(tabCenter - containerCenter);
-    const maxDist = cRect.width * 0.45; // same as before
+    const maxDist = cRect.width * 0.45;
+    if (maxDist <= 0) return { scale: 1, opacity: 1 };
 
     const scale = 1 - (distance / maxDist) * 0.15;
     const clamped = Math.max(scale, 0.85);

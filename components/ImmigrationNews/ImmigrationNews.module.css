@@ -30,6 +30,10 @@
   display: none;
 }
 
+/* Fix: The previous media query logic was incorrect. 
+   When width >= 768, show desktop, hide mobile. 
+   When width < 768, shows mobile, hides desktop (default above). 
+*/
 @media (min-width: 768px) {
   .mobileFeedWrapper {
     display: none;

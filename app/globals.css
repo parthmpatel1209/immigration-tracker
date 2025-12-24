@@ -77,3 +77,13 @@ body {
 .pr-empty.dark {
   color: #9ca3af;
 }
+
+/* globals.css cleanup - Removing broken Swiper overrides */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

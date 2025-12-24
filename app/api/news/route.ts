@@ -10,16 +10,18 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const language = searchParams.get('language') || 'en';
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const from = (page - 1) * limit;
-    const to = from + limit - 1;
+    const days = parseInt(searchParams.get('days') || '7'); // Default to 7 days if not specified
+
+    // Calculate the date threshold
+    const dateThreshold = new Date();
+    dateThreshold.setDate(dateThreshold.getDate() - days);
+    const dateThresholdISO = dateThreshold.toISOString();
 
     const { data, error } = await supabase
       .from("news")
       .select("*")
-      .order("published_at", { ascending: false })
-      .range(from, to);
+      .gte("published_at", dateThresholdISO) // Filter by date
+      .order("published_at", { ascending: false });
 
     if (error) {
       console.error("Supabase error:", error);

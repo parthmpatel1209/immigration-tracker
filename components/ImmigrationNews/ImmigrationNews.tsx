@@ -10,9 +10,9 @@ import { NewsGrid } from "./NewsGrid";
 import { NewsFooter } from "./NewsFooter";
 import { NewsTicker } from "./NewsTicker";
 import { NewsModal } from "./NewsModal";
-import { MobileNewsFeed } from "./MobileNewsFeed";
+import { MobileNewsCarouselGrouped } from "./MobileNewsCarouselGrouped";
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 10;
 
 const LIGHT = {
   bgPrimary: "#ffffff",
@@ -46,7 +46,8 @@ export default function ImmigrationNews() {
   const [selectedNewsItem, setSelectedNewsItem] = useState<NewsItem | null>(null);
 
   const [isMobile, setIsMobile] = useState(false);
-  // Pagination state
+  // Date-based loading state
+  const [daysLoaded, setDaysLoaded] = useState(2); // Start with 2 days
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [fetchingMore, setFetchingMore] = useState(false);
@@ -76,16 +77,17 @@ export default function ImmigrationNews() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const fetchNews = async (pageNum: number, reset: boolean = false) => {
+  const fetchNews = async (daysToFetch: number, reset: boolean = false) => {
     if (reset) {
       setLoading(true);
       setTranslating(true);
+      setPage(1);
     } else {
       setFetchingMore(true);
     }
 
     try {
-      const res = await fetch(`/api/news?language=${selectedLanguage}&page=${pageNum}&limit=${ITEMS_PER_PAGE}`);
+      const res = await fetch(`/api/news?language=${selectedLanguage}&days=${daysToFetch}`);
       if (!res.ok) throw new Error("Failed to fetch");
 
       const data = await res.json();
@@ -94,11 +96,16 @@ export default function ImmigrationNews() {
       if (reset) {
         setNews(newItems);
       } else {
-        setNews((prev) => [...prev, ...newItems]);
+        setNews((prev) => {
+          // Filter out duplicates based on ID
+          const existingIds = new Set(prev.map(n => n.id));
+          const uniqueNewItems = newItems.filter((n: NewsItem) => !existingIds.has(n.id));
+          return [...prev, ...uniqueNewItems];
+        });
       }
 
-      setHasMore(newItems.length === ITEMS_PER_PAGE);
-      setPage(pageNum);
+      // Check if there's more data (if we got less than expected, no more data)
+      setHasMore(newItems.length > 0);
 
     } catch (err) {
       console.error("Failed to load news:", err);
@@ -110,14 +117,17 @@ export default function ImmigrationNews() {
     }
   };
 
-  // Initial fetch using the function
+  // Initial fetch - load 2 days of news
   useEffect(() => {
-    fetchNews(1, true);
+    setDaysLoaded(2);
+    fetchNews(2, true);
   }, [selectedLanguage]);
 
-  // Handler for Load More
+  // Handler for Load More - load 5 more days
   const handleLoadMore = () => {
-    fetchNews(page + 1, false);
+    const newDaysToLoad = daysLoaded + 5;
+    setDaysLoaded(newDaysToLoad);
+    fetchNews(newDaysToLoad, true); // Fetch all days up to newDaysToLoad
   };
 
   const handleLanguageChange = (langCode: string) => {
@@ -142,10 +152,6 @@ export default function ImmigrationNews() {
     }
   };
 
-  // We show all filtered items now, as pagination is server-side (kind of) + client side append
-  // But wait, if we filter by Year/Month on client side, it only filters loaded items.
-  // The 'filtered' array is what we show.
-
   if (loading) {
     return (
       <div className={styles.loading}>
@@ -160,6 +166,16 @@ export default function ImmigrationNews() {
       className={styles.container}
       style={{ backgroundColor: theme.bgPrimary, color: theme.textPrimary }}
     >
+
+      {selectedNewsItem && (
+        <NewsModal
+          item={selectedNewsItem}
+          allItems={news}
+          onClose={handleCloseModal}
+          onNavigate={handleNavigateModal}
+        />
+      )}
+
       <NewsHeader
         theme={theme}
         showFilters={showFilters}
@@ -186,7 +202,7 @@ export default function ImmigrationNews() {
         </div>
       ) : (
         <div className={styles.mobileFeedWrapper}>
-          <MobileNewsFeed
+          <MobileNewsCarouselGrouped
             news={filtered}
             darkMode={darkMode}
             theme={theme}
@@ -196,11 +212,13 @@ export default function ImmigrationNews() {
       )}
 
       {/* Footer: Showing X of Y */}
-      <NewsFooter
-        total={filtered.length} // This shows total LOADED and FILTERED
-        shown={filtered.length}
-        theme={theme}
-      />
+      {!isMobile && (
+        <NewsFooter
+          total={filtered.length}
+          shown={filtered.length}
+          theme={theme}
+        />
+      )}
 
       {/* Load More Button */}
       {hasMore && !filterProps.hasActiveFilters && (
@@ -213,19 +231,11 @@ export default function ImmigrationNews() {
             {fetchingMore ? (
               <span className={styles.loaderSmall}></span>
             ) : (
-              <span>Load More</span>
+              <span>Load More News</span>
             )}
           </button>
         </div>
       )}
-
-      {/* News Modal */}
-      <NewsModal
-        item={selectedNewsItem}
-        allItems={news}
-        onClose={handleCloseModal}
-        onNavigate={handleNavigateModal}
-      />
     </div>
   );
 }
