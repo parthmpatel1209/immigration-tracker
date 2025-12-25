@@ -18,6 +18,7 @@ import WaitlistForm from "@/components/waitlist/WaitlistForm";
 import Home from "@/components/Home";
 import MobileBottomNav from "@/components/MobileBottomNav";
 import MoreHub from "@/components/MoreHub";
+import MyJourney from "@/components/MyJourney/MyJourney";
 
 export default function HomePage() {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -40,6 +41,7 @@ export default function HomePage() {
     { label: "CRS Scores", content: <CRSScoresEnhanced /> },
     { label: "Calculator", content: <Calculator />, badge: "Popular" },
     { label: "News", content: <ImmigrationNews /> },
+    { label: "My Journey", content: <MyJourney />, badge: "New" },
     { label: "More", content: <MoreHub onNavigateToTab={handleTabNavigation} /> },
     // Hidden tabs for direct navigation
     { label: "PR Pathways", content: <PRPathways />, hidden: true },

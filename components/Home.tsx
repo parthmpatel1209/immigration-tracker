@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 import styles from "./Home.module.css";
 import CLBConverter from './CLBConverter';
+import ProvinceTicker from './ProvinceTicker';
+import AnimatedCounter from './AnimatedCounter';
 
 interface HomeProps {
     onNavigateToTab?: (tabName: string) => void;
@@ -89,34 +91,51 @@ export default function Home({ onNavigateToTab }: HomeProps) {
         { icon: Heart, label: "Support Us", action: "Support" },
     ];
 
-    const [drawStats, setDrawStats] = useState({ score: "...", invitations: "...", date: "..." });
+    const [drawStats, setDrawStats] = useState({ score: "0", invitations: "0", date: "Loading..." });
 
     useEffect(() => {
         const fetchLatestDraw = async () => {
             try {
+                console.log("Fetching latest draw data...");
                 const res = await fetch("/api/draws");
+                console.log("API Response status:", res.status);
+
                 if (res.ok) {
                     const data = await res.json();
+                    console.log("Received data:", data?.length, "draws");
+
                     if (data && data.length > 0) {
                         // Sort by date to ensure we get the latest
+                        // API returns dates in YYYY-MM-DD format
                         const sorted = data
-                            .filter((d: any) => dayjs(d.draw_date, "MM/DD/YYYY", true).isValid())
+                            .filter((d: any) => d.draw_date && dayjs(d.draw_date).isValid())
                             .sort((a: any, b: any) =>
-                                dayjs(b.draw_date, "MM/DD/YYYY").valueOf() -
-                                dayjs(a.draw_date, "MM/DD/YYYY").valueOf()
+                                dayjs(b.draw_date).valueOf() - dayjs(a.draw_date).valueOf()
                             );
 
+                        console.log("Sorted draws:", sorted.length);
+
                         if (sorted.length > 0) {
+                            const latest = sorted[0];
+                            console.log("Latest draw:", latest);
+
                             setDrawStats({
-                                score: sorted[0].crs_cutoff || "N/A",
-                                invitations: sorted[0].invitations ? Number(sorted[0].invitations).toLocaleString() : "N/A",
-                                date: sorted[0].draw_date
+                                score: latest.crs_cutoff || "N/A",
+                                invitations: latest.invitations ? Number(latest.invitations).toLocaleString() : "N/A",
+                                date: dayjs(latest.draw_date).format("MMM DD, YYYY")
                             });
+                        } else {
+                            console.warn("No valid draws found after filtering");
                         }
+                    } else {
+                        console.warn("No data received from API");
                     }
+                } else {
+                    console.error("API returned error status:", res.status);
                 }
             } catch (err) {
                 console.error("Error fetching hero stats:", err);
+                setDrawStats({ score: "Error", invitations: "Error", date: "Error" });
             }
         };
         fetchLatestDraw();
@@ -155,7 +174,9 @@ export default function Home({ onNavigateToTab }: HomeProps) {
                                     <stat.icon size={18} />
                                 </div>
                                 <div className={styles.heroStatText}>
-                                    <div className={styles.heroStatValue}>{stat.value}</div>
+                                    <div className={styles.heroStatValue}>
+                                        <AnimatedCounter value={stat.value} />
+                                    </div>
                                     <div className={styles.heroStatLabel}>{stat.label}</div>
                                 </div>
                             </div>
@@ -163,6 +184,9 @@ export default function Home({ onNavigateToTab }: HomeProps) {
                     </div>
                 </div>
             </section>
+
+            {/* Province Ticker */}
+            <ProvinceTicker />
 
             {/* Main Hub Section */}
             <section className={styles.hubSection}>
