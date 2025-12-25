@@ -5,7 +5,6 @@ export const journeyData = [
         title: "The Beginning",
         subtitle: "India → Canada",
         description: "Packed my bags and left home. A 14-hour flight marked the beginning of a new life in Canada.",
-        icon: "✈️",
         gradient: "from-orange-400 via-red-500 to-blue-600",
         image: "/journey/departure.png"
     },
@@ -15,7 +14,6 @@ export const journeyData = [
         title: "Student Life",
         subtitle: "Niagara College",
         description: "Studied Diploma in Computer Programming. Adapted to Canadian education and winter.",
-        icon: "🎓",
         gradient: "from-blue-400 via-cyan-500 to-teal-600",
         image: "/journey/education.png"
     },
@@ -25,7 +23,6 @@ export const journeyData = [
         title: "Moving East",
         subtitle: "Nova Scotia",
         description: "Relocated to Halifax during the pandemic. Started full-time career on the Atlantic coast.",
-        icon: "🌊",
         gradient: "from-teal-400 via-blue-500 to-indigo-600",
         image: "/journey/halifax.png"
     },
@@ -35,7 +32,6 @@ export const journeyData = [
         title: "Permanent Residency",
         subtitle: "Major Milestone",
         description: "After years of hard work, finally received my PR card. No more visa anxiety.",
-        icon: "🍁",
         gradient: "from-red-500 via-pink-500 to-rose-600",
         image: "/journey/pr.png"
     },
@@ -45,7 +41,6 @@ export const journeyData = [
         title: "Homecoming",
         subtitle: "Return to India",
         description: "Visited family after 5.5 years. A heartwarming reunion with loved ones.",
-        icon: "🏠",
         gradient: "from-amber-400 via-orange-500 to-red-600",
         image: "/journey/homecoming.png"
     },
@@ -55,7 +50,6 @@ export const journeyData = [
         title: "Return to Ontario",
         subtitle: "Career Growth",
         description: "Back to Canada, settling in Ontario for long-term opportunities.",
-        icon: "🏙️",
         gradient: "from-purple-400 via-violet-500 to-blue-600",
         image: "/journey/return.png"
     },
@@ -65,7 +59,6 @@ export const journeyData = [
         title: "Citizenship Pending",
         subtitle: "The Final Step",
         description: "Waiting for the Oath Ceremony. The 7-year journey is almost complete.",
-        icon: "🇨🇦",
         gradient: "from-red-600 via-white to-red-600",
         image: "/journey/citizenship.png"
     }

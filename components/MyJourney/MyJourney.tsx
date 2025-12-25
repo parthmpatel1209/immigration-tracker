@@ -144,14 +144,6 @@ function Card({ item, index, progress, range, targetScale }: CardProps) {
                         transformStyle: "preserve-3d",
                     }}
                 >
-                    {/* Icon */}
-                    <motion.div
-                        className={styles.iconContainer}
-                        style={{ transform: "translateZ(75px)" }}
-                    >
-                        <span className={styles.icon}>{item.icon}</span>
-                    </motion.div>
-
                     {/* Year Badge */}
                     <motion.div
                         className={styles.yearBadge}

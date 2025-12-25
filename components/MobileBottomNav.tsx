@@ -80,12 +80,11 @@ export default function MobileBottomNav({
     // Tabs configuration
     const moreTabsInfo = [
         { index: 2, icon: <Activity size={18} /> },
-        { index: 4, icon: <Newspaper size={18} /> },
-        { index: 6, icon: <MapPin size={18} /> },
-        { index: 7, icon: <GraduationCap size={18} /> },
-        { index: 8, icon: <Bell size={18} /> },
-        { index: 9, icon: <Heart size={18} /> },
-        { index: 10, icon: <Mail size={18} /> },
+        { index: 5, icon: <MapPin size={18} /> }, // My Journey
+        { index: 6, icon: <GraduationCap size={18} /> },
+        { index: 7, icon: <Bell size={18} /> },
+        { index: 8, icon: <Heart size={18} /> },
+        { index: 9, icon: <Mail size={18} /> },
     ];
 
     const handleTabClick = (index: number) => {

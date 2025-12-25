@@ -41,7 +41,7 @@ export default function HomePage() {
     { label: "CRS Scores", content: <CRSScoresEnhanced /> },
     { label: "Calculator", content: <Calculator />, badge: "Popular" },
     { label: "News", content: <ImmigrationNews /> },
-    { label: "My Journey", content: <MyJourney />, badge: "New" },
+    { label: "My Journey", content: <MyJourney /> },
     { label: "More", content: <MoreHub onNavigateToTab={handleTabNavigation} /> },
     // Hidden tabs for direct navigation
     { label: "PR Pathways", content: <PRPathways />, hidden: true },

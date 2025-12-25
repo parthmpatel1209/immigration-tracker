@@ -45,19 +45,17 @@
     margin: 0 auto;
     padding: 0 1rem;
     perspective: 1000px;
-    /* Enable 3D perspective */
 }
 
 /* Card Wrapper (Sticky positioning) */
 .cardWrapper {
     position: sticky;
-    height: 500px;
+    height: 600px;
     display: flex;
     align-items: center;
     justify-content: center;
     margin-bottom: 2rem;
     perspective: 1000px;
-    /* 3D perspective */
 }
 
 /* Card */
@@ -74,7 +72,6 @@
     backdrop-filter: blur(10px);
     transition: box-shadow 0.3s ease;
     transform-style: preserve-3d;
-    /* Enable 3D transforms */
     will-change: transform;
 }
 
@@ -119,19 +116,6 @@
     flex-direction: column;
     color: white;
     transform-style: preserve-3d;
-    /* Enable 3D for children */
-}
-
-/* Icon */
-.iconContainer {
-    margin-bottom: 1.5rem;
-    transform-style: preserve-3d;
-}
-
-.icon {
-    font-size: 4rem;
-    display: inline-block;
-    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
 }
 
 /* Year Badge */
@@ -234,7 +218,7 @@
     }
 
     .cardWrapper {
-        height: 600px;
+        height: 650px;
         perspective: none;
     }
 
@@ -244,8 +228,8 @@
         transform-style: flat;
     }
 
-    .icon {
-        font-size: 3rem;
+    .modelContainer {
+        height: 150px;
     }
 
     .cardDescription {
@@ -263,10 +247,14 @@
     }
 
     .cardWrapper {
-        height: 550px;
+        height: 600px;
     }
 
     .card {
         padding: 1.5rem;
+    }
+
+    .modelContainer {
+        height: 120px;
     }
 }
