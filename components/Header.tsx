@@ -69,6 +69,7 @@ function generatePositions(count: number) {
 import styles from "./Header.module.css";
 
 export default function Header() {
+  const [positions, setPositions] = useState<{ top: string; left: string; startOffset: string }[]>([]);
   const [isDark, setIsDark] = useState(false);
 
   // Sync dark mode with Tabs (detects class="dark" on <html>)
@@ -86,27 +87,31 @@ export default function Header() {
     return () => observer.disconnect();
   }, []);
 
-  // Generate icon positions once on mount
-  const positions = useMemo(() => generatePositions(ICONS.length), []);
+  // Generate icon positions only on client
+  useEffect(() => {
+    const newPositions = generatePositions(ICONS.length).map(pos => ({
+      ...pos,
+      startOffset: `${Math.random() * 100}vh`
+    }));
+    setPositions(newPositions);
+  }, []);
 
   return (
     <header className={styles.root}>
       {/* ---------- FLOATING ICONS ---------- */}
       <div className={styles.floaters}>
-        {ICONS.map((icon, i) => {
-          const pos = positions[i];
-          const startOffset = Math.random() * 100; // Random starting point below screen
-
+        {positions.map((pos, i) => {
+          const icon = ICONS[i];
           return (
             <div
               key={i}
               className={styles.floater}
               style={
                 {
-                  top: pos?.top ?? "50%",
-                  left: pos?.left ?? "50%",
+                  top: pos.top,
+                  left: pos.left,
                   "--duration": `${25 + i * 1.5}s`, // 25–40s cycle
-                  "--start-y": `${startOffset}vh`, // Random entry point
+                  "--start-y": pos.startOffset, // Random entry point
                 } as React.CSSProperties
               }
             >

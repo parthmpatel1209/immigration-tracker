@@ -538,6 +538,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .converterText {
@@ -570,6 +571,12 @@
 }
 
 /* --- CTA Section Enhanced --- */
+.ctaSection {
+    padding: 0 1.5rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
 .ctaContent {
     background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
     position: relative;
