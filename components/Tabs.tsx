@@ -25,6 +25,7 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
 
   const [isDark, setIsDark] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -35,6 +36,15 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
     setIsMobile(mql.matches);
     mql.addEventListener("change", handler);
     return () => mql.removeEventListener("change", handler);
+  }, []);
+
+  /* ---- Scroll detection for sticky header -------------------- */
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 100);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   /* ---- Dark-mode handling -------------------------------------- */
@@ -153,44 +163,65 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
         style={{
           display: isMobile && hideHeaderOnMobile ? "none" : "flex",
           alignItems: "center",
-          paddingTop: isMobile ? "0" : "1rem",
+          paddingTop: isScrolled ? "0.5rem" : (isMobile ? "0" : "1rem"),
           paddingLeft: isMobile ? "0" : "1rem",
           paddingRight: isMobile ? "0" : "1rem",
-          paddingBottom: "1.25rem",
+          paddingBottom: isScrolled ? "0.5rem" : "1.25rem",
           marginBottom: "0",
-          position: "relative",
-          zIndex: 10,
+          position: "sticky",
+          top: 0,
+          zIndex: 50,
+          background: isScrolled
+            ? (isDark
+              ? "rgba(15, 23, 42, 0.8)"
+              : "rgba(255, 255, 255, 0.8)")
+            : "transparent",
+          backdropFilter: isScrolled ? "blur(12px)" : "none",
+          WebkitBackdropFilter: isScrolled ? "blur(12px)" : "none",
+          borderBottom: isScrolled
+            ? (isDark
+              ? "1px solid rgba(255, 255, 255, 0.1)"
+              : "1px solid rgba(0, 0, 0, 0.1)")
+            : "none",
+          boxShadow: isScrolled
+            ? "0 4px 12px rgba(0, 0, 0, 0.1)"
+            : "none",
+          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         }}
       >
         {/* Subtle Gradient Fade-out at the bottom */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '-24px',
-            left: 0,
-            right: 0,
-            height: '24px',
-            background: isDark
-              ? 'transparent'
-              : 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9), transparent)',
-            pointerEvents: 'none',
-            zIndex: 5,
-          }}
-        />
+        {!isScrolled && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '-24px',
+              left: 0,
+              right: 0,
+              height: '24px',
+              background: isDark
+                ? 'transparent'
+                : 'linear-gradient(to bottom, rgba(255, 255, 255, 0.9), transparent)',
+              pointerEvents: 'none',
+              zIndex: 5,
+            }}
+          />
+        )}
         {/* Subtle Ambient Line */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '0',
-            left: '5%',
-            right: '5%',
-            height: '1px',
-            background: isDark
-              ? 'linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent)'
-              : 'linear-gradient(to right, transparent, rgba(0,0,0,0.08), transparent)',
-            zIndex: 11,
-          }}
-        />
+        {!isScrolled && (
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '0',
+              left: '5%',
+              right: '5%',
+              height: '1px',
+              background: isDark
+                ? 'linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent)'
+                : 'linear-gradient(to right, transparent, rgba(0,0,0,0.08), transparent)',
+              zIndex: 11,
+            }}
+          />
+        )}
         {/* Scrollable area (mobile) / static (desktop) ------------- */}
         <div
           ref={scrollContainerRef}

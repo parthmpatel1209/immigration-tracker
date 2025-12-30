@@ -47,6 +47,106 @@
     perspective: 1000px;
 }
 
+/* Floating Particles */
+.particlesContainer {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.particle {
+    position: absolute;
+    top: 100%;
+    opacity: 0.4;
+}
+
+.particleIcon {
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+:global(.dark) .particleIcon {
+    filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2)) brightness(1.2);
+}
+
+/* Journey Path SVG */
+.journeyPath {
+    position: fixed;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.3;
+}
+
+:global(.dark) .journeyPath {
+    opacity: 0.5;
+}
+
+/* Progress Indicator Side */
+.progressIndicatorSide {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    z-index: 20;
+}
+
+.progressDotSide {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(100, 116, 139, 0.3);
+    border: 2px solid rgba(100, 116, 139, 0.5);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+}
+
+.progressDotSide:hover {
+    transform: scale(1.3);
+}
+
+.progressDotActive {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border-color: #3b82f6;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+}
+
+.progressTooltip {
+    position: absolute;
+    right: calc(100% + 1rem);
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(15, 23, 42, 0.9);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    backdrop-filter: blur(8px);
+}
+
+:global(.dark) .progressTooltip {
+    background: rgba(255, 255, 255, 0.9);
+    color: #0f172a;
+}
+
+.progressDotSide:hover .progressTooltip {
+    opacity: 1;
+}
+
 /* Card Wrapper (Sticky positioning) */
 .cardWrapper {
     position: sticky;
@@ -70,7 +170,7 @@
         0 20px 60px -15px rgba(0, 0, 0, 0.3),
         0 0 0 1px rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
-    transition: box-shadow 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
     will-change: transform;
 }
@@ -78,7 +178,23 @@
 .card:hover {
     box-shadow:
         0 30px 80px -20px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.2);
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        0 0 40px rgba(59, 130, 246, 0.3);
+}
+
+/* Card Hover Glow Effect */
+.cardGlow {
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(135deg,
+            rgba(59, 130, 246, 0.4),
+            rgba(139, 92, 246, 0.4),
+            rgba(236, 72, 153, 0.4));
+    border-radius: 2rem;
+    filter: blur(20px);
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease;
 }
 
 /* Card Image Background */
@@ -122,17 +238,27 @@
 .yearBadge {
     display: inline-block;
     padding: 0.5rem 1.5rem;
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-radius: 2rem;
     font-weight: 700;
     font-size: 0.875rem;
     letter-spacing: 0.05em;
     margin-bottom: 1.5rem;
     width: fit-content;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: white;
     transform-style: preserve-3d;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.yearBadge:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
 }
 
 /* Titles */
@@ -225,19 +351,47 @@
     .card {
         padding: 2rem;
         border-radius: 1.5rem;
-        transform-style: flat;
+        transform-style: flat !important;
+        transform: none !important;
     }
 
-    .modelContainer {
-        height: 150px;
+    .cardContent {
+        transform-style: flat !important;
+    }
+
+    .cardContent>* {
+        transform: none !important;
+    }
+
+    .yearBadge,
+    .cardTitle,
+    .cardSubtitle,
+    .cardDescription,
+    .progressIndicator {
+        transform: none !important;
     }
 
     .cardDescription {
         font-size: 1rem;
     }
 
-    .cardContent {
-        transform-style: flat;
+    .cardGlow {
+        display: none;
+    }
+
+    /* Hide progress indicator on mobile */
+    .progressIndicatorSide {
+        display: none;
+    }
+
+    /* Hide journey path on mobile */
+    .journeyPath {
+        display: none;
+    }
+
+    /* Reduce particles on mobile */
+    .particle:nth-child(n+4) {
+        display: none;
     }
 }
 
@@ -254,7 +408,16 @@
         padding: 1.5rem;
     }
 
-    .modelContainer {
-        height: 120px;
+    .cardTitle {
+        font-size: 2rem;
+    }
+
+    .cardSubtitle {
+        font-size: 1.25rem;
+    }
+
+    /* Hide all particles on very small screens */
+    .particlesContainer {
+        display: none;
     }
 }

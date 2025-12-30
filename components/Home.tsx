@@ -20,6 +20,7 @@ import styles from "./Home.module.css";
 import CLBConverter from './CLBConverter';
 import ProvinceTicker from './ProvinceTicker';
 import AnimatedCounter from './AnimatedCounter';
+import ScrollHighlightText from './ScrollHighlightText';
 
 interface HomeProps {
     onNavigateToTab?: (tabName: string) => void;
@@ -187,6 +188,11 @@ export default function Home({ onNavigateToTab }: HomeProps) {
 
             {/* Province Ticker */}
             <ProvinceTicker />
+
+            {/* Scroll Highlight Text Section */}
+            <ScrollHighlightText
+                text="Navigate your Canadian immigration journey with real-time data, accurate CRS calculations, and comprehensive pathway insights that empower your decisions every step of the way"
+            />
 
             {/* Main Hub Section */}
             <section className={styles.hubSection}>
