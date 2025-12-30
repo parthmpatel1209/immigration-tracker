@@ -12,7 +12,7 @@ import { NewsTicker } from "./NewsTicker";
 import { NewsModal } from "./NewsModal";
 import { MobileNewsCarouselGrouped } from "./MobileNewsCarouselGrouped";
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 15;
 
 const LIGHT = {
   bgPrimary: "#ffffff",
@@ -46,9 +46,9 @@ export default function ImmigrationNews() {
   const [selectedNewsItem, setSelectedNewsItem] = useState<NewsItem | null>(null);
 
   const [isMobile, setIsMobile] = useState(false);
-  // Date-based loading state
-  const [daysLoaded, setDaysLoaded] = useState(2); // Start with 2 days
-  const [page, setPage] = useState(1);
+  // Pagination state
+  const [offset, setOffset] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [fetchingMore, setFetchingMore] = useState(false);
 
@@ -77,21 +77,28 @@ export default function ImmigrationNews() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const fetchNews = async (daysToFetch: number, reset: boolean = false) => {
+  const fetchNews = async (currentOffset: number, reset: boolean = false) => {
     if (reset) {
       setLoading(true);
       setTranslating(true);
-      setPage(1);
     } else {
       setFetchingMore(true);
     }
 
     try {
-      const res = await fetch(`/api/news?language=${selectedLanguage}&days=${daysToFetch}`);
+      // Build URL with filters
+      let url = `/api/news?language=${selectedLanguage}&limit=${ITEMS_PER_PAGE}&offset=${currentOffset}`;
+      if (filterProps.year) url += `&year=${filterProps.year}`;
+      if (filterProps.month) url += `&month=${filterProps.month}`;
+
+      const res = await fetch(url);
       if (!res.ok) throw new Error("Failed to fetch");
 
-      const data = await res.json();
-      const newItems = data || [];
+      const response = await res.json();
+      const newItems = response.items || [];
+      const total = response.total || 0;
+
+      setTotalCount(total);
 
       if (reset) {
         setNews(newItems);
@@ -104,8 +111,8 @@ export default function ImmigrationNews() {
         });
       }
 
-      // Check if there's more data (if we got less than expected, no more data)
-      setHasMore(newItems.length > 0);
+      // Check if there's more data (if we got less than requested, no more data)
+      setHasMore(newItems.length === ITEMS_PER_PAGE);
 
     } catch (err) {
       console.error("Failed to load news:", err);
@@ -117,17 +124,25 @@ export default function ImmigrationNews() {
     }
   };
 
-  // Initial fetch - load 2 days of news
+  // Initial fetch - load first 15 items
   useEffect(() => {
-    setDaysLoaded(2);
-    fetchNews(2, true);
+    setOffset(0);
+    fetchNews(0, true);
   }, [selectedLanguage]);
 
-  // Handler for Load More - load 5 more days
+  // Refetch when filters change
+  useEffect(() => {
+    if (filterProps.month || filterProps.year) {
+      setOffset(0);
+      fetchNews(0, true);
+    }
+  }, [filterProps.month, filterProps.year]);
+
+  // Handler for Load More - load next 15 items
   const handleLoadMore = () => {
-    const newDaysToLoad = daysLoaded + 5;
-    setDaysLoaded(newDaysToLoad);
-    fetchNews(newDaysToLoad, true); // Fetch all days up to newDaysToLoad
+    const newOffset = offset + ITEMS_PER_PAGE;
+    setOffset(newOffset);
+    fetchNews(newOffset, false);
   };
 
   const handleLanguageChange = (langCode: string) => {
@@ -198,12 +213,12 @@ export default function ImmigrationNews() {
       {/* Conditional Rendering based on Device Type */}
       {!isMobile ? (
         <div className={styles.desktopGridWrapper}>
-          <NewsGrid news={filtered} darkMode={darkMode} theme={theme} />
+          <NewsGrid news={filterProps.specificDate ? filtered : news} darkMode={darkMode} theme={theme} />
         </div>
       ) : (
         <div className={styles.mobileFeedWrapper}>
           <MobileNewsCarouselGrouped
-            news={filtered}
+            news={filterProps.specificDate ? filtered : news}
             darkMode={darkMode}
             theme={theme}
             onItemClick={handleNewsItemClick}
@@ -214,14 +229,14 @@ export default function ImmigrationNews() {
       {/* Footer: Showing X of Y */}
       {!isMobile && (
         <NewsFooter
-          total={filtered.length}
-          shown={filtered.length}
+          total={totalCount}
+          shown={news.length}
           theme={theme}
         />
       )}
 
       {/* Load More Button */}
-      {hasMore && !filterProps.hasActiveFilters && (
+      {hasMore && !filterProps.specificDate && (
         <div className={styles.loadMoreWrapper}>
           <button
             className={styles.loadMoreModern}

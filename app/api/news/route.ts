@@ -10,18 +10,42 @@ export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const language = searchParams.get('language') || 'en';
-    const days = parseInt(searchParams.get('days') || '7'); // Default to 7 days if not specified
+    const limit = parseInt(searchParams.get('limit') || '15'); // Default to 15 items
+    const offset = parseInt(searchParams.get('offset') || '0'); // Default to 0 offset
+    const month = searchParams.get('month'); // Optional month filter (01-12)
+    const year = searchParams.get('year'); // Optional year filter
 
-    // Calculate the date threshold
-    const dateThreshold = new Date();
-    dateThreshold.setDate(dateThreshold.getDate() - days);
-    const dateThresholdISO = dateThreshold.toISOString();
-
-    const { data, error } = await supabase
+    // Build query
+    let query = supabase
       .from("news")
-      .select("*")
-      .gte("published_at", dateThresholdISO) // Filter by date
+      .select("*", { count: 'exact' })
       .order("published_at", { ascending: false });
+
+    // Apply date filters if provided
+    if (year && month) {
+      // Filter by specific month and year
+      const startDate = new Date(`${year}-${month}-01`);
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 1);
+
+      query = query
+        .gte("published_at", startDate.toISOString())
+        .lt("published_at", endDate.toISOString());
+    } else if (year) {
+      // Filter by year only
+      const startDate = new Date(`${year}-01-01`);
+      const endDate = new Date(`${parseInt(year) + 1}-01-01`);
+
+      query = query
+        .gte("published_at", startDate.toISOString())
+        .lt("published_at", endDate.toISOString());
+    }
+
+    // Get total count with filters
+    const { count: totalCount } = await query;
+
+    // Get paginated data with filters
+    const { data, error } = await query.range(offset, offset + limit - 1);
 
     if (error) {
       console.error("Supabase error:", error);
@@ -73,10 +97,10 @@ export async function GET(request: Request) {
         })
       );
 
-      return Response.json(translatedData);
+      return Response.json({ items: translatedData, total: totalCount || 0 });
     }
 
-    return Response.json(transformedData); // always 200 + valid JSON
+    return Response.json({ items: transformedData, total: totalCount || 0 });
   } catch (err: any) {
     console.error("Unexpected news API error:", err);
     return Response.json(

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AlertTriangle, X, CheckCircle } from "lucide-react";
 import styles from "./DisclaimerModal.module.css";
 
@@ -10,8 +11,10 @@ interface DisclaimerModalProps {
 
 export default function DisclaimerModal({ onClose }: DisclaimerModalProps) {
     const [isVisible, setIsVisible] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         // Trigger animation after mount
         setTimeout(() => setIsVisible(true), 10);
     }, []);
@@ -21,7 +24,9 @@ export default function DisclaimerModal({ onClose }: DisclaimerModalProps) {
         setTimeout(onClose, 300); // Wait for fade out animation
     };
 
-    return (
+    if (!mounted) return null;
+
+    return createPortal(
         <div className={`${styles.overlay} ${isVisible ? styles.visible : ""}`}>
             <div className={`${styles.modal} ${isVisible ? styles.modalVisible : ""}`}>
                 {/* Close button */}
@@ -89,6 +94,7 @@ export default function DisclaimerModal({ onClose }: DisclaimerModalProps) {
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
