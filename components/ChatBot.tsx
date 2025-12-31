@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Send, MessageCircle, X, Sparkles, ThumbsUp, ThumbsDown, Loader2 } from "lucide-react";
 import { getSuggestions } from "@/utils/rag";
 import styles from "./ChatBot.module.css";
@@ -259,7 +260,18 @@ export default function ChatBot() {
     setTimeout(() => sendMessage(), 100);
   };
 
-  return (
+  /* ------------------------------------------------------------- */
+  /* MOUNT CHECK + PORTAL */
+  /* ------------------------------------------------------------- */
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <>
       {/* Floating toggle */}
       <button onClick={toggle} className={styles.toggleBtn}>
@@ -413,6 +425,7 @@ export default function ChatBot() {
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.body
   );
 }

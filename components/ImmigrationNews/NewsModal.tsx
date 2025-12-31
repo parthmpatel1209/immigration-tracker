@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
+import { createPortal } from "react-dom";
 import styles from "./NewsModal.module.css";
 import { NewsItem } from "./types";
 
@@ -45,7 +46,14 @@ export function NewsModal({ item, allItems, onClose, onNavigate }: NewsModalProp
         };
     }, [item, handleKeyNav]);
 
-    if (!item) return null;
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
+
+    if (!mounted || !item) return null;
 
     const currentIndex = allItems.findIndex((n) => n.id === item.id);
     const hasPrev = currentIndex > 0;
@@ -66,7 +74,7 @@ export function NewsModal({ item, allItems, onClose, onNavigate }: NewsModalProp
         });
     };
 
-    return (
+    return createPortal(
         <div className={styles.overlay} onClick={onClose}>
             <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
                 {/* Close Button */}
@@ -173,6 +181,7 @@ export function NewsModal({ item, allItems, onClose, onNavigate }: NewsModalProp
                     </div>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }

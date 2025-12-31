@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Check, ChevronDown, Award, X, RotateCcw } from "lucide-react";
 
 type TestType = "CELPIP" | "IELTS" | "PTE" | "TEF" | "TCF";
@@ -71,7 +72,14 @@ export default function CLBConverter({ isOpen, onClose, isDark = false }: CLBCon
         return () => { document.body.style.overflow = "unset"; };
     }, [isOpen]);
 
-    if (!isOpen) return null;
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
+
+    if (!mounted || !isOpen) return null;
 
     const getClb = (f: 'r' | 'w' | 'l' | 's') => {
         const val = scores[f];
@@ -116,7 +124,7 @@ export default function CLBConverter({ isOpen, onClose, isDark = false }: CLBCon
         resultNorm: isDark ? '#60a5fa' : '#2563eb'
     };
 
-    return (
+    return createPortal(
         <div style={{
             position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
             zIndex: 9999,
@@ -283,6 +291,7 @@ export default function CLBConverter({ isOpen, onClose, isDark = false }: CLBCon
                     )}
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 }
