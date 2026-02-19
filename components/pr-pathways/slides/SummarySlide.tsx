@@ -1,4 +1,4 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, FileText } from "lucide-react";
 import styles from "../PRPathways.module.css";
 
 interface SummarySlideProps {
@@ -9,13 +9,19 @@ interface SummarySlideProps {
 export function SummarySlide({ p, darkMode }: SummarySlideProps) {
   return (
     <div className="space-y-6">
-      <p
-        className={`text-base leading-relaxed ${
-          darkMode ? "text-gray-200" : "text-gray-700"
-        }`}
-      >
-        {p.summary || "No summary available."}
-      </p>
+      <div className="flex items-start gap-3">
+        <FileText
+          size={24}
+          className={`flex-shrink-0 mt-1 ${darkMode ? "text-violet-400" : "text-indigo-600"
+            }`}
+        />
+        <p
+          className={`text-base leading-relaxed ${darkMode ? "text-gray-200" : "text-gray-700"
+            }`}
+        >
+          {p.summary || "No summary available."}
+        </p>
+      </div>
 
       {p.url && (
         <a
@@ -24,7 +30,7 @@ export function SummarySlide({ p, darkMode }: SummarySlideProps) {
           rel="noopener noreferrer"
           className={styles.link}
         >
-          Official Details <ExternalLink size={18} className="inline ml-2" />
+          View Official Details <ExternalLink size={18} className="inline ml-1" />
         </a>
       )}
     </div>

@@ -80,7 +80,7 @@ const MobileNewsCarouselGrouped = ({
                     </div>
 
                     {/* Horizontal Scroller */}
-                    <div className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar px-8 gap-16 pt-4 pb-16 w-full">
+                    <div className="flex overflow-x-auto snap-x snap-mandatory no-scrollbar px-8 gap-0.5 pt-4 pb-16 w-full">
                         {group.items.map((item) => {
                             const badgeColor = item.program
                                 ? PROGRAM_COLORS[item.program as keyof typeof PROGRAM_COLORS] ||
@@ -93,7 +93,7 @@ const MobileNewsCarouselGrouped = ({
                             return (
                                 <div
                                     key={item.id}
-                                    className="flex-shrink-0 snap-center mr-16"
+                                    className="flex-shrink-0 snap-center"
                                     style={{ width: 'min(82vw, 340px)' }}
                                 >
                                     <div

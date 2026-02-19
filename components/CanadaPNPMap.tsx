@@ -28,7 +28,7 @@ export default function CanadaPNPMap() {
 
   /* ------------------- FETCH ------------------- */
   useEffect(() => {
-    fetch("/api/pnpdata")
+    fetch("/api/pnpdata", { cache: 'no-store' })
       .then((res) => {
         if (!res.ok) throw new Error("Failed to load data");
         return res.json();
@@ -67,7 +67,7 @@ export default function CanadaPNPMap() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-            Loading 2025 PNP Quotas...
+            Loading 2026 PNP Quotas...
           </p>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default function CanadaPNPMap() {
       >
         {/* Header */}
         <header className="text-center mb-6">
-          <h1 className={styles.headerTitle}>Canada PNP Quotas 2025</h1>
+          <h1 className={styles.headerTitle}>Canada PNP Quotas 2026</h1>
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Latest Provincial Nominee Program allocations
           </p>

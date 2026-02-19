@@ -203,6 +203,11 @@
     inset: 0;
     z-index: 0;
     transform-style: preserve-3d;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.cardImage img {
+    transition: opacity 0.5s ease-in-out;
 }
 
 .cardImage::after {
@@ -221,6 +226,20 @@
             rgba(0, 0, 0, 0.5) 0%,
             rgba(0, 0, 0, 0.7) 50%,
             rgba(0, 0, 0, 0.85) 100%);
+}
+
+/* Image Shadow for Lift Effect */
+.imageShadow {
+    position: absolute;
+    bottom: -20px;
+    left: 10%;
+    right: 10%;
+    height: 40px;
+    background: radial-gradient(ellipse, rgba(0, 0, 0, 0.5) 0%, transparent 70%);
+    filter: blur(15px);
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 /* Card Content */
@@ -418,6 +437,47 @@
 
     /* Hide all particles on very small screens */
     .particlesContainer {
+        display: none;
+    }
+}
+/* Floating PNG Icon */
+.floatingIcon {
+    position: absolute;
+    left: -250px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    pointer-events: none;
+}
+
+.iconImage {
+    filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.3));
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    padding: 20px;
+    transition: all 0.5s ease;
+}
+
+:global(.dark) .iconImage {
+    background: rgba(255, 255, 255, 0.08);
+    filter: drop-shadow(0 20px 60px rgba(255, 255, 255, 0.1));
+}
+
+/* Responsive - hide on smaller screens */
+@media (max-width: 1400px) {
+    .floatingIcon {
+        left: -180px;
+    }
+    
+    .iconImage {
+        width: 150px !important;
+        height: 150px !important;
+    }
+}
+
+@media (max-width: 1200px) {
+    .floatingIcon {
         display: none;
     }
 }

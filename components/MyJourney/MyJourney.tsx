@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { useRef, MouseEvent, useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import { journeyData } from "./journeyData";
 import styles from "./MyJourney.module.css";
@@ -181,6 +182,15 @@ interface CardProps {
 
 function Card({ item, index, progress, range, targetScale }: CardProps) {
     const cardRef = useRef<HTMLDivElement>(null);
+    const imageRef = useRef<HTMLDivElement>(null);
+    const { theme, resolvedTheme } = useTheme();
+    const [isHovered, setIsHovered] = useState(false);
+    const [mounted, setMounted] = useState(false);
+    const [imageLoaded, setImageLoaded] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const scale = useTransform(progress, range, [1, targetScale]);
     const opacity = useTransform(progress, range, [1, 0.5]);
@@ -189,14 +199,25 @@ function Card({ item, index, progress, range, targetScale }: CardProps) {
     const x = useMotionValue(0);
     const y = useMotionValue(0);
 
-    const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
-    const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+    const mouseXSpring = useSpring(x, { stiffness: 150, damping: 20 });
+    const mouseYSpring = useSpring(y, { stiffness: 150, damping: 20 });
 
-    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
-    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+    const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
+    const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
+
+    // Enhanced image lift on hover - Optimized for performance
+    const imageLiftZ = useSpring(0, { stiffness: 150, damping: 20 });
+    const imageScale = useSpring(1, { stiffness: 150, damping: 20 });
 
     // Detect if mobile
     const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+    // Determine which image to use (theme-aware)
+    const getImagePath = () => {
+        if (!mounted) return item.image; // Default during SSR
+        // Keep original card background images
+        return item.image;
+    };
 
     const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
         if (!cardRef.current || isMobile) return;
@@ -215,9 +236,20 @@ function Card({ item, index, progress, range, targetScale }: CardProps) {
         y.set(yPct);
     };
 
+    const handleMouseEnter = () => {
+        setIsHovered(true);
+        if (!isMobile) {
+            imageLiftZ.set(50);
+            imageScale.set(1.05);
+        }
+    };
+
     const handleMouseLeave = () => {
+        setIsHovered(false);
         x.set(0);
         y.set(0);
+        imageLiftZ.set(0);
+        imageScale.set(1);
     };
 
     return (
@@ -233,11 +265,12 @@ function Card({ item, index, progress, range, targetScale }: CardProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{
-                duration: 0.6,
-                delay: index * 0.1,
+                duration: 0.5,
+                delay: index * 0.08,
                 ease: [0.25, 0.1, 0.25, 1]
             }}
             onMouseMove={handleMouseMove}
+            onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             whileHover={{ scale: isMobile ? 1 : 1.02 }}
         >
@@ -253,22 +286,71 @@ function Card({ item, index, progress, range, targetScale }: CardProps) {
                 <motion.div
                     className={styles.cardGlow}
                     initial={{ opacity: 0 }}
-                    whileHover={{ opacity: isMobile ? 0 : 1 }}
+                    animate={{ opacity: isHovered && !isMobile ? 1 : 0 }}
                     transition={{ duration: 0.3 }}
                 />
 
-                {/* Background Image */}
-                <div className={styles.cardImage}>
-                    <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                        priority={index < 2}
-                    />
-                </div>
+                {/* Background Image with Enhanced Hover Effect */}
+                <motion.div
+                    ref={imageRef}
+                    className={styles.cardImage}
+                    style={{
+                        transform: isMobile ? "none" : `translateZ(${imageLiftZ.get()}px) scale(${imageScale.get()})`,
+                        transformStyle: "preserve-3d",
+                    }}
+                >
+                    {/* Image Container with Loading State */}
+                    <motion.div
+                        initial={{
+                            scale: 0.95,
+                            rotate: -3,
+                            opacity: 0
+                        }}
+                        whileInView={{
+                            scale: 1,
+                            rotate: 0,
+                            opacity: 1
+                        }}
+                        viewport={{ once: true }}
+                        transition={{
+                            duration: 0.6,
+                            delay: index * 0.08,
+                            ease: [0.25, 0.1, 0.25, 1]
+                        }}
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                            position: 'relative',
+                            background: !imageLoaded ? 'rgba(0, 0, 0, 0.3)' : 'transparent'
+                        }}
+                    >
+                        <Image
+                            src={getImagePath()}
+                            alt={item.title}
+                            fill
+                            className="object-cover"
+                            priority={index < 2}
+                            onLoad={() => setImageLoaded(true)}
+                            style={{
+                                opacity: imageLoaded ? 1 : 0,
+                                transition: 'opacity 0.3s ease-in-out'
+                            }}
+                        />
+                    </motion.div>
 
-                {/* Card Content */}
+                    {/* Enhanced Shadow for Lifted Image */}
+                    {!isMobile && (
+                        <motion.div
+                            className={styles.imageShadow}
+                            style={{
+                                opacity: isHovered ? 0.6 : 0,
+                            }}
+                            transition={{ duration: 0.3 }}
+                        />
+                    )}
+                </motion.div>
+
+                {/* Card Content with Staggered Reveal */}
                 <motion.div
                     className={styles.cardContent}
                     style={{
@@ -283,29 +365,31 @@ function Card({ item, index, progress, range, targetScale }: CardProps) {
                         initial={{ opacity: 0, x: -20 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 + 0.2, duration: 0.5 }}
+                        transition={{ delay: index * 0.08 + 0.15, duration: 0.4 }}
                     >
                         {item.year}
                     </motion.div>
 
-                    {/* Title */}
+                    {/* Title with Slide Up */}
                     <motion.h2
                         className={styles.cardTitle}
                         style={{ transform: isMobile ? "none" : "translateZ(65px)" }}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 + 0.3, duration: 0.5 }}
+                        transition={{ delay: index * 0.08 + 0.25, duration: 0.5, ease: "easeOut" }}
                     >
                         {item.title}
                     </motion.h2>
+
+                    {/* Subtitle */}
                     <motion.h3
                         className={styles.cardSubtitle}
                         style={{ transform: isMobile ? "none" : "translateZ(60px)" }}
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 + 0.4, duration: 0.5 }}
+                        transition={{ delay: index * 0.08 + 0.35, duration: 0.5, ease: "easeOut" }}
                     >
                         {item.subtitle}
                     </motion.h3>
@@ -314,10 +398,10 @@ function Card({ item, index, progress, range, targetScale }: CardProps) {
                     <motion.p
                         className={styles.cardDescription}
                         style={{ transform: isMobile ? "none" : "translateZ(55px)" }}
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
+                        initial={{ opacity: 0, y: 15 }}
+                        whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 + 0.5, duration: 0.5 }}
+                        transition={{ delay: index * 0.08 + 0.45, duration: 0.5 }}
                     >
                         {item.description}
                     </motion.p>
@@ -329,7 +413,7 @@ function Card({ item, index, progress, range, targetScale }: CardProps) {
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.1 + 0.6, duration: 0.5 }}
+                        transition={{ delay: index * 0.08 + 0.55, duration: 0.4 }}
                     >
                         <motion.span
                             className={styles.progressDot}
@@ -353,19 +437,54 @@ function Card({ item, index, progress, range, targetScale }: CardProps) {
                     </motion.div>
                 </motion.div>
 
-                {/* Decorative Elements */}
+                {/* Decorative Elements - Simplified */}
                 <motion.div
                     className={styles.cardDecoration}
                     animate={{
-                        scale: [1, 1.1, 1],
-                        opacity: [0.3, 0.5, 0.3]
+                        scale: [1, 1.05, 1],
+                        opacity: [0.2, 0.4, 0.2]
                     }}
                     transition={{
-                        duration: 4,
+                        duration: 5,
                         repeat: Infinity,
                         ease: "easeInOut"
                     }}
                 />
+
+                {/* Floating PNG Icon - Scrolls with card */}
+                {!isMobile && (
+                    <motion.div
+                        className={styles.floatingIcon}
+                        initial={{ opacity: 0, x: -100, rotate: -15 }}
+                        whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+                        viewport={{ once: true }}
+                        transition={{
+                            duration: 0.8,
+                            delay: index * 0.08 + 0.2,
+                            ease: [0.25, 0.1, 0.25, 1]
+                        }}
+                    >
+                        <motion.div
+                            animate={{
+                                y: [0, -20, 0],
+                                rotate: [-5, 5, -5],
+                            }}
+                            transition={{
+                                duration: 6,
+                                repeat: Infinity,
+                                ease: "easeInOut"
+                            }}
+                        >
+                            <Image
+                                src={`/journey/${index + 1}-${resolvedTheme === 'dark' ? 'dark' : 'light'}.png`}
+                                alt={`${item.title} icon`}
+                                width={200}
+                                height={200}
+                                className={styles.iconImage}
+                            />
+                        </motion.div>
+                    </motion.div>
+                )}
             </motion.div>
         </motion.div>
     );

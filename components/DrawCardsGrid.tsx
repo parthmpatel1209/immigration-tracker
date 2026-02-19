@@ -55,7 +55,7 @@ const BADGE_COLORS: Record<
 };
 
 // ──────────────────────────────────────────────────────────────
-// Helper: Display "N/A" for null/undefined/empty – same as table
+// Helper: Display "N/A" for null/undefined/empty
 // ──────────────────────────────────────────────────────────────
 const NA = (value: any, fallback = "N/A"): string => {
   if (value == null) return fallback;
@@ -64,67 +64,57 @@ const NA = (value: any, fallback = "N/A"): string => {
 };
 
 // ──────────────────────────────────────────────────────────────
-// DrawCard Component – Province shows correctly
+// Content Processors
+// ──────────────────────────────────────────────────────────────
+const getProgramCategory = (program: string): string => {
+  const p = program.toLowerCase();
+  if (p.includes("provincial") || p.includes("pnp")) return "PNP";
+  if (p.includes("canadian experience class") || p.includes("cec")) return "CEC";
+  if (p.includes("federal skilled worker") || p.includes("fsw")) return "FSW";
+  if (p.includes("federal skilled trades") || p.includes("fst")) return "FST";
+  if (p.includes("express entry")) return "Express Entry";
+  return "General";
+};
+
+// ──────────────────────────────────────────────────────────────
+// DrawCard Component
 // ──────────────────────────────────────────────────────────────
 function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
   const [isDark, setIsDark] = useState(false);
 
-  // Detect dark mode – EXACT same as DrawsTable
   useEffect(() => {
     const checkDarkMode = () => {
       setIsDark(document.documentElement.classList.contains("dark"));
     };
-
     checkDarkMode();
-
     const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    });
-
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
     return () => observer.disconnect();
   }, []);
 
-  const badge = BADGE_COLORS[draw.program] ?? BADGE_COLORS.default;
+  const category = getProgramCategory(draw.program);
+  const badge = BADGE_COLORS[category] ?? BADGE_COLORS.default;
   const colors = isDark ? badge.dark : badge.light;
 
-  const formattedDate = dayjs(draw.draw_date, "MM/DD/YYYY", true).isValid()
-    ? dayjs(draw.draw_date, "MM/DD/YYYY").format("MMM D, YYYY")
+  const formattedDate = dayjs(draw.draw_date).isValid()
+    ? dayjs(draw.draw_date).format("MMM D, YYYY")
     : NA(draw.draw_date);
 
-  const rankLabel =
-    rank === 1 ? "Latest" : rank === 2 ? "2nd Latest" : "3rd Latest";
+  const rankLabel = rank === 1 ? "Latest Draw" : rank === 2 ? "Previous Draw" : "Older Draw";
 
-  // Footer: Province logic – matches DrawsTable behavior
+  // Footer: Province logic
   const renderFooterContent = () => {
-    const isPNP = draw.program === "PNP";
+    const isPNP = draw.program.toLowerCase().includes("pnp") || draw.program.toLowerCase().includes("provincial");
     const province = draw.draw_province?.trim();
 
-    // 1. PNP + has province → show icon + code
     if (isPNP && province) {
       return (
-        <>
-          <span className={styles.sep}> • </span>
-          <span className={styles.province}>
-            <MapPin className={styles.provIcon} />
-            {province}
-          </span>
-        </>
+        <div className={styles.provinceTag}>
+          <MapPin size={14} />
+          {province}
+        </div>
       );
     }
-
-    // 2. Not PNP → show N/A
-    if (!isPNP) {
-      return (
-        <>
-          <span className={styles.sep}> • </span>
-          <span className={styles.province}>N/A</span>
-        </>
-      );
-    }
-
-    // 3. PNP but no province → show nothing
     return null;
   };
 
@@ -132,63 +122,59 @@ function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+      whileHover={{ y: -8 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
       className={styles.card}
-      style={
-        {
-          "--badge-bg": colors.bg,
-          "--badge-text": colors.text,
-        } as React.CSSProperties
-      }
+      style={{ "--badge-bg": colors.bg, "--badge-text": colors.text } as React.CSSProperties}
     >
       <div className={styles.glass}>
+        {/* Glow Effects */}
         <div className={styles.glow} />
+        <div className={styles.glowBorder} />
 
-        {/* Header */}
-        <header className={styles.header}>
-          <h3 className={styles.title}>{rankLabel} Draw</h3>
-          <span className={styles.badge}>{draw.program}</span>
-        </header>
-
-        {/* CRS Score */}
-        <div className={styles.crs}>
-          <Hash
-            className={styles.icon}
-            style={{ color: isDark ? "#93c5fd" : "#3b82f6" }}
-          />
-          <span className={styles.crsValue}>{NA(draw.crs_cutoff)}</span>
+        {/* Top Meta: Rank & Date */}
+        <div className={styles.topMeta}>
+          <span className={styles.rankLabel}>{rankLabel}</span>
+          <span className={styles.dateLabel}>{formattedDate}</span>
         </div>
 
-        {/* Stats */}
-        <div className={styles.stats}>
-          <div className={styles.stat}>
-            <Users className={styles.iconSm} />
-            <span>
-              {draw.invitations != null
-                ? /^\d+$/.test(draw.invitations) // check if it’s all digits
-                  ? Number(draw.invitations).toLocaleString()
-                  : draw.invitations
-                : "N/A"}
-            </span>
+        {/* Main Content */}
+        <div className={styles.mainContent}>
+          <div className={styles.programHeader}>
+            <span className={styles.categoryBadge}>{category}</span>
+            <div className={styles.programTitleWrapper}>
+              <h3 className={styles.programTitle} title={draw.program}>
+                {draw.program}
+              </h3>
+            </div>
           </div>
 
-          <div className={styles.stat}>
-            <Calendar className={styles.iconSm} />
-            <span>{formattedDate}</span>
+          <div className={styles.statsGrid}>
+            <div className={styles.statBox}>
+              <p className={styles.statLabel}>CRS Cutoff</p>
+              <div className={styles.statValueRow}>
+                <Hash size={16} className={styles.statIcon} />
+                <span className={styles.statValue}>{NA(draw.crs_cutoff)}</span>
+              </div>
+            </div>
+
+            <div className={styles.statBox}>
+              <p className={styles.statLabel}>Invitations</p>
+              <div className={styles.statValueRow}>
+                <Users size={16} className={styles.statIcon} />
+                <span className={styles.statValue}>
+                  {draw.invitations ? Number(draw.invitations).toLocaleString() : "N/A"}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Footer */}
-        <footer className={styles.footer}>
-          <span>Round #{NA(draw.round)}</span>
-          <span className={styles.sep}> | </span>
-          <span className={styles.province}>
-            <MapPin className={styles.provIcon} />
-            {NA(draw.draw_province)}
-          </span>
-        </footer>
+        <div className={styles.cardFooter}>
+          <span className={styles.roundNumber}>#{NA(draw.round)}</span>
+          {renderFooterContent()}
+        </div>
       </div>
     </motion.div>
   );
@@ -249,18 +235,18 @@ export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
   useEffect(() => {
     const fetchDraws = async () => {
       try {
-        const res = await fetch("/api/draws");
+        const res = await fetch("/api/draws", { cache: 'no-store' });
         if (!res.ok) throw new Error("Failed to fetch draws");
 
         const data: Draw[] = await res.json();
 
-        // Same validation & sorting as DrawsTable
+        // Relaxed sorting logic
         const validDraws = data
-          .filter((d) => dayjs(d.draw_date, "MM/DD/YYYY", true).isValid())
+          .filter((d) => dayjs(d.draw_date).isValid())
           .sort(
             (a, b) =>
-              dayjs(b.draw_date, "MM/DD/YYYY").valueOf() -
-              dayjs(a.draw_date, "MM/DD/YYYY").valueOf()
+              dayjs(b.draw_date).valueOf() -
+              dayjs(a.draw_date).valueOf()
           );
 
         setDraws(validDraws.slice(0, 3));

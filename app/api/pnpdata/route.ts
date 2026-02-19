@@ -7,6 +7,8 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY!
 );
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     const { data, error } = await supabase
@@ -33,7 +35,7 @@ export async function GET() {
     return NextResponse.json(data, {
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "public, s-maxage=300, stale-while-revalidate=60",
+        "Cache-Control": "no-store, max-age=0",
       },
     });
   } catch (err: any) {
