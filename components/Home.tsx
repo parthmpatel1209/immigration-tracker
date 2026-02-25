@@ -21,6 +21,7 @@ import CLBConverter from './CLBConverter';
 import ProvinceTicker from './ProvinceTicker';
 import AnimatedCounter from './AnimatedCounter';
 import ScrollHighlightText from './ScrollHighlightText';
+import PlexusBackground from './PlexusBackground';
 
 interface HomeProps {
     onNavigateToTab?: (tabName: string) => void;
@@ -152,6 +153,7 @@ export default function Home({ onNavigateToTab }: HomeProps) {
         <div className={styles.container}>
             {/* Hero Section */}
             <section className={styles.hero}>
+                <PlexusBackground />
                 <div className={styles.heroContent}>
                     <div className={styles.badge}>
                         <div className={styles.badgePulse}></div>
