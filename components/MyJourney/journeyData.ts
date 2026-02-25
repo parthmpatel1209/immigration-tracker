@@ -55,10 +55,10 @@ export const journeyData = [
     },
     {
         id: "citizenship",
-        year: "Present",
-        title: "Citizenship Pending",
-        subtitle: "The Final Step",
-        description: "Waiting for the Oath Ceremony. The 7-year journey is almost complete.",
+        year: "Feb 2026",
+        title: "Canadian Citizen",
+        subtitle: "Journey Complete",
+        description: "Officially became a Canadian Citizen. The 8-year journey is finally complete.",
         gradient: "from-red-600 via-white to-red-600",
         image: "/journey/citizenship.png"
     }
