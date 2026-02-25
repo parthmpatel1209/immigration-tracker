@@ -28,8 +28,8 @@ const PlexusBackground: React.FC = () => {
 
         let animationFrameId: number;
         let particles: Particle[] = [];
-        const particleCount = 60;
-        const connectionDistance = 150;
+        const particleCount = 100; // Increased from 60
+        const connectionDistance = 180; // Increased from 150
         const mouseDistance = 200;
         let mouse = { x: -1000, y: -1000 };
 
@@ -45,7 +45,7 @@ const PlexusBackground: React.FC = () => {
                 this.y = Math.random() * height;
                 this.vx = (Math.random() - 0.5) * 0.5;
                 this.vy = (Math.random() - 0.5) * 0.5;
-                this.size = Math.random() * 2 + 1;
+                this.size = Math.random() * 2.5 + 1.5; // Increased from 1-3 to 1.5-4
             }
 
             update(width: number, height: number) {
@@ -102,8 +102,8 @@ const PlexusBackground: React.FC = () => {
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
                         const opacity = 1 - dist / connectionDistance;
-                        ctx.strokeStyle = color.replace('opacity', (opacity * 0.2).toString());
-                        ctx.lineWidth = 0.5;
+                        ctx.strokeStyle = color.replace('opacity', (opacity * 0.4).toString()); // Increased from 0.2
+                        ctx.lineWidth = 0.8; // Increased from 0.5
                         ctx.stroke();
                     }
                 }
@@ -113,7 +113,7 @@ const PlexusBackground: React.FC = () => {
         const render = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const particleColor = isDark ? 'rgba(96, 165, 250, 0.4)' : 'rgba(37, 99, 235, 0.4)';
+            const particleColor = isDark ? 'rgba(96, 165, 250, 0.6)' : 'rgba(37, 99, 235, 0.6)'; // Increased opacity
             const lineColor = isDark ? 'rgba(96, 165, 250, opacity)' : 'rgba(37, 99, 235, opacity)';
 
             particles.forEach(p => {
@@ -137,13 +137,17 @@ const PlexusBackground: React.FC = () => {
         };
 
         window.addEventListener('resize', resize);
+        window.addEventListener('scroll', resize); // Also resize on scroll as content may shift
         canvas.addEventListener('mousemove', handleMouseMove);
         canvas.addEventListener('mouseleave', handleMouseLeave);
 
+        // Initial setup
+        setTimeout(resize, 0); // Use timeout to ensure parent has dimensions
         render();
 
         return () => {
             window.removeEventListener('resize', resize);
+            window.removeEventListener('scroll', resize);
             canvas.removeEventListener('mousemove', handleMouseMove);
             canvas.removeEventListener('mouseleave', handleMouseLeave);
             cancelAnimationFrame(animationFrameId);
