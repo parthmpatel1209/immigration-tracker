@@ -126,8 +126,8 @@ const PlexusBackground: React.FC = () => {
         const render = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const particleColor = isDark ? 'rgba(96, 165, 250, 0.6)' : 'rgba(37, 99, 235, 0.6)'; // Increased opacity
-            const lineColor = isDark ? 'rgba(96, 165, 250, opacity)' : 'rgba(37, 99, 235, opacity)';
+            const particleColor = isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(228, 61, 60, 0.9)';
+            const lineColor = isDark ? 'rgba(255, 255, 255, opacity)' : 'rgba(228, 61, 60, opacity)';
 
             particles.forEach(p => {
                 p.update(canvas.width, canvas.height);

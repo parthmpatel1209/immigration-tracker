@@ -22,6 +22,7 @@ import ProvinceTicker from './ProvinceTicker';
 import AnimatedCounter from './AnimatedCounter';
 import ScrollHighlightText from './ScrollHighlightText';
 import PlexusBackground from './PlexusBackground';
+import Image from 'next/image';
 
 interface HomeProps {
     onNavigateToTab?: (tabName: string) => void;
@@ -161,12 +162,14 @@ export default function Home({ onNavigateToTab }: HomeProps) {
                     </div>
 
                     <h1 className={styles.heroTitle}>
-                        Your Path to <span className={styles.gradient}>Canada</span> <br />
+                        Your Path to <span className={styles.gradient}>
+                            C<Image src="/journey/maple.png" alt="" width={64} height={64} className={styles.titleIcon} priority />NADA
+                        </span> <br />
                         Starts Here
                     </h1>
 
                     <p className={styles.heroSubtitle}>
-                        Track latest draws, calculate your CRS score, and explore immigration pathways with Canada's most accurate real-time tracker.
+                        Navigate your Canadian immigration journey with real-time data, accurate CRS calculations, and comprehensive pathway insights that empower your decisions every step of the way.
                     </p>
 
                     {/* Quick Stats Banner */}
@@ -194,6 +197,7 @@ export default function Home({ onNavigateToTab }: HomeProps) {
             {/* Scroll Highlight Text Section */}
             <ScrollHighlightText
                 text="Navigate your Canadian immigration journey with real-time data, accurate CRS calculations, and comprehensive pathway insights that empower your decisions every step of the way"
+                highlightColor="linear-gradient(135deg, #ef4444 0%, #1f2937 100%)"
             />
 
             {/* Main Hub Section */}

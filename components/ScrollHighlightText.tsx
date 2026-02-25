@@ -11,7 +11,7 @@ interface ScrollHighlightTextProps {
 
 export default function ScrollHighlightText({
     text,
-    highlightColor = "linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899)"
+    highlightColor = "linear-gradient(135deg, #ef4444, #991b1b)"
 }: ScrollHighlightTextProps) {
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -54,12 +54,7 @@ interface WordProps {
 }
 
 function Word({ children, progress, range, highlightColor }: WordProps) {
-    const opacity = useTransform(progress, range, [0.3, 1]);
-    const color = useTransform(
-        progress,
-        range,
-        ["rgba(100, 116, 139, 0.6)", "transparent"]
-    );
+    const opacity = useTransform(progress, range, [0, 1]);
 
     return (
         <span className={styles.word}>
@@ -68,10 +63,9 @@ function Word({ children, progress, range, highlightColor }: WordProps) {
                 className={styles.wordHighlight}
                 style={{
                     opacity,
-                    color,
                     background: highlightColor,
                     WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: color,
+                    WebkitTextFillColor: "transparent",
                     backgroundClip: "text",
                 }}
             >

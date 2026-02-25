@@ -21,11 +21,11 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    background: linear-gradient(180deg, rgba(239, 246, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(180deg, rgba(239, 68, 68, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
 :global(.dark) .hero {
-    background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15) 0%, rgba(17, 24, 39, 0) 70%), linear-gradient(180deg, rgba(17, 24, 39, 0.8) 0%, rgba(17, 24, 39, 0) 100%);
+    background: radial-gradient(circle at 50% 0%, rgba(239, 68, 68, 0.1) 0%, rgba(10, 10, 10, 0) 70%), linear-gradient(180deg, rgba(10, 10, 10, 0.8) 0%, rgba(10, 10, 10, 0) 100%);
     color: #f3f4f6;
 }
 
@@ -64,20 +64,20 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: rgba(59, 130, 246, 0.1);
-    color: #2563eb;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
     border-radius: 9999px;
     font-size: 0.875rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.2);
     backdrop-filter: blur(8px);
 }
 
 :global(.dark) .badge {
-    background: rgba(59, 130, 246, 0.2);
-    color: #60a5fa;
-    border-color: rgba(59, 130, 246, 0.3);
+    background: rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.25);
 }
 
 .heroTitle {
@@ -102,7 +102,7 @@
 
 .gradient {
     display: inline-block;
-    background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -110,24 +110,52 @@
 }
 
 :global(.dark) .gradient {
-    background: linear-gradient(135deg, #60a5fa 0%, #22d3ee 100%);
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.titleIcon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 0.9em;
+    height: 0.9em;
+    margin: 0 -0.05em;
+    position: relative;
+    top: -0.08em;
+    object-fit: contain;
+    image-rendering: -webkit-optimize-contrast;
+    /* Safari/Chrome sharpness */
+    image-rendering: crisp-edges;
+}
+
+:global(.dark) .titleIcon {
+    color: #f87171;
 }
 
 .heroSubtitle {
     font-size: 1.125rem;
     line-height: 1.6;
     color: #4b5563;
+    /* Fallback */
     margin-bottom: 2.5rem;
-    max-width: 600px;
+    max-width: 800px;
     margin-left: auto;
     margin-right: auto;
+
+    background: linear-gradient(135deg, #ef4444 0%, #374151 70%, #1f2937 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 500;
 }
 
 :global(.dark) .heroSubtitle {
-    color: #9ca3af;
+    background: linear-gradient(135deg, #ef4444 0%, #ffffff 80%, #ffffff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .heroActions {
@@ -149,19 +177,19 @@
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
     font-weight: 600;
     border-radius: 9999px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3);
     transition: all 0.3s ease;
 }
 
 .primaryButton:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4);
 }
 
 .secondaryButton {
@@ -239,15 +267,15 @@
 
 .statIcon {
     margin-bottom: 0.5rem;
-    color: #2563eb;
+    color: #ef4444;
     padding: 0.5rem;
-    background: #eff6ff;
+    background: rgba(239, 68, 68, 0.1);
     border-radius: 50%;
 }
 
 :global(.dark) .statIcon {
-    background: rgba(37, 99, 235, 0.2);
-    color: #60a5fa;
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
 }
 
 .statValue {
@@ -350,19 +378,19 @@
 }
 
 .gradient0 {
-    background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #991b1b 100%);
 }
 
 .gradient1 {
-    background: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
 }
 
 .gradient2 {
-    background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
 }
 
 .gradient3 {
-    background: linear-gradient(135deg, #ea580c 0%, #d97706 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #7f1d1d 100%);
 }
 
 .hubContent {
@@ -427,7 +455,7 @@
 .hubStats {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #3b82f6;
+    color: #ef4444;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -441,7 +469,7 @@
 
 .hubCard:hover .hubArrow {
     transform: translateX(5px);
-    color: #3b82f6;
+    color: #ef4444;
 }
 
 /* --- Secondary Section --- */
@@ -552,7 +580,7 @@
     font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #3b82f6;
+    color: #ef4444;
     letter-spacing: 0.1em;
 }
 
@@ -578,7 +606,7 @@
 }
 
 .ctaContent {
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #991b1b 0%, #ef4444 100%);
     position: relative;
     padding: 4rem 2rem;
     border-radius: 2rem;
@@ -616,7 +644,7 @@
 
 .ctaButton {
     background: white;
-    color: #1e3a8a;
+    color: #991b1b;
     padding: 1rem 2rem;
     border-radius: 9999px;
     font-weight: 800;
@@ -664,7 +692,7 @@
 }
 
 .heroStatIcon {
-    color: #3b82f6;
+    color: #ef4444;
     display: flex;
     align-items: center;
 }
@@ -689,7 +717,7 @@
 .badgePulse {
     width: 8px;
     height: 8px;
-    background: #2563eb;
+    background: #ef4444;
     border-radius: 50%;
     position: relative;
     margin-right: 8px;
@@ -699,7 +727,7 @@
     content: "";
     position: absolute;
     inset: -4px;
-    background: #2563eb;
+    background: #ef4444;
     border-radius: 50%;
     animation: pulse-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
     opacity: 0.5;

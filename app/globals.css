@@ -1,9 +1,8 @@
-/* globals.css or equivalent */
 :root {
   --background: #ffffff;
   --foreground: #171717;
-  --primary: #2563eb;
-  /* blue-600 */
+  --primary: #ef4444;
+  /* canadian-red (red-600) */
   --hover: #e5e7eb;
   /* gray-200 */
 }
@@ -26,8 +25,8 @@ body {
 .dark body {
   --background: #0a0a0a;
   --foreground: #ededed;
-  --primary: #3b82f6;
-  /* lighter blue for dark mode */
+  --primary: #f87171;
+  /* lighter red for dark mode */
   --hover: #1f1f1f;
 }
 

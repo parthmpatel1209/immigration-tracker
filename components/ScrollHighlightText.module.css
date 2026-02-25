@@ -19,7 +19,8 @@
 }
 
 .wordShadow {
-    color: rgba(100, 116, 139, 0.3);
+    color: rgba(100, 116, 139, 0.2);
+    /* Subtle shadow */
 }
 
 :global(.dark) .wordShadow {
