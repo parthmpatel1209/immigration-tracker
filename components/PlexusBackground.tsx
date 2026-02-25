@@ -49,7 +49,7 @@ const PlexusBackground: React.FC = () => {
                 this.originalY = this.y;
                 this.vx = (Math.random() - 0.5) * 0.3;
                 this.vy = (Math.random() - 0.5) * 0.3;
-                this.size = Math.random() * 1.5 + 1; // Slightly smaller dots
+                this.size = Math.random() * 2 + 1.5; // Slightly larger dots
             }
 
             update(width: number, height: number) {
@@ -115,7 +115,7 @@ const PlexusBackground: React.FC = () => {
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
                         const opacity = 1 - dist / connectionDistance;
-                        ctx.strokeStyle = color.replace('opacity', (opacity * 0.15).toString()); // Much subtler lines
+                        ctx.strokeStyle = color.replace('opacity', (opacity * 0.3).toString()); // Increased from 0.15
                         ctx.lineWidth = 0.5;
                         ctx.stroke();
                     }
@@ -126,7 +126,7 @@ const PlexusBackground: React.FC = () => {
         const render = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const particleColor = isDark ? 'rgba(96, 165, 250, 0.4)' : 'rgba(37, 99, 235, 0.4)';
+            const particleColor = isDark ? 'rgba(96, 165, 250, 0.6)' : 'rgba(37, 99, 235, 0.6)'; // Increased opacity
             const lineColor = isDark ? 'rgba(96, 165, 250, opacity)' : 'rgba(37, 99, 235, opacity)';
 
             particles.forEach(p => {
