@@ -590,11 +590,18 @@
     color: #10b981;
 }
 
-.othersCard .cardIconSummary {
+.categoryBasedCard .cardIconSummary {
     background: linear-gradient(135deg,
-            rgba(245, 158, 11, 0.15) 0%,
-            rgba(245, 158, 11, 0.05) 100%);
-    color: #f59e0b;
+            rgba(30, 64, 175, 0.15) 0%,
+            rgba(30, 64, 175, 0.05) 100%);
+    color: #1e40af;
+}
+
+.nonEECard .cardIconSummary {
+    background: linear-gradient(135deg,
+            rgba(71, 85, 105, 0.15) 0%,
+            rgba(71, 85, 105, 0.05) 100%);
+    color: #334155;
 }
 
 .cardIconSummary svg {
@@ -778,33 +785,35 @@
 }
 
 .chartFilterBtn {
-    padding: 0.35rem 0.75rem;
-    border-radius: 8px;
-    border: 1px solid rgba(239, 68, 68, 0.2);
-    background: rgba(255, 255, 255, 0.5);
-    color: #6b7280;
-    font-size: 0.8rem;
+    padding: 0.65rem 1.25rem;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
     font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 :global(.dark) .chartFilterBtn {
-    background: rgba(31, 41, 55, 0.5);
-    color: #9ca3af;
-    border-color: rgba(239, 68, 68, 0.15);
+    background: #1e293b;
+    border-color: #334155;
+    color: #94a3b8;
 }
 
 .chartFilterBtn:hover {
-    background: rgba(239, 68, 68, 0.08);
+    border-color: #ef4444;
     color: #ef4444;
+    background: rgba(239, 68, 68, 0.02);
 }
 
 .chartFilterBtnActive {
     background: #ef4444 !important;
-    color: white !important;
     border-color: #ef4444 !important;
-    box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.35);
+    color: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
 }
 
 .chartIcon {
@@ -1467,39 +1476,51 @@
 }
 
 .badgeCEC {
-    background: rgba(239, 68, 68, 0.1);
-    color: #b91c1c;
-    border: 1px solid rgba(239, 68, 68, 0.25);
+    background: rgba(153, 27, 27, 0.08);
+    color: #991b1b;
+    border: 1px solid rgba(153, 27, 27, 0.2);
 }
 
 :global(.dark) .badgeCEC {
-    background: rgba(239, 68, 68, 0.15);
+    background: rgba(252, 165, 165, 0.12);
     color: #fca5a5;
-    border-color: rgba(239, 68, 68, 0.3);
+    border-color: rgba(252, 165, 165, 0.25);
 }
 
 .badgePNP {
-    background: rgba(16, 185, 129, 0.1);
-    color: #047857;
-    border: 1px solid rgba(16, 185, 129, 0.25);
+    background: rgba(6, 95, 70, 0.08);
+    color: #065f46;
+    border: 1px solid rgba(6, 95, 70, 0.2);
 }
 
 :global(.dark) .badgePNP {
-    background: rgba(16, 185, 129, 0.15);
+    background: rgba(52, 211, 153, 0.12);
     color: #34d399;
-    border-color: rgba(16, 185, 129, 0.3);
+    border-color: rgba(52, 211, 153, 0.25);
 }
 
-.badgeOthers {
-    background: rgba(245, 158, 11, 0.1);
-    color: #92400e;
-    border: 1px solid rgba(245, 158, 11, 0.25);
+.badgeCategoryBased {
+    background: rgba(30, 64, 175, 0.08);
+    color: #1e40af;
+    border: 1px solid rgba(30, 64, 175, 0.2);
 }
 
-:global(.dark) .badgeOthers {
-    background: rgba(245, 158, 11, 0.15);
-    color: #d97706;
-    border-color: rgba(245, 158, 11, 0.3);
+:global(.dark) .badgeCategoryBased {
+    background: rgba(96, 165, 250, 0.12);
+    color: #60a5fa;
+    border-color: rgba(96, 165, 250, 0.25);
+}
+
+.badgeNonEE {
+    background: rgba(71, 85, 105, 0.08);
+    color: #334155;
+    border: 1px solid rgba(71, 85, 105, 0.2);
+}
+
+:global(.dark) .badgeNonEE {
+    background: rgba(148, 163, 184, 0.12);
+    color: #cbd5e1;
+    border-color: rgba(148, 163, 184, 0.25);
 }
 
 .province {

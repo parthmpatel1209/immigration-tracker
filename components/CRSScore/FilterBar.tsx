@@ -8,7 +8,7 @@ interface FilterBarProps {
     onYearChange: (year: string) => void;
 }
 
-const filterButtons = ["All", "CEC", "PNP", "Others"];
+const filterButtons = ["All", "CEC", "PNP", "CEC - Category Based", "Other"];
 
 export default function FilterBar({
     selectedFilter,

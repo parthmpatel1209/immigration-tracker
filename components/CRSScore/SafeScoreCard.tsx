@@ -11,16 +11,18 @@ interface SafeScoreRange {
 interface SafeScoreCardProps {
     cecRange: SafeScoreRange | null;
     pnpRange: SafeScoreRange | null;
-    othersRange: SafeScoreRange | null;
+    categoryBasedRange: SafeScoreRange | null;
+    nonEERange: SafeScoreRange | null;
 }
 
 export default function SafeScoreCard({
     cecRange,
     pnpRange,
-    othersRange,
+    categoryBasedRange,
+    nonEERange,
 }: SafeScoreCardProps) {
     const renderRange = (
-        category: ProgramCategory,
+        category: string,
         range: SafeScoreRange | null,
         color: string
     ) => (
@@ -50,9 +52,10 @@ export default function SafeScoreCard({
                     </p>
                 </div>
                 <div className={styles.safeScoreGrid}>
-                    {renderRange("CEC", cecRange, "#ef4444")}
-                    {renderRange("PNP", pnpRange, "#10b981")}
-                    {renderRange("Others", othersRange, "#f59e0b")}
+                    {renderRange("CEC", cecRange, "#991b1b")}
+                    {renderRange("PNP", pnpRange, "#065f46")}
+                    {renderRange("Category Based", categoryBasedRange, "#1e40af")}
+                    {renderRange("Other", nonEERange, "#334155")}
                 </div>
                 <div className={styles.safeScoreTip}>
                     <AlertCircle className={styles.tipIcon} />

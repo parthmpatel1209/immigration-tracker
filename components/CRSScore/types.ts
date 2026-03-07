@@ -27,17 +27,19 @@ export interface MonthlyData {
     month: string;
     CEC: number;
     PNP: number;
-    Others: number;
+    CategoryBased: number;
+    NonEE: number;
 }
 
 export interface DistributionData {
     range: string;
     CEC: number;
     PNP: number;
-    Others: number;
+    CategoryBased: number;
+    NonEE: number;
 }
 
-export type ProgramCategory = "CEC" | "PNP" | "Others";
+export type ProgramCategory = "CEC" | "PNP" | "CategoryBased" | "NonEE";
 export type ViewMode = "table" | "analytics";
 export type SortBy = "date" | "crs" | "invitations";
 export type SortOrder = "asc" | "desc";

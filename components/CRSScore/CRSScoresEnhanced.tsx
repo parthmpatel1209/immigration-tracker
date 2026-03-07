@@ -92,7 +92,8 @@ function CRSScoresEnhanced() {
         const stats = {
             CEC: 0,
             PNP: 0,
-            Others: 0,
+            CategoryBased: 0,
+            NonEE: 0,
             total: 0,
         };
 
@@ -105,6 +106,13 @@ function CRSScoresEnhanced() {
 
         return stats;
     }, [draws]);
+
+    // Helper to map UI labels to internal categories
+    const mapFilterToCategory = (filter: string): string => {
+        if (filter === "CEC - Category Based") return "CategoryBased";
+        if (filter === "Other") return "NonEE";
+        return filter; // All, CEC, PNP
+    };
 
     // Get available years
     const availableYears = useMemo(() => {
@@ -122,6 +130,47 @@ function CRSScoresEnhanced() {
         return ["All", ...years];
     }, [draws]);
 
+    // Generate line chart data
+    const lineChartData = useMemo(() => {
+        let filtered = draws;
+
+        if (lineChartYear !== "All") {
+            filtered = filtered.filter((draw) => {
+                const drawYear = dayjs(draw.draw_date).year().toString();
+                return drawYear === lineChartYear;
+            });
+        }
+
+        if (lineChartFilter !== "All") {
+            const internalCategory = mapFilterToCategory(lineChartFilter);
+            filtered = filtered.filter(
+                (draw) => categorizeProgram(draw.program) === internalCategory
+            );
+        }
+
+        const data: TrendDataPoint[] = filtered
+            .map((draw) => ({
+                date: dayjs(draw.draw_date).format("MMM DD, YYYY"),
+                timestamp: dayjs(draw.draw_date).valueOf(),
+                crs: Number(draw.crs_cutoff),
+                program: draw.program,
+                category: categorizeProgram(draw.program),
+            }))
+            .filter((d) => !isNaN(d.crs) && d.crs > 0)
+            .sort((a, b) => a.timestamp - b.timestamp);
+
+        return data;
+    }, [draws, lineChartYear, lineChartFilter]);
+
+    // Calculate dynamic Y-axis domain
+    const yAxisDomain = useMemo(() => {
+        if (lineChartData.length === 0) return [300, 900];
+        const scores = lineChartData.map((d) => d.crs);
+        const min = Math.min(...scores);
+        const max = Math.max(...scores);
+        return [Math.max(0, min - 20), max + 20];
+    }, [lineChartData]);
+
     // Filter draws
     const filteredDraws = useMemo(() => {
         let filtered = [...draws];
@@ -135,8 +184,9 @@ function CRSScoresEnhanced() {
         }
 
         if (selectedFilter !== "All") {
+            const internalCategory = mapFilterToCategory(selectedFilter);
             filtered = filtered.filter(
-                (d) => categorizeProgram(d.program) === selectedFilter
+                (d) => categorizeProgram(d.program) === internalCategory
             );
         }
 
@@ -166,46 +216,6 @@ function CRSScoresEnhanced() {
         });
     }, [draws, selectedFilter, selectedYear, viewMode, sortBy, sortOrder]);
 
-    // Generate line chart data
-    const lineChartData = useMemo(() => {
-        let filtered = draws;
-
-        if (lineChartYear !== "All") {
-            filtered = filtered.filter((draw) => {
-                const drawYear = dayjs(draw.draw_date).year().toString();
-                return drawYear === lineChartYear;
-            });
-        }
-
-        if (lineChartFilter !== "All") {
-            filtered = filtered.filter(
-                (draw) => categorizeProgram(draw.program) === lineChartFilter
-            );
-        }
-
-        const data: TrendDataPoint[] = filtered
-            .map((draw) => ({
-                date: dayjs(draw.draw_date).format("MMM DD, YYYY"),
-                timestamp: dayjs(draw.draw_date).valueOf(),
-                crs: Number(draw.crs_cutoff),
-                program: draw.program,
-                category: categorizeProgram(draw.program),
-            }))
-            .filter((d) => !isNaN(d.crs) && d.crs > 0)
-            .sort((a, b) => a.timestamp - b.timestamp);
-
-        return data;
-    }, [draws, lineChartYear, lineChartFilter]);
-
-    // Calculate dynamic Y-axis domain
-    const yAxisDomain = useMemo(() => {
-        if (lineChartData.length === 0) return [300, 900];
-        const scores = lineChartData.map((d) => d.crs);
-        const min = Math.min(...scores);
-        const max = Math.max(...scores);
-        return [Math.max(0, min - 20), max + 20];
-    }, [lineChartData]);
-
     // Generate monthly chart data
     const monthlyChartData = useMemo(() => {
         const monthMap = new Map<string, MonthlyData>();
@@ -220,7 +230,8 @@ function CRSScoresEnhanced() {
                     month: monthKey,
                     CEC: 0,
                     PNP: 0,
-                    Others: 0,
+                    CategoryBased: 0,
+                    NonEE: 0,
                 });
             }
 
@@ -261,20 +272,16 @@ function CRSScoresEnhanced() {
 
     // Calculate safe score ranges
     const safeScoreInfo = useMemo(() => {
-        const cecScores = filteredDraws
-            .filter((d) => categorizeProgram(d.program) === "CEC")
-            .map((d) => Number(d.crs_cutoff))
-            .filter((s) => s > 0);
+        const getScoresForCategory = (cat: string) =>
+            filteredDraws
+                .filter((d) => categorizeProgram(d.program) === cat)
+                .map((d) => Number(d.crs_cutoff))
+                .filter((s) => s > 0);
 
-        const pnpScores = filteredDraws
-            .filter((d) => categorizeProgram(d.program) === "PNP")
-            .map((d) => Number(d.crs_cutoff))
-            .filter((s) => s > 0);
-
-        const othersScores = filteredDraws
-            .filter((d) => categorizeProgram(d.program) === "Others")
-            .map((d) => Number(d.crs_cutoff))
-            .filter((s) => s > 0);
+        const cecScores = getScoresForCategory("CEC");
+        const pnpScores = getScoresForCategory("PNP");
+        const catBasedScores = getScoresForCategory("CategoryBased");
+        const nonEEScores = getScoresForCategory("NonEE");
 
         const getRange = (scores: number[]) => {
             if (scores.length === 0) return null;
@@ -287,7 +294,8 @@ function CRSScoresEnhanced() {
         return {
             CEC: getRange(cecScores),
             PNP: getRange(pnpScores),
-            Others: getRange(othersScores),
+            CategoryBased: getRange(catBasedScores),
+            NonEE: getRange(nonEEScores),
         };
     }, [filteredDraws]);
 
@@ -372,7 +380,8 @@ function CRSScoresEnhanced() {
                     <SummaryCards
                         cecTotal={summaryStats.CEC}
                         pnpTotal={summaryStats.PNP}
-                        othersTotal={summaryStats.Others}
+                        categoryBasedTotal={summaryStats.CategoryBased}
+                        nonEETotal={summaryStats.NonEE}
                         grandTotal={summaryStats.total}
                     />
 
@@ -395,7 +404,8 @@ function CRSScoresEnhanced() {
                     <SafeScoreCard
                         cecRange={safeScoreInfo.CEC}
                         pnpRange={safeScoreInfo.PNP}
-                        othersRange={safeScoreInfo.Others}
+                        categoryBasedRange={safeScoreInfo.CategoryBased}
+                        nonEERange={safeScoreInfo.NonEE}
                     />
                 </>
             )}

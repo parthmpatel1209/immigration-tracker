@@ -4,14 +4,16 @@ import styles from "./CRSScore.module.css";
 interface SummaryCardsProps {
     cecTotal: number;
     pnpTotal: number;
-    othersTotal: number;
+    categoryBasedTotal: number;
+    nonEETotal: number;
     grandTotal: number;
 }
 
 export default function SummaryCards({
     cecTotal,
     pnpTotal,
-    othersTotal,
+    categoryBasedTotal,
+    nonEETotal,
     grandTotal,
 }: SummaryCardsProps) {
     return (
@@ -44,18 +46,33 @@ export default function SummaryCards({
                     <div className={styles.cardLabelSummary}>Provincial Nominee Program</div>
                 </div>
 
-                <div className={`${styles.summaryCard} ${styles.othersCard}`}>
+                <div className={`${styles.summaryCard} ${styles.categoryBasedCard}`}>
                     <div className={styles.cardHeaderSummary}>
                         <div className={styles.cardIconSummary}>
                             <Users />
                         </div>
-                        <h3 className={styles.cardTitleSummary}>Others</h3>
+                        <h3 className={styles.cardTitleSummary}>Category Based</h3>
                     </div>
                     <div className={styles.cardValueSummary}>
-                        {othersTotal.toLocaleString()}
+                        {categoryBasedTotal.toLocaleString()}
                     </div>
                     <div className={styles.cardLabelSummary}>
                         French, Healthcare, STEM, etc.
+                    </div>
+                </div>
+
+                <div className={`${styles.summaryCard} ${styles.nonEECard}`}>
+                    <div className={styles.cardHeaderSummary}>
+                        <div className={styles.cardIconSummary}>
+                            <Target />
+                        </div>
+                        <h3 className={styles.cardTitleSummary}>Other</h3>
+                    </div>
+                    <div className={styles.cardValueSummary}>
+                        {nonEETotal.toLocaleString()}
+                    </div>
+                    <div className={styles.cardLabelSummary}>
+                        Non-Express Entry Draws
                     </div>
                 </div>
 

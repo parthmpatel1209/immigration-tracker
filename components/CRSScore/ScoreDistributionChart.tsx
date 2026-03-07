@@ -26,10 +26,11 @@ export default function ScoreDistributionChart({ data, safeScore, darkMode }: Sc
     // Split data by category for coloring and legend
     const cecData = data.filter(d => d.category === "CEC");
     const pnpData = data.filter(d => d.category === "PNP");
-    const othersData = data.filter(d => d.category === "Others");
+    const catBasedData = data.filter(d => d.category === "CategoryBased");
+    const nonEEData = data.filter(d => d.category === "NonEE");
 
     // Static X-axis categories to ensure order
-    const xDomain = ["CEC", "PNP", "Others"];
+    const xDomain = ["CEC", "PNP", "CategoryBased", "NonEE"];
 
     return (
         <div className={styles.chartSection}>
@@ -105,9 +106,10 @@ export default function ScoreDistributionChart({ data, safeScore, darkMode }: Sc
                                 fontSize: 12
                             }}
                         />
-                        <Scatter name="CEC" data={cecData} fill="#ef4444" />
+                        <Scatter name="CEC" data={cecData} fill="#991b1b" />
                         <Scatter name="PNP" data={pnpData} fill="#10b981" />
-                        <Scatter name="Others" data={othersData} fill="#f59e0b" />
+                        <Scatter name="Category Based" data={catBasedData} fill="#1e40af" />
+                        <Scatter name="Other" data={nonEEData} fill="#334155" />
                     </ScatterChart>
                 </ResponsiveContainer>
             </div>

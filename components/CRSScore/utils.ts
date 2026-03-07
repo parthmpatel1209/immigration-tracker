@@ -9,18 +9,30 @@ export function NA(value: any, fallback = "N/A"): string {
 
 export function categorizeProgram(program: string): ProgramCategory {
     const lowerProgram = program.toLowerCase();
+
+    // 1. Explicitly check for CEC/Canadian Experience
     if (
         lowerProgram.includes("canadian experience") ||
         lowerProgram.includes("cec")
     ) {
         return "CEC";
-    } else if (
+    }
+
+    // 2. Explicitly check for PNP/Provincial Nominee
+    if (
         lowerProgram.includes("provincial nominee") ||
         lowerProgram.includes("pnp")
     ) {
         return "PNP";
     }
-    return "Others";
+
+    // 3. Express Entry Category Based
+    if (lowerProgram.includes("express entry")) {
+        return "CategoryBased";
+    }
+
+    // 4. Non-Express Entry (AAIP, OINP, Skilled Worker, etc.)
+    return "NonEE";
 }
 
 export function getRange(scores: number[]) {
@@ -35,24 +47,24 @@ export const BADGE_COLORS: Record<
     string,
     { light: { bg: string; text: string }; dark: { bg: string; text: string } }
 > = {
-    "Express Entry": {
-        light: { bg: "#e0e7ff", text: "#4338ca" },
-        dark: { bg: "#4338ca", text: "#c7d2fe" },
-    },
     CEC: {
-        light: { bg: "#dbeafe", text: "#1e40af" },
-        dark: { bg: "#1e40af", text: "#bfdbfe" },
+        light: { bg: "rgba(153, 27, 27, 0.08)", text: "#991b1b" },
+        dark: { bg: "rgba(252, 165, 165, 0.15)", text: "#fca5a5" },
     },
     PNP: {
-        light: { bg: "#d1fae5", text: "#065f46" },
-        dark: { bg: "#065f46", text: "#a7f3d0" },
+        light: { bg: "rgba(6, 95, 70, 0.08)", text: "#065f46" },
+        dark: { bg: "rgba(52, 211, 153, 0.15)", text: "#34d399" },
     },
-    FSW: {
-        light: { bg: "#fef3c7", text: "#92400e" },
-        dark: { bg: "#78350f", text: "#fde68a" },
+    CategoryBased: {
+        light: { bg: "rgba(30, 64, 175, 0.08)", text: "#1e40af" },
+        dark: { bg: "rgba(96, 165, 250, 0.15)", text: "#60a5fa" },
+    },
+    NonEE: {
+        light: { bg: "rgba(71, 85, 105, 0.08)", text: "#334155" },
+        dark: { bg: "rgba(148, 163, 184, 0.15)", text: "#cbd5e1" },
     },
     default: {
-        light: { bg: "#e5e7eb", text: "#374151" },
-        dark: { bg: "#374151", text: "#d1d5db" },
+        light: { bg: "#f8fafc", text: "#64748b" },
+        dark: { bg: "#1e293b", text: "#94a3b8" },
     },
 };
