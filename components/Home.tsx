@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import dayjs from "dayjs";
 import {
     Heart,
@@ -15,12 +15,16 @@ import {
     GraduationCap,
     CheckCircle2,
     Bell,
+    ChevronUp,
+    ChevronDown,
+    ChevronsUpDown,
+    BarChart2,
 } from "lucide-react";
 import styles from "./Home.module.css";
 import CLBConverter from './CLBConverter';
 import ProvinceTicker from './ProvinceTicker';
 import AnimatedCounter from './AnimatedCounter';
-import ScrollHighlightText from './ScrollHighlightText';
+
 import PlexusBackground from './PlexusBackground';
 import Image from 'next/image';
 
@@ -28,9 +32,34 @@ interface HomeProps {
     onNavigateToTab?: (tabName: string) => void;
 }
 
+type SortKey = "year" | "pr" | "study" | "work" | "citizenship";
+type SortDir = "asc" | "desc";
+
+const RAW_DATA = [
+    { year: 2010, pr: 280681, study: 225295, work: 145000, citizenship: 143600, notes: "" },
+    { year: 2011, pr: 248748, study: 248470, work: 140000, citizenship: 181300, notes: "" },
+    { year: 2012, pr: 257903, study: 274700, work: 149000, citizenship: 113100, notes: "" },
+    { year: 2013, pr: 259023, study: 301545, work: 161000, citizenship: 128900, notes: "" },
+    { year: 2014, pr: 260411, study: 330110, work: 164000, citizenship: 262600, notes: "" },
+    { year: 2015, pr: 271845, study: 352330, work: 165000, citizenship: 252200, notes: "" },
+    { year: 2016, pr: 296340, study: 410570, work: 215800, citizenship: 147700, notes: "" },
+    { year: 2017, pr: 286475, study: 490775, work: 301236, citizenship: 106300, notes: "" },
+    { year: 2018, pr: 321035, study: 567065, work: 337460, citizenship: 176400, notes: "" },
+    { year: 2019, pr: 341180, study: 638280, work: 403869, citizenship: 250400, notes: "" },
+    { year: 2020, pr: 184585, study: 528190, work: 326739, citizenship: 110900, notes: "COVID impact" },
+    { year: 2021, pr: 405999, study: 621565, work: 416846, citizenship: 221919, notes: "" },
+    { year: 2022, pr: 437539, study: 807750, work: 605851, citizenship: 373000, notes: "" },
+    { year: 2023, pr: 471808, study: 1037200, work: 949270, citizenship: 354000, notes: "" },
+    { year: 2024, pr: 483640, study: 996400, work: 911000, citizenship: 360000, notes: "" },
+    { year: 2025, pr: 395000, study: 305900, work: null, citizenship: null, notes: "Target / Cap" },
+    { year: 2026, pr: 380000, study: null, work: null, citizenship: null, notes: "Target" },
+];
+
 export default function Home({ onNavigateToTab }: HomeProps) {
     const [isDark, setIsDark] = useState(false);
     const [isConverterOpen, setIsConverterOpen] = useState(false);
+    const [sortKey, setSortKey] = useState<SortKey>("year");
+    const [sortDir, setSortDir] = useState<SortDir>("desc");
 
     // Sync dark mode
     useEffect(() => {
@@ -150,6 +179,33 @@ export default function Home({ onNavigateToTab }: HomeProps) {
         { label: "Frequency", value: "Bi-Weekly", sub: "Average", icon: Activity },
     ];
 
+    const sortedData = useMemo(() => {
+        return [...RAW_DATA].sort((a, b) => {
+            const av = a[sortKey] ?? -1;
+            const bv = b[sortKey] ?? -1;
+            return sortDir === "asc" ? (av as number) - (bv as number) : (bv as number) - (av as number);
+        });
+    }, [sortKey, sortDir]);
+
+    const handleSort = (key: SortKey) => {
+        if (sortKey === key) {
+            setSortDir(d => d === "asc" ? "desc" : "asc");
+        } else {
+            setSortKey(key);
+            setSortDir("desc");
+        }
+    };
+
+    const fmt = (n: number | null) =>
+        n == null ? <span className={styles.cellPending}>Pending</span> : n.toLocaleString();
+
+    const SortIcon = ({ col }: { col: SortKey }) => {
+        if (sortKey !== col) return <ChevronsUpDown size={13} className={styles.sortIconInactive} />;
+        return sortDir === "asc"
+            ? <ChevronUp size={13} className={styles.sortIconActive} />
+            : <ChevronDown size={13} className={styles.sortIconActive} />;
+    };
+
     return (
         <div className={styles.container}>
             {/* Hero Section */}
@@ -193,12 +249,6 @@ export default function Home({ onNavigateToTab }: HomeProps) {
 
             {/* Province Ticker */}
             <ProvinceTicker />
-
-            {/* Scroll Highlight Text Section */}
-            <ScrollHighlightText
-                text="Navigate your Canadian immigration journey with real-time data, accurate CRS calculations, and comprehensive pathway insights that empower your decisions every step of the way"
-                highlightColor="linear-gradient(135deg, #ef4444 0%, #1f2937 100%)"
-            />
 
             {/* Main Hub Section */}
             <section className={styles.hubSection}>
@@ -268,6 +318,67 @@ export default function Home({ onNavigateToTab }: HomeProps) {
             </section>
 
             <CLBConverter isOpen={isConverterOpen} onClose={() => setIsConverterOpen(false)} isDark={isDark} />
+
+            {/* Historical Immigration Data Table */}
+            <section className={styles.dataSection}>
+                <div className={styles.dataSectionHeader}>
+                    <div className={styles.dataSectionIcon}>
+                        <BarChart2 size={22} />
+                    </div>
+                    <div>
+                        <h2 className={styles.dataSectionTitle}>Canadian Immigration at a Glance</h2>
+                        <p className={styles.dataSectionSubtitle}>Historical admissions data from 2010 – 2026 · Click any column header to sort</p>
+                    </div>
+                </div>
+
+                <div className={styles.tableWrapper}>
+                    <table className={styles.dataTable}>
+                        <thead>
+                            <tr>
+                                <th className={styles.th} onClick={() => handleSort("year")}>
+                                    <span className={styles.thInner}>Year <SortIcon col="year" /></span>
+                                </th>
+                                <th className={styles.th} onClick={() => handleSort("pr")}>
+                                    <span className={styles.thInner}>Permanent Residents <SortIcon col="pr" /></span>
+                                </th>
+                                <th className={styles.th} onClick={() => handleSort("study")}>
+                                    <span className={styles.thInner}>Study Permits <SortIcon col="study" /></span>
+                                </th>
+                                <th className={styles.th} onClick={() => handleSort("work")}>
+                                    <span className={styles.thInner}>Work Permits <SortIcon col="work" /></span>
+                                </th>
+                                <th className={styles.th} onClick={() => handleSort("citizenship")}>
+                                    <span className={styles.thInner}>Citizenship Grants <SortIcon col="citizenship" /></span>
+                                </th>
+                                <th className={`${styles.th} ${styles.thNote}`}>
+                                    <span className={styles.thInner}>Notes</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {sortedData.map((row) => (
+                                <tr
+                                    key={row.year}
+                                    className={`${styles.tr} ${row.notes === "COVID impact" ? styles.trCovid : ""} ${row.notes === "Target / Cap" || row.notes === "Target" ? styles.trTarget : ""}`}
+                                >
+                                    <td className={`${styles.td} ${styles.tdYear}`}>{row.year}</td>
+                                    <td className={styles.td}>{fmt(row.pr)}</td>
+                                    <td className={styles.td}>{fmt(row.study)}</td>
+                                    <td className={styles.td}>{fmt(row.work)}</td>
+                                    <td className={styles.td}>{fmt(row.citizenship)}</td>
+                                    <td className={`${styles.td} ${styles.tdNote}`}>
+                                        {row.notes ? <span className={styles.noteTag}>{row.notes}</span> : null}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <p className={styles.dataFootnote}>
+                    Sources: IRCC Annual Reports, Statistics Canada · Approximate figures (~) used where exact data unavailable · 2025–2026 figures are government targets
+                </p>
+            </section>
 
             {/* CTA Section */}
             <section className={styles.ctaSection}>

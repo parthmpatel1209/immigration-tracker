@@ -108,7 +108,7 @@ const MobileNewsCarousel = ({
                                         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/30" />
                                     </div>
                                 ) : (
-                                    <div className="absolute top-0 left-0 w-full h-[140px] bg-gradient-to-br from-blue-600 to-indigo-800">
+                                    <div className="absolute top-0 left-0 w-full h-[140px] bg-gradient-to-br from-red-600 to-red-900">
                                         <div className="absolute inset-0 bg-black/10" />
                                     </div>
                                 )}
@@ -118,7 +118,7 @@ const MobileNewsCarousel = ({
 
                                 {/* Date Label (Top Right) */}
                                 <div className="absolute top-3 right-3 z-30">
-                                    <span className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full shadow-lg border border-white/20">
+                                    <span className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white bg-gradient-to-r from-red-600 to-red-800 rounded-full shadow-lg border border-white/20">
                                         {dateLabel}
                                     </span>
                                 </div>

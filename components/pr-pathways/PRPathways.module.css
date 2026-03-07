@@ -1,7 +1,7 @@
 /* ---------- ROOT CONTAINER ---------- */
 .container {
   max-width: auto;
-  background: linear-gradient(to bottom right, #eff6ff, #ffffff, #eef2ff);
+  background: linear-gradient(to bottom right, #fff5f5, #ffffff, #fef2f2);
   margin: 0 auto;
   padding: 1.5rem 1rem;
   border-radius: 10px;
@@ -9,7 +9,7 @@
 }
 
 :global(html.dark) .container {
-  background: linear-gradient(to bottom right, #111827, #1e1b4b, #111827);
+  background: linear-gradient(to bottom right, #111827, #1a0505, #111827);
 }
 
 @media (min-width: 640px) {
@@ -33,11 +33,11 @@
 }
 
 .breadcrumb:hover {
-  color: #4f46e5;
+  color: #ef4444;
 }
 
 .breadcrumbActive {
-  color: #4f46e5;
+  color: #ef4444;
   font-weight: 600;
 }
 
@@ -46,7 +46,7 @@
 }
 
 :global(.dark) .breadcrumbActive {
-  color: #c4b5fd;
+  color: #fca5a5;
 }
 
 .breadcrumbSeparator {
@@ -63,7 +63,7 @@
 .title {
   font-size: 2.5rem;
   font-weight: 900;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed, #ec4899);
+  background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -114,9 +114,9 @@
 }
 
 .statCard {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 255, 0.9));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 248, 248, 0.9));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.15);
   border-radius: 16px;
   padding: 1rem;
   display: flex;
@@ -128,26 +128,26 @@
 
 :global(.dark) .statCard {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.9));
-  border-color: rgba(139, 92, 246, 0.25);
+  border-color: rgba(239, 68, 68, 0.2);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .statCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(124, 58, 237, 0.2);
-  border-color: rgba(124, 58, 237, 0.4);
+  box-shadow: 0 12px 40px rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 :global(.dark) .statCard:hover {
-  box-shadow: 0 12px 40px rgba(139, 92, 246, 0.3);
-  border-color: rgba(139, 92, 246, 0.5);
+  box-shadow: 0 12px 40px rgba(239, 68, 68, 0.25);
+  border-color: rgba(239, 68, 68, 0.4);
 }
 
 .statIcon {
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   display: flex;
   align-items: center;
@@ -156,7 +156,7 @@
 }
 
 :global(.dark) .statIcon {
-  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+  background: linear-gradient(135deg, #dc2626, #ef4444);
 }
 
 .statContent {
@@ -168,14 +168,14 @@
   font-weight: 800;
   color: #1e293b;
   margin-bottom: 0.25rem;
-  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  background: linear-gradient(90deg, #ef4444, #b91c1c);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 :global(.dark) .statValue {
-  background: linear-gradient(90deg, #c4b5fd, #a78bfa);
+  background: linear-gradient(90deg, #fca5a5, #f87171);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -197,17 +197,17 @@
 .filterSection {
   max-width: 1400px;
   margin: 0 auto 3rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 255, 0.85));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 248, 248, 0.85));
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.15);
   border-radius: 24px;
   padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
 }
 
 :global(.dark) .filterSection {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.85));
-  border-color: rgba(139, 92, 246, 0.25);
+  border-color: rgba(239, 68, 68, 0.2);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
@@ -286,8 +286,8 @@
 
 .searchInput:focus {
   outline: none;
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
 }
 
 :global(.dark) .searchInput {
@@ -297,8 +297,8 @@
 }
 
 :global(.dark) .searchInput:focus {
-  border-color: #a78bfa;
-  box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.15);
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 4px rgba(252, 165, 165, 0.12);
 }
 
 .clearSearch {
@@ -373,8 +373,8 @@
 
 .filterSelect:focus {
   outline: none;
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 :global(.dark) .filterSelect {
@@ -384,8 +384,8 @@
 }
 
 :global(.dark) .filterSelect:focus {
-  border-color: #a78bfa;
-  box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.15);
+  border-color: #fca5a5;
+  box-shadow: 0 0 0 3px rgba(252, 165, 165, 0.12);
 }
 
 /* ---------- RESULTS HEADER ---------- */
@@ -401,7 +401,7 @@
 }
 
 .resultsCount strong {
-  color: #4f46e5;
+  color: #ef4444;
   font-weight: 700;
 }
 
@@ -410,7 +410,7 @@
 }
 
 :global(.dark) .resultsCount strong {
-  color: #c4b5fd;
+  color: #fca5a5;
 }
 
 /* ---------- GRID ---------- */
@@ -439,10 +439,10 @@
   position: relative;
   border-radius: 28px;
   overflow: hidden;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.97), rgba(248, 250, 255, 0.9));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.97), rgba(255, 248, 248, 0.9));
   backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(124, 58, 237, 0.25);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1.5px solid rgba(239, 68, 68, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   height: 100%;
   display: flex;
@@ -451,18 +451,18 @@
 
 :global(.dark) .card {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.98), rgba(15, 23, 42, 0.95));
-  border-color: rgba(139, 92, 246, 0.4);
+  border-color: rgba(239, 68, 68, 0.3);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
 .card:hover {
-  transform: translateY(-12px) scale(1.02);
-  box-shadow: 0 30px 60px rgba(124, 58, 237, 0.25);
-  border-color: rgba(124, 58, 237, 0.5);
+  transform: translateY(-10px) scale(1.01);
+  box-shadow: 0 28px 55px rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.45);
 }
 
 :global(.dark) .card:hover {
-  box-shadow: 0 30px 60px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 28px 55px rgba(239, 68, 68, 0.3);
 }
 
 /* ---------- CAROUSEL ---------- */
@@ -505,7 +505,7 @@
   font-size: 1.75rem;
   font-weight: 800;
   margin-bottom: 0.75rem;
-  background: linear-gradient(90deg, #4f46e5, #6366f1);
+  background: linear-gradient(90deg, #ef4444, #dc2626);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -521,7 +521,7 @@
 }
 
 :global(.dark) .provinceTitle {
-  background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+  background: linear-gradient(90deg, #fca5a5, #f87171);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -531,11 +531,11 @@
   font-size: 1.375rem;
   font-weight: 700;
   margin-bottom: 1rem;
-  color: #4f46e5;
+  color: #ef4444;
 }
 
 :global(.dark) .keyPoints {
-  color: #c4b5fd;
+  color: #fca5a5;
 }
 
 /* ---------- BADGES ---------- */
@@ -549,21 +549,21 @@
 .programBadge {
   padding: 0.75rem 1.5rem;
   border-radius: 9999px;
-  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  background: linear-gradient(90deg, #ef4444, #dc2626);
   color: white;
   font-weight: 700;
   text-align: center;
   font-size: 0.95rem;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .statusBadge {
   display: inline-block;
   padding: 0.5rem 1rem;
   border-radius: 12px;
-  background: rgba(139, 92, 246, 0.15);
-  color: #7c3aed;
-  border: 1px solid rgba(139, 92, 246, 0.4);
+  background: rgba(239, 68, 68, 0.1);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
   font-weight: 600;
   font-size: 0.875rem;
   text-align: center;
@@ -571,14 +571,14 @@
 }
 
 :global(.dark) .statusBadge {
-  background: rgba(167, 139, 250, 0.25);
-  color: #e0d4ff;
-  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(252, 165, 165, 0.15);
+  color: #fca5a5;
+  border-color: rgba(252, 165, 165, 0.35);
 }
 
 .statusBadge:hover {
-  background: rgba(124, 58, 237, 0.2);
-  border-color: rgba(124, 58, 237, 0.6);
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.5);
   cursor: default;
 }
 
@@ -587,7 +587,7 @@
   width: 48px;
   height: 48px;
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(124, 58, 237, 0.15));
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.12), rgba(220, 38, 38, 0.12));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -595,15 +595,15 @@
 }
 
 :global(.dark) .provinceIconContainer {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(167, 139, 250, 0.2));
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.18), rgba(252, 165, 165, 0.12));
 }
 
 .provinceIcon {
-  color: #4f46e5;
+  color: #ef4444;
 }
 
 :global(.dark) .provinceIcon {
-  color: #c4b5fd;
+  color: #fca5a5;
 }
 
 
@@ -630,7 +630,7 @@
 
 .navButton:hover {
   background: white;
-  border-color: rgba(79, 70, 229, 0.6);
+  border-color: rgba(239, 68, 68, 0.5);
   transform: translateY(-50%) scale(1.1);
   opacity: 1;
 }
@@ -643,7 +643,7 @@
 
 :global(.dark) .navButton:hover {
   background: rgba(51, 65, 85, 0.95);
-  border-color: rgba(139, 92, 246, 0.5);
+  border-color: rgba(239, 68, 68, 0.45);
 }
 
 .navButton.left {
@@ -688,11 +688,11 @@
 }
 
 .trackSegment.active {
-  background: #7c3aed;
+  background: #ef4444;
 }
 
 :global(.dark) .trackSegment.active {
-  background: #c4b5fd;
+  background: #fca5a5;
 }
 
 .trackFill {
@@ -717,18 +717,18 @@
   gap: 0.75rem;
   font-weight: 700;
   font-size: 1.05rem;
-  color: #7c3aed;
+  color: #ef4444;
   transition: all 0.3s ease;
 }
 
 :global(.dark) .link {
-  color: #c4b5fd;
+  color: #fca5a5;
 }
 
 .link:hover {
   gap: 1rem;
   text-decoration: underline;
-  color: #6366f1;
+  color: #dc2626;
 }
 
 /* ---------- FOOTER ---------- */
@@ -736,14 +736,14 @@
   text-align: center;
   margin-top: 4rem;
   padding: 2rem;
-  background: linear-gradient(135deg, rgba(248, 250, 255, 0.5), rgba(243, 244, 246, 0.5));
+  background: linear-gradient(135deg, rgba(255, 248, 248, 0.5), rgba(243, 244, 246, 0.5));
   border-radius: 20px;
-  border: 1px solid rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.1);
 }
 
 :global(.dark) .footer {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
-  border-color: rgba(139, 92, 246, 0.2);
+  border-color: rgba(239, 68, 68, 0.15);
 }
 
 .footerDisclaimer {
@@ -759,11 +759,11 @@
 }
 
 .footerDisclaimer strong {
-  color: #4f46e5;
+  color: #ef4444;
 }
 
 :global(.dark) .footerDisclaimer strong {
-  color: #c4b5fd;
+  color: #fca5a5;
 }
 
 /* ---------- LOADING STATE ---------- */
@@ -779,8 +779,8 @@
 .spinner {
   width: 64px;
   height: 64px;
-  border: 4px solid rgba(124, 58, 237, 0.2);
-  border-top-color: #7c3aed;
+  border: 4px solid rgba(239, 68, 68, 0.15);
+  border-top-color: #ef4444;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -853,7 +853,7 @@
 
 .retryButton {
   padding: 0.875rem 2rem;
-  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  background: linear-gradient(90deg, #ef4444, #dc2626);
   color: white;
   border: none;
   border-radius: 12px;
@@ -861,12 +861,12 @@
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .retryButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
 }
 
 /* ---------- NO RESULTS ---------- */
@@ -879,14 +879,14 @@
   gap: 1.5rem;
   text-align: center;
   padding: 3rem 2rem;
-  background: linear-gradient(135deg, rgba(248, 250, 255, 0.5), rgba(243, 244, 246, 0.5));
+  background: linear-gradient(135deg, rgba(255, 248, 248, 0.5), rgba(243, 244, 246, 0.5));
   border-radius: 24px;
-  border: 1px dashed rgba(124, 58, 237, 0.3);
+  border: 1px dashed rgba(239, 68, 68, 0.25);
 }
 
 :global(.dark) .noResults {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.5));
-  border-color: rgba(139, 92, 246, 0.3);
+  border-color: rgba(239, 68, 68, 0.25);
 }
 
 .noResultsIcon {
@@ -916,7 +916,7 @@
 
 .clearFiltersButton {
   padding: 0.875rem 2rem;
-  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  background: linear-gradient(90deg, #ef4444, #dc2626);
   color: white;
   border: none;
   border-radius: 12px;
@@ -924,12 +924,12 @@
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .clearFiltersButton:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(124, 58, 237, 0.4);
+  box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
 }
 
 /* ---------- EMPTY STATE ---------- */

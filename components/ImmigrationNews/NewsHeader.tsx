@@ -121,7 +121,7 @@ export function NewsHeader({ showFilters, onToggleFilters, theme, selectedLangua
             className={styles.filterIconWrapper}
             style={{
               backgroundColor: showFilters
-                ? "rgba(99,102,241,0.12)"
+                ? "rgba(239,68,68,0.12)"
                 : safeTheme.bgSecondary,
               borderColor: safeTheme.border,
             }}

@@ -279,7 +279,7 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
                     color: isActive
                       ? isDark
                         ? "#ffffff"
-                        : "#2563eb"
+                        : "#dc2626"
                       : isDark
                         ? "#9ca3af"
                         : "#6b7280",
@@ -301,7 +301,7 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
                     if (!isActive)
                       e.currentTarget.style.backgroundColor = isDark
                         ? "rgba(55, 65, 81, 0.3)"
-                        : "rgba(243, 244, 246, 0.5)";
+                        : "rgba(254, 242, 242, 0.6)";
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive)
@@ -314,17 +314,17 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
                       position: "absolute",
                       inset: 0,
                       background: isDark
-                        ? "linear-gradient(135deg, rgba(79, 70, 229, 0.4), rgba(124, 58, 237, 0.4))"
-                        : "linear-gradient(135deg, rgba(219, 234, 254, 1), rgba(239, 246, 255, 1))",
+                        ? "linear-gradient(135deg, rgba(220, 38, 38, 0.35), rgba(185, 28, 28, 0.35))"
+                        : "linear-gradient(135deg, rgba(254, 226, 226, 1), rgba(255, 241, 241, 1))",
                       borderRadius: "9999px",
                       backdropFilter: "blur(12px)",
                       WebkitBackdropFilter: "blur(12px)",
                       boxShadow: isDark
-                        ? "0 4px 20px rgba(124, 58, 237, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-                        : "0 4px 12px rgba(37, 99, 235, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
+                        ? "0 4px 20px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
+                        : "0 4px 12px rgba(239, 68, 68, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
                       border: isDark
-                        ? "1px solid rgba(139, 92, 246, 0.4)"
-                        : "1px solid rgba(191, 219, 254, 0.8)",
+                        ? "1px solid rgba(239, 68, 68, 0.35)"
+                        : "1px solid rgba(254, 202, 202, 0.9)",
                       opacity: isActive ? 1 : 0,
                       transition: "opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
                       pointerEvents: "none",
@@ -356,16 +356,16 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
                         top: "-5px",
                         right: "-4px",
                         background: isDark
-                          ? "linear-gradient(135deg, rgba(99, 102, 241, 0.95), rgba(79, 70, 229, 0.95))"
-                          : "linear-gradient(135deg, rgba(129, 140, 248, 0.95), rgba(99, 102, 241, 0.95))",
+                          ? "linear-gradient(135deg, rgba(220, 38, 38, 0.95), rgba(185, 28, 28, 0.95))"
+                          : "linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95))",
                         color: "white",
                         fontSize: "0.55rem",
                         fontWeight: "700",
                         padding: "1px 5px",
                         borderRadius: "9999px",
                         boxShadow: isDark
-                          ? "0 2px 4px rgba(79, 70, 229, 0.3)"
-                          : "0 2px 4px rgba(99, 102, 241, 0.3)",
+                          ? "0 2px 4px rgba(185, 28, 28, 0.35)"
+                          : "0 2px 4px rgba(239, 68, 68, 0.3)",
                         border: "1px solid rgba(255, 255, 255, 0.4)",
                         backdropFilter: "blur(4px)",
                         textTransform: "uppercase",
@@ -486,9 +486,9 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
           }
         }
         @keyframes pulse-badge {
-          0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4); }
-          70% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(99, 102, 241, 0); }
-          100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+          0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+          70% { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+          100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         @keyframes shine {
           0% {

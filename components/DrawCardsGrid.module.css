@@ -80,7 +80,7 @@
   position: absolute;
   inset: 0;
   border-radius: var(--radius);
-  background: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.15), transparent 70%);
+  background: radial-gradient(circle at 50% 0%, rgba(239, 68, 68, 0.15), transparent 70%);
   opacity: 0;
   transition: opacity 0.5s ease;
   pointer-events: none;
@@ -91,7 +91,7 @@
   position: absolute;
   inset: -2px;
   border-radius: calc(var(--radius) + 2px);
-  background: linear-gradient(135deg, #3b82f6, #ec4899, #8b5cf6);
+  background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
   opacity: 0;
   filter: blur(10px);
   z-index: -2;
@@ -130,16 +130,15 @@
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #3b82f6;
-  /* Accent color */
-  background: rgba(59, 130, 246, 0.08);
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
   padding: 0.35rem 0.7rem;
   border-radius: 6px;
 }
 
 :global(.dark) .rankLabel {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
 }
 
 .dateLabel {
@@ -248,11 +247,11 @@
 }
 
 .statIcon {
-  color: #6366f1;
+  color: #ef4444;
 }
 
 :global(.dark) .statIcon {
-  color: #818cf8;
+  color: #fca5a5;
 }
 
 .statValue {
@@ -298,17 +297,17 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  color: #8b5cf6;
+  color: #ef4444;
   font-weight: 700;
-  background: rgba(139, 92, 246, 0.1);
+  background: rgba(239, 68, 68, 0.1);
   padding: 0.25rem 0.6rem;
   border-radius: 999px;
   font-size: 0.75rem;
 }
 
 :global(.dark) .provinceTag {
-  color: #a78bfa;
-  background: rgba(139, 92, 246, 0.15);
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.15);
 }
 
 /* ───── SKELETON ───── */
@@ -385,7 +384,7 @@
   align-items: center;
   gap: 1rem;
   padding: 0.9rem 1.75rem;
-  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
   color: white;
   border-radius: 9999px;
   border: none;
@@ -393,7 +392,7 @@
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.4);
   overflow: hidden;
   z-index: 1;
 }
@@ -424,7 +423,7 @@
 
 .moreButton:hover {
   transform: translateY(-3px);
-  box-shadow: 0 20px 40px -10px rgba(37, 99, 235, 0.55);
+  box-shadow: 0 20px 40px -10px rgba(239, 68, 68, 0.5);
 }
 
 :global(.dark) .moreButton:hover {

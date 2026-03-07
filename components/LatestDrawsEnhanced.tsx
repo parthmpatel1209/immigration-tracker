@@ -245,7 +245,7 @@ export default function LatestDrawsEnhanced() {
                                 className={styles.cardProgressBar}
                                 style={{
                                     width: `${(summaryStats.CEC / summaryStats.total) * 100}%`,
-                                    backgroundColor: "#3b82f6",
+                                    background: "linear-gradient(90deg, #ef4444, #dc2626)",
                                 }}
                             ></div>
                         </div>
@@ -273,7 +273,7 @@ export default function LatestDrawsEnhanced() {
                                 className={styles.cardProgressBar}
                                 style={{
                                     width: `${(summaryStats.PNP / summaryStats.total) * 100}%`,
-                                    backgroundColor: "#10b981",
+                                    background: "linear-gradient(90deg, #10b981, #059669)",
                                 }}
                             ></div>
                         </div>
@@ -301,7 +301,7 @@ export default function LatestDrawsEnhanced() {
                                 className={styles.cardProgressBar}
                                 style={{
                                     width: `${(summaryStats.Others / summaryStats.total) * 100}%`,
-                                    backgroundColor: "#a855f7",
+                                    background: "linear-gradient(90deg, #f97316, #ea580c)",
                                 }}
                             ></div>
                         </div>
@@ -349,12 +349,12 @@ export default function LatestDrawsEnhanced() {
                                     paddingTop: "20px",
                                 }}
                             />
-                            <Bar dataKey="CEC" stackId="a" fill="#3b82f6" radius={[0, 0, 0, 0]} />
+                            <Bar dataKey="CEC" stackId="a" fill="#ef4444" radius={[0, 0, 0, 0]} />
                             <Bar dataKey="PNP" stackId="a" fill="#10b981" radius={[0, 0, 0, 0]} />
                             <Bar
                                 dataKey="Others"
                                 stackId="a"
-                                fill="#a855f7"
+                                fill="#f97316"
                                 radius={[4, 4, 0, 0]}
                             />
                         </BarChart>

@@ -6,7 +6,7 @@
   padding: 0.75rem;
   box-sizing: border-box;
   overflow-x: hidden;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 50%, #fce7f3 100%);
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 50%, #fef2f2 100%);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   border-radius: 1rem;
 }
@@ -18,7 +18,7 @@
 }
 
 :global(html.dark) .container {
-  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1a0606 50%, #150404 100%);
 }
 
 /* ───── HEADER ───── */
@@ -27,7 +27,7 @@
   padding: 0 0.5rem;
   font-weight: 800;
   font-size: 1.75rem;
-  background: linear-gradient(to right, #2563eb, #9333ea);
+  background: linear-gradient(to right, #ef4444, #b91c1c);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -42,7 +42,7 @@
 }
 
 :global(html.dark) .headerTitle {
-  background: linear-gradient(to right, #60a5fa, #c084fc);
+  background: linear-gradient(to right, #fca5a5, #ef4444);
   -webkit-background-clip: text;
   background-clip: text;
 }
@@ -82,10 +82,10 @@
 
 .searchInput:focus {
   background: #fff;
-  border-color: #8b5cf6;
+  border-color: #ef4444;
   box-shadow:
-    0 10px 15px -3px rgba(139, 92, 246, 0.15),
-    0 4px 6px -2px rgba(139, 92, 246, 0.1);
+    0 10px 15px -3px rgba(239, 68, 68, 0.12),
+    0 4px 6px -2px rgba(239, 68, 68, 0.07);
 }
 
 :global(html.dark) .searchInput {
@@ -96,7 +96,7 @@
 
 :global(html.dark) .searchInput:focus {
   background: rgba(30, 41, 59, 0.8);
-  border-color: #a78bfa;
+  border-color: #fca5a5;
 }
 
 .searchIcon {
@@ -520,7 +520,7 @@
   display: inline-flex;
   align-items: center;
   font-size: 0.75rem;
-  color: #6366f1;
+  color: #ef4444;
   font-weight: 600;
   transition: all 0.2s;
   opacity: 0.7;
@@ -528,16 +528,16 @@
 
 .sourceLink:hover {
   opacity: 1;
-  color: #4f46e5;
+  color: #dc2626;
   text-decoration: underline;
 }
 
 :global(html.dark) .sourceLink {
-  color: #a78bfa;
+  color: #fca5a5;
 }
 
 :global(html.dark) .sourceLink:hover {
-  color: #c084fc;
+  color: #f87171;
 }
 
 /* ───── LOADING & ERROR & FOOTER ───── */

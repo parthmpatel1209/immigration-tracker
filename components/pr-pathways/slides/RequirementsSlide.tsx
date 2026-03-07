@@ -22,7 +22,7 @@ export function RequirementsSlide({ p, darkMode }: RequirementsSlideProps) {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-2">
-        <AlertCircle size={24} className={darkMode ? "text-violet-400" : "text-indigo-600"} />
+        <AlertCircle size={24} className={darkMode ? "text-red-400" : "text-red-600"} />
         <h4 className={styles.keyPoints}>Key Requirements</h4>
       </div>
 

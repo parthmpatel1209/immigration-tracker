@@ -1,5 +1,5 @@
 /* ================================================
-   DATE CALENDAR - Modern Professional Design
+   DATE CALENDAR - Canadian Red Theme
    ================================================ */
 
 .calendar {
@@ -11,7 +11,7 @@
     box-shadow:
         0 20px 25px -5px rgba(0, 0, 0, 0.1),
         0 10px 10px -5px rgba(0, 0, 0, 0.04),
-        0 0 0 1px rgba(99, 102, 241, 0.1);
+        0 0 0 1px rgba(239, 68, 68, 0.1);
     min-width: 320px;
     animation: calendarSlideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(12px);
@@ -23,7 +23,7 @@
     box-shadow:
         0 20px 25px -5px rgba(0, 0, 0, 0.4),
         0 10px 10px -5px rgba(0, 0, 0, 0.2),
-        0 0 0 1px rgba(99, 102, 241, 0.2);
+        0 0 0 1px rgba(239, 68, 68, 0.2);
 }
 
 @keyframes calendarSlideIn {
@@ -45,17 +45,17 @@
     justify-content: space-between;
     margin-bottom: 1rem;
     padding-bottom: 0.75rem;
-    border-bottom: 2px solid rgba(99, 102, 241, 0.1);
+    border-bottom: 2px solid rgba(239, 68, 68, 0.1);
 }
 
 :global(html.dark) .header {
-    border-bottom-color: rgba(99, 102, 241, 0.2);
+    border-bottom-color: rgba(239, 68, 68, 0.2);
 }
 
 .monthYear {
     font-size: 1.125rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -63,7 +63,7 @@
 }
 
 :global(html.dark) .monthYear {
-    background: linear-gradient(135deg, #818cf8, #a78bfa);
+    background: linear-gradient(135deg, #fca5a5, #ef4444);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -75,8 +75,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(99, 102, 241, 0.08);
-    color: #4f46e5;
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -84,7 +84,7 @@
 }
 
 .navButton:hover {
-    background: rgba(99, 102, 241, 0.15);
+    background: rgba(239, 68, 68, 0.15);
     transform: scale(1.05);
 }
 
@@ -93,12 +93,12 @@
 }
 
 :global(html.dark) .navButton {
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
 }
 
 :global(html.dark) .navButton:hover {
-    background: rgba(99, 102, 241, 0.25);
+    background: rgba(239, 68, 68, 0.25);
 }
 
 /* Weekdays */
@@ -152,8 +152,8 @@
 }
 
 .day:hover:not(.disabled) {
-    background: rgba(99, 102, 241, 0.1);
-    color: #4f46e5;
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
     transform: scale(1.05);
 }
 
@@ -166,31 +166,31 @@
 }
 
 :global(html.dark) .day:hover:not(.disabled) {
-    background: rgba(99, 102, 241, 0.2);
-    color: #818cf8;
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
 }
 
 /* Today */
 .day.today {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
     color: white;
     font-weight: 700;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .day.today:hover {
-    background: linear-gradient(135deg, #4338ca, #6d28d9);
+    background: linear-gradient(135deg, #dc2626, #991b1b);
     color: white;
     transform: scale(1.08);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
 }
 
 :global(html.dark) .day.today {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, #ef4444, #dc2626);
 }
 
 :global(html.dark) .day.today:hover {
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
 }
 
 /* Disabled (future dates) */
@@ -214,16 +214,16 @@
     display: flex;
     justify-content: center;
     padding-top: 0.75rem;
-    border-top: 2px solid rgba(99, 102, 241, 0.1);
+    border-top: 2px solid rgba(239, 68, 68, 0.1);
 }
 
 :global(html.dark) .footer {
-    border-top-color: rgba(99, 102, 241, 0.2);
+    border-top-color: rgba(239, 68, 68, 0.2);
 }
 
 .todayButton {
     padding: 0.5rem 1.5rem;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -231,12 +231,12 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
 }
 
 .todayButton:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
 }
 
 .todayButton:active {
@@ -244,7 +244,7 @@
 }
 
 :global(html.dark) .todayButton {
-    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, #ef4444, #dc2626);
 }
 
 /* Mobile adjustments */

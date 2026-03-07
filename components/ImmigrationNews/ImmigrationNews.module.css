@@ -4,15 +4,14 @@
 
 .container {
   max-width: auto;
-  background: linear-gradient(to bottom right, #eff6ff, #ffffff, #eef2ff);
-
+  background: linear-gradient(to bottom right, #fff5f5, #ffffff, #fff0f0);
   margin: 0 auto;
   padding: 1rem 1rem;
   border-radius: 10px;
 }
 
 :global(html.dark) .container {
-  background: linear-gradient(to bottom right, #111827, #1e1b4b, #111827);
+  background: linear-gradient(to bottom right, #111827, #1a0606, #111827);
 }
 
 @media (min-width: 640px) {
@@ -69,7 +68,7 @@
 .title {
   font-size: 1.875rem;
   font-weight: 700;
-  background: linear-gradient(to right, #4f46e5, #7c3aed);
+  background: linear-gradient(to right, #ef4444, #b91c1c);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -77,7 +76,7 @@
 }
 
 .filterIcon {
-  color: #6366f1;
+  color: #ef4444;
   width: 1.25rem;
   height: 1.25rem;
 }
@@ -101,25 +100,23 @@
   padding: 0.625rem 2.5rem 0.625rem 1rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #374151;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.2s;
   appearance: none;
-  background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%),
+  background-image: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%),
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat, no-repeat;
   background-position: center, right 0.5rem center;
   background-size: cover, 1.25rem;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
 }
 
 .languageDropdown:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
 }
 
 .languageDropdown:disabled {
@@ -210,7 +207,7 @@
 
 .newsTranslatingBadge {
   font-size: 0.7rem;
-  color: #2563eb;
+  color: #ef4444;
   font-weight: 500;
   animation: pulse 2s infinite;
 }
@@ -253,7 +250,7 @@
 .newsLanguageDropdown:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  border-color: #6366f1;
+  border-color: #ef4444;
 }
 
 :global(html.dark) .newsLanguageDropdown:hover:not(:disabled) {
@@ -262,8 +259,8 @@
 
 .newsLanguageDropdown:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
 }
 
 .newsLanguageDropdown:disabled {
@@ -303,8 +300,8 @@
 }
 
 .filterToggleBtn:hover {
-  background: rgba(99, 102, 241, 0.10);
-  border-color: #6366f1;
+  background: rgba(239, 68, 68, 0.08);
+  border-color: #ef4444;
 }
 
 /* Dark mode override for filter toggle button */
@@ -320,15 +317,15 @@
 
 :global(html.dark) .filterToggleActive {
   color: #ffffff !important;
-  background: rgba(99, 102, 241, 0.25) !important;
-  border-color: #6366f1 !important;
+  background: rgba(239, 68, 68, 0.25) !important;
+  border-color: #ef4444 !important;
 }
 
 .filterToggleActive {
-  background: rgba(99, 102, 241, 0.18) !important;
-  border-color: #6366f1 !important;
-  color: #6366f1 !important;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: #ef4444 !important;
+  color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 }
 
 /* icon container */
@@ -447,12 +444,12 @@
 }
 
 .modernSelect:hover {
-  border-color: #6366f1;
+  border-color: #ef4444;
 }
 
 .modernSelect:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+  border-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
   outline: none;
 }
 
@@ -798,14 +795,14 @@ cardBack .footer {
   align-items: center;
   gap: 0.15rem;
   font-size: 0.6875rem;
-  color: #4f46e5;
+  color: #ef4444;
   text-decoration: none;
   font-weight: 500;
   transition: color .2s;
 }
 
 .cardBack .readMore:hover {
-  color: #4338ca;
+  color: #dc2626;
   text-decoration: underline;
 }
 
@@ -856,7 +853,7 @@ cardBack .footer {
   width: 2.5rem;
   height: 2.5rem;
   border: 3px solid transparent;
-  border-top: 3px solid #4f46e5;
+  border-top: 3px solid #ef4444;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto;
@@ -991,24 +988,24 @@ cardBack .footer {
   isolation: isolate;
 
   /* Modern glass style */
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(239, 68, 68, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
   /* Border gradient */
-  border: 1px solid rgba(99, 102, 241, 0.4);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 
   /* Text */
-  color: #4f46e5;
+  color: #ef4444;
 
   transition: all 0.25s ease;
 }
 
 /* Dark mode */
 :global(html.dark) .loadMoreModern {
-  background: rgba(99, 102, 241, 0.25);
-  border: 1px solid rgba(129, 140, 248, 0.4);
-  color: #c7d2fe;
+  background: rgba(239, 68, 68, 0.2);
+  border: 1px solid rgba(252, 165, 165, 0.35);
+  color: #fca5a5;
 }
 
 /* Hover glow effect */
@@ -1050,29 +1047,33 @@ cardBack .footer {
   position: relative;
   overflow: hidden;
   width: 100%;
-  padding: 0.75rem 0;
+  padding: 0;
   margin: 0.75rem 0;
 
+  /* Premium red band */
   background: linear-gradient(90deg,
-      rgba(79, 70, 229, 0.15),
-      rgba(129, 140, 248, 0.15));
+      #dc2626 0%,
+      #ef4444 20%,
+      rgba(239, 68, 68, 0.08) 28%,
+      rgba(255, 255, 255, 0.6) 100%);
 
-  border-top: 1px solid rgba(99, 102, 241, 0.25);
-  border-bottom: 1px solid rgba(99, 102, 241, 0.25);
-
+  border-top: 1px solid rgba(220, 38, 38, 0.3);
+  border-bottom: 1px solid rgba(220, 38, 38, 0.2);
   backdrop-filter: blur(8px);
 
-  /* Fade edges color variable */
+  /* Fade edge color variable */
   --fade-color: rgba(255, 255, 255, 1);
 }
 
 /* Dark mode wrapper */
 :global(html.dark) .tickerModernWrapper {
   background: linear-gradient(90deg,
-      rgba(99, 102, 241, 0.12),
-      rgba(139, 92, 246, 0.12));
-  border-color: rgba(129, 140, 248, 0.25);
-  --fade-color: rgba(15, 23, 42, 1);
+      #991b1b 0%,
+      #dc2626 20%,
+      rgba(220, 38, 38, 0.1) 28%,
+      rgba(17, 24, 39, 0.7) 100%);
+  border-color: rgba(220, 38, 38, 0.25);
+  --fade-color: rgba(17, 24, 39, 1);
 }
 
 /* Main scrolling track */
@@ -1081,6 +1082,7 @@ cardBack .footer {
   white-space: nowrap;
   gap: 2.5rem;
   will-change: transform;
+  padding: 0.6rem 0;
 
   /* Infinite loop animation */
   animation: tickerModernMove linear infinite;
@@ -1104,38 +1106,43 @@ cardBack .footer {
 
 /* Individual headline pills */
 .tickerModernItem {
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 0.35rem 1rem;
-  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.3rem 0.9rem;
+  border-radius: 999px;
 
-  background: rgba(255, 255, 255, 0.55);
-  color: #1e1b4b;
+  background: rgba(255, 255, 255, 0.88);
+  color: #1e293b;
 
   display: flex;
   align-items: center;
   gap: 0.4rem;
 
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.15);
-  backdrop-filter: blur(3px);
+  box-shadow: 0 1px 6px rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.12);
+  backdrop-filter: blur(4px);
 
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* Dark mode pill */
 :global(html.dark) .tickerModernItem {
-  background: rgba(255, 255, 255, 0.12);
-  color: #e0e7ff;
+  background: rgba(255, 255, 255, 0.07);
+  color: #f1f5f9;
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
 
 /* Hover lift */
 .tickerModernItem:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18);
 }
 
 :global(html.dark) .tickerModernItem:hover {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
 /* Ticker item title */
@@ -1148,21 +1155,20 @@ cardBack .footer {
 
 /* Ticker date label - modern separator style */
 .tickerDateLabel {
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.4rem 1rem;
-  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.3rem 0.85rem;
+  border-radius: 999px;
   white-space: nowrap;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 
-  /* Light mode - prominent separator */
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(99, 102, 241, 0.2));
-  color: #4338ca;
-  border: 1.5px solid rgba(79, 70, 229, 0.4);
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+  /* Solid red pill for strong separation */
+  background: rgba(255, 255, 255, 0.9);
+  color: #dc2626;
+  border: 1.5px solid rgba(220, 38, 38, 0.35);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);
 
-  /* Make it stand out */
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
@@ -1170,33 +1176,33 @@ cardBack .footer {
   transition: all 0.2s ease;
 }
 
-/* Add a subtle icon effect with pseudo-element */
+/* Calendar icon pseudo-element */
 .tickerDateLabel::before {
   content: "📅";
-  font-size: 0.7rem;
-  opacity: 0.8;
+  font-size: 0.65rem;
+  opacity: 0.85;
 }
 
 /* Dark mode date label */
 :global(html.dark) .tickerDateLabel {
-  background: linear-gradient(135deg, rgba(129, 140, 248, 0.25), rgba(99, 102, 241, 0.2));
-  color: #c7d2fe;
-  border: 1.5px solid rgba(129, 140, 248, 0.4);
-  box-shadow: 0 2px 8px rgba(129, 140, 248, 0.15);
+  background: rgba(220, 38, 38, 0.18);
+  color: #fca5a5;
+  border: 1.5px solid rgba(220, 38, 38, 0.35);
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
 }
 
 /* Hover effect on date label */
 .tickerDateLabel:hover {
-  background: linear-gradient(135deg, rgba(79, 70, 229, 0.35), rgba(99, 102, 241, 0.3));
-  border-color: rgba(79, 70, 229, 0.6);
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(220, 38, 38, 0.6);
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 }
 
 :global(html.dark) .tickerDateLabel:hover {
-  background: linear-gradient(135deg, rgba(129, 140, 248, 0.35), rgba(99, 102, 241, 0.3));
-  border-color: rgba(129, 140, 248, 0.6);
-  box-shadow: 0 4px 12px rgba(129, 140, 248, 0.25);
+  background: rgba(220, 38, 38, 0.28);
+  border-color: rgba(220, 38, 38, 0.55);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
 }
 
 .clickableDate {

@@ -12,9 +12,9 @@ export interface NewsItem {
 }
 
 export const PROGRAM_COLORS: Record<string, { light: string; dark: string }> = {
-  "Express Entry": { light: "#4338ca", dark: "#c7d2fe" },
+  "Express Entry": { light: "#b91c1c", dark: "#fca5a5" },
   PNP: { light: "#065f46", dark: "#a7f3d0" },
-  CEC: { light: "#6b21a8", dark: "#e9d5ff" },
+  CEC: { light: "#9f1239", dark: "#fda4af" },
   FSW: { light: "#92400e", dark: "#fde68a" },
   default: { light: "#374151", dark: "#d1d5db" },
 };

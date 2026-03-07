@@ -171,12 +171,12 @@ export default function MobileBottomNav({
                                     cursor: 'pointer',
                                     transition: 'all 0.2s',
                                     backgroundColor: activeIndex === item.index
-                                        ? '#2563eb'
+                                        ? '#dc2626'
                                         : (isDark ? 'rgba(31, 41, 55, 0.5)' : 'rgba(249, 250, 251, 0.5)'),
                                     color: activeIndex === item.index ? 'white' : (isDark ? '#d1d5db' : '#374151')
                                 }}
                             >
-                                <div style={{ color: activeIndex === item.index ? 'white' : '#3b82f6' }}>
+                                <div style={{ color: activeIndex === item.index ? 'white' : '#ef4444' }}>
                                     {item.icon}
                                 </div>
                                 <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
@@ -185,7 +185,7 @@ export default function MobileBottomNav({
                                         <span style={{
                                             fontSize: '8px',
                                             padding: '1px 4px',
-                                            backgroundColor: '#60a5fa',
+                                            backgroundColor: '#ef4444',
                                             color: 'white',
                                             borderRadius: '9999px',
                                             width: 'fit-content',
@@ -290,14 +290,14 @@ export default function MobileBottomNav({
                         border: 'none',
                         cursor: 'pointer',
                         transition: 'all 0.3s',
-                        color: (isMoreActive || isMoreOpen) ? '#3b82f6' : (isDark ? '#9ca3af' : '#6b7280'),
+                        color: (isMoreActive || isMoreOpen) ? '#ef4444' : (isDark ? '#9ca3af' : '#6b7280'),
                         position: 'relative'
                     }}
                 >
                     <div style={{
                         padding: '6px',
                         borderRadius: '12px',
-                        backgroundColor: isMoreOpen ? (isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)') : 'transparent',
+                        backgroundColor: isMoreOpen ? (isDark ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.1)') : 'transparent',
                         transform: isMoreOpen ? 'rotate(180deg)' : 'none',
                         transition: 'all 0.3s'
                     }}>
@@ -311,7 +311,7 @@ export default function MobileBottomNav({
                             right: '4px',
                             width: '8px',
                             height: '8px',
-                            backgroundColor: '#3b82f6',
+                            backgroundColor: '#ef4444',
                             borderRadius: '50%',
                             border: `2px solid ${isDark ? '#111827' : 'white'}`
                         }} />
@@ -349,14 +349,14 @@ function TabButton({
                 border: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.3s',
-                color: isActive ? '#3b82f6' : (isDark ? '#9ca3af' : '#6b7280'),
+                color: isActive ? '#ef4444' : (isDark ? '#9ca3af' : '#6b7280'),
                 position: 'relative'
             }}
         >
             <div style={{
                 padding: '6px',
                 borderRadius: '12px',
-                backgroundColor: isActive ? (isDark ? 'rgba(59, 130, 246, 0.2)' : 'rgba(59, 130, 246, 0.1)') : 'transparent',
+                backgroundColor: isActive ? (isDark ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.1)') : 'transparent',
                 transform: isActive ? 'scale(1.1)' : 'scale(1)',
                 transition: 'all 0.3s'
             }}>
@@ -370,11 +370,11 @@ function TabButton({
                     right: '-4px',
                     fontSize: '8px',
                     padding: '1px 4px',
-                    backgroundColor: '#3b82f6',
+                    backgroundColor: '#ef4444',
                     color: 'white',
                     borderRadius: '9999px',
                     fontWeight: '900',
-                    boxShadow: '0 2px 4px rgba(59, 130, 246, 0.5)'
+                    boxShadow: '0 2px 4px rgba(239, 68, 68, 0.5)'
                 }}>
                     {badge}
                 </span>
@@ -385,7 +385,7 @@ function TabButton({
                     bottom: '-6px',
                     width: '4px',
                     height: '4px',
-                    backgroundColor: '#3b82f6',
+                    backgroundColor: '#ef4444',
                     borderRadius: '50%'
                 }} />
             )}

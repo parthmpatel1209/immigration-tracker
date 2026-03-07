@@ -12,7 +12,7 @@ export function SummarySlide({ p, darkMode }: SummarySlideProps) {
       <div className="flex items-start gap-3">
         <FileText
           size={24}
-          className={`flex-shrink-0 mt-1 ${darkMode ? "text-violet-400" : "text-indigo-600"
+          className={`flex-shrink-0 mt-1 ${darkMode ? "text-red-400" : "text-red-600"
             }`}
         />
         <p

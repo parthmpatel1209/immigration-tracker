@@ -18,8 +18,8 @@
 .spinner {
     width: 50px;
     height: 50px;
-    border: 4px solid rgba(59, 130, 246, 0.1);
-    border-top: 4px solid #3b82f6;
+    border: 4px solid rgba(239, 68, 68, 0.12);
+    border-top: 4px solid #ef4444;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -39,7 +39,7 @@
 .title {
     font-size: 2.5rem;
     font-weight: 800;
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -58,7 +58,7 @@
     gap: 2rem;
     margin-bottom: 2rem;
     padding: 1.5rem;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(185, 28, 28, 0.04) 100%);
     border-radius: 16px;
     backdrop-filter: blur(10px);
 }
@@ -109,7 +109,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(185, 28, 28, 0.08) 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -120,24 +120,24 @@
 
 .filterBtn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.3);
+    box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.2);
 }
 
 .filterBtnActive {
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
     color: white;
     border-color: transparent;
-    box-shadow: 0 10px 30px -5px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 10px 30px -5px rgba(239, 68, 68, 0.45);
 }
 
 .filterBtnActive:hover {
-    box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.6);
+    box-shadow: 0 15px 35px -5px rgba(239, 68, 68, 0.55);
 }
 
 .yearSelect {
     padding: 0.75rem 1.25rem;
     border-radius: 10px;
-    border: 2px solid rgba(59, 130, 246, 0.2);
+    border: 2px solid rgba(239, 68, 68, 0.2);
     background: rgba(255, 255, 255, 0.8);
     color: #374151;
     font-weight: 600;
@@ -150,18 +150,18 @@
 :global(.dark) .yearSelect {
     background: rgba(31, 41, 55, 0.8);
     color: #f3f4f6;
-    border-color: rgba(139, 92, 246, 0.3);
+    border-color: rgba(239, 68, 68, 0.25);
 }
 
 .yearSelect:hover {
-    border-color: #3b82f6;
-    box-shadow: 0 5px 15px -3px rgba(59, 130, 246, 0.2);
+    border-color: #ef4444;
+    box-shadow: 0 5px 15px -3px rgba(239, 68, 68, 0.15);
 }
 
 .yearSelect:focus {
     outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 /* Summary Cards */
@@ -177,7 +177,7 @@
     border-radius: 20px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.1);
     box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.1);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -186,7 +186,7 @@
 
 :global(.dark) .summaryCard {
     background: linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.9) 100%);
-    border-color: rgba(139, 92, 246, 0.2);
+    border-color: rgba(239, 68, 68, 0.15);
 }
 
 .summaryCard::before {
@@ -196,22 +196,23 @@
     left: 0;
     width: 100%;
     height: 4px;
-    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(90deg, #ef4444, #b91c1c);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 
 .summaryCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0 30px 80px -20px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 30px 80px -20px rgba(239, 68, 68, 0.3);
 }
 
 .summaryCard:hover::before {
     opacity: 1;
 }
 
+/* Card type accent colors — kept distinct but harmonious */
 .cecCard {
-    border-top: 4px solid #3b82f6;
+    border-top: 4px solid #ef4444;
 }
 
 .pnpCard {
@@ -219,7 +220,7 @@
 }
 
 .othersCard {
-    border-top: 4px solid #a855f7;
+    border-top: 4px solid #f97316;
 }
 
 .cardHeader {
@@ -236,13 +237,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-    color: #3b82f6;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(185, 28, 28, 0.08) 100%);
+    color: #ef4444;
 }
 
 .cecCard .cardIcon {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
-    color: #3b82f6;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0.05) 100%);
+    color: #ef4444;
 }
 
 .pnpCard .cardIcon {
@@ -251,8 +252,8 @@
 }
 
 .othersCard .cardIcon {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0.05) 100%);
-    color: #a855f7;
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.15) 0%, rgba(249, 115, 22, 0.05) 100%);
+    color: #f97316;
 }
 
 .cardIcon svg {
@@ -279,7 +280,7 @@
 .cardValue {
     font-size: 2.5rem;
     font-weight: 800;
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -287,7 +288,7 @@
 }
 
 .cecCard .cardValue {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -301,7 +302,7 @@
 }
 
 .othersCard .cardValue {
-    background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -331,7 +332,7 @@
     height: 100%;
     border-radius: 999px;
     transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    background: linear-gradient(90deg, #ef4444, #b91c1c);
 }
 
 .cardPercent {
@@ -347,13 +348,13 @@
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
     backdrop-filter: blur(20px);
     border-radius: 20px;
-    border: 1px solid rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.08);
     box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.1);
 }
 
 :global(.dark) .chartSection {
     background: linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.9) 100%);
-    border-color: rgba(139, 92, 246, 0.2);
+    border-color: rgba(239, 68, 68, 0.12);
 }
 
 .chartTitle {
@@ -393,13 +394,13 @@
     border-radius: 16px;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.08);
     box-shadow: 0 20px 60px -15px rgba(0, 0, 0, 0.1);
 }
 
 :global(.dark) .tableContainer {
     background: linear-gradient(135deg, rgba(31, 41, 55, 0.9) 0%, rgba(17, 24, 39, 0.9) 100%);
-    border-color: rgba(139, 92, 246, 0.2);
+    border-color: rgba(239, 68, 68, 0.12);
 }
 
 .table {
@@ -408,7 +409,7 @@
 }
 
 .thead {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.07) 0%, rgba(185, 28, 28, 0.05) 100%);
 }
 
 .th {
@@ -458,7 +459,7 @@
 }
 
 .tr:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.04) 0%, rgba(185, 28, 28, 0.03) 100%);
     transform: scale(1.01);
 }
 
@@ -475,8 +476,8 @@
 .roundBadge {
     display: inline-block;
     padding: 0.375rem 0.875rem;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-    color: #3b82f6;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(185, 28, 28, 0.07) 100%);
+    color: #ef4444;
     border-radius: 8px;
     font-weight: 700;
     font-size: 0.875rem;
@@ -511,22 +512,25 @@
     white-space: nowrap;
 }
 
+/* CEC = red (Canadian Express Class) */
 .badgeCEC {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0.05) 100%);
-    color: #2563eb;
-    border: 1px solid rgba(59, 130, 246, 0.3);
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(239, 68, 68, 0.05) 100%);
+    color: #dc2626;
+    border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
+/* PNP stays green — it's a distinct program category */
 .badgePNP {
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(16, 185, 129, 0.05) 100%);
     color: #059669;
     border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
+/* Others → warm orange instead of purple */
 .badgeOthers {
-    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0.05) 100%);
-    color: #9333ea;
-    border: 1px solid rgba(168, 85, 247, 0.3);
+    background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(249, 115, 22, 0.05) 100%);
+    color: #ea580c;
+    border: 1px solid rgba(249, 115, 22, 0.25);
 }
 
 .province {
@@ -536,7 +540,7 @@
 .crsScore {
     font-weight: 700;
     font-size: 1.1rem;
-    color: #3b82f6;
+    color: #ef4444;
 }
 
 .invitations {
