@@ -68,11 +68,12 @@
 .title {
   font-size: 1.875rem;
   font-weight: 700;
-  background: linear-gradient(to right, #ef4444, #b91c1c);
+  background: linear-gradient(135deg, #ef4444, #991b1b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .filterIcon {
@@ -1050,16 +1051,13 @@ cardBack .footer {
   padding: 0;
   margin: 0.75rem 0;
 
-  /* Premium red band */
-  background: linear-gradient(90deg,
-      #dc2626 0%,
-      #ef4444 20%,
-      rgba(239, 68, 68, 0.08) 28%,
-      rgba(255, 255, 255, 0.6) 100%);
-
-  border-top: 1px solid rgba(220, 38, 38, 0.3);
-  border-bottom: 1px solid rgba(220, 38, 38, 0.2);
+  /* Clean subtle background instead of solid red band */
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+
+  border-top: 1px solid rgba(239, 68, 68, 0.15);
+  border-bottom: 1px solid rgba(239, 68, 68, 0.1);
 
   /* Fade edge color variable */
   --fade-color: rgba(255, 255, 255, 1);
@@ -1067,13 +1065,9 @@ cardBack .footer {
 
 /* Dark mode wrapper */
 :global(html.dark) .tickerModernWrapper {
-  background: linear-gradient(90deg,
-      #991b1b 0%,
-      #dc2626 20%,
-      rgba(220, 38, 38, 0.1) 28%,
-      rgba(17, 24, 39, 0.7) 100%);
-  border-color: rgba(220, 38, 38, 0.25);
-  --fade-color: rgba(17, 24, 39, 1);
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(239, 68, 68, 0.2);
+  --fade-color: rgba(15, 23, 42, 1);
 }
 
 /* Main scrolling track */
@@ -1082,7 +1076,7 @@ cardBack .footer {
   white-space: nowrap;
   gap: 2.5rem;
   will-change: transform;
-  padding: 0.6rem 0;
+  padding: 0.75rem 0;
 
   /* Infinite loop animation */
   animation: tickerModernMove linear infinite;
@@ -1108,26 +1102,26 @@ cardBack .footer {
 .tickerModernItem {
   font-size: 0.875rem;
   font-weight: 500;
-  padding: 0.3rem 0.9rem;
+  padding: 0.35rem 1rem;
   border-radius: 999px;
 
-  background: rgba(255, 255, 255, 0.88);
+  background: #ffffff;
   color: #1e293b;
 
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
 
-  box-shadow: 0 1px 6px rgba(239, 68, 68, 0.12);
-  border: 1px solid rgba(239, 68, 68, 0.12);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.06);
   backdrop-filter: blur(4px);
 
-  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 /* Dark mode pill */
 :global(html.dark) .tickerModernItem {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.05);
   color: #f1f5f9;
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
@@ -1136,12 +1130,13 @@ cardBack .footer {
 /* Hover lift */
 .tickerModernItem:hover {
   transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.97);
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.18);
+  background: #ffffff;
+  border-color: rgba(239, 68, 68, 0.25);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
 }
 
 :global(html.dark) .tickerModernItem:hover {
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
 }
 
@@ -1153,25 +1148,25 @@ cardBack .footer {
   text-overflow: ellipsis;
 }
 
-/* Ticker date label - modern separator style */
+/* Ticker date label - refined secondary style */
 .tickerDateLabel {
   font-size: 0.7rem;
-  font-weight: 800;
+  font-weight: 700;
   padding: 0.3rem 0.85rem;
   border-radius: 999px;
   white-space: nowrap;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 
-  /* Solid red pill for strong separation */
-  background: rgba(255, 255, 255, 0.9);
+  /* Refined rose-white label instead of solid red */
+  background: rgba(239, 68, 68, 0.08);
   color: #dc2626;
-  border: 1.5px solid rgba(220, 38, 38, 0.35);
-  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  box-shadow: 0 1px 4px rgba(239, 68, 68, 0.05);
 
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.35rem;
 
   transition: all 0.2s ease;
 }
@@ -1180,15 +1175,15 @@ cardBack .footer {
 .tickerDateLabel::before {
   content: "📅";
   font-size: 0.65rem;
-  opacity: 0.85;
+  opacity: 0.8;
 }
 
 /* Dark mode date label */
 :global(html.dark) .tickerDateLabel {
-  background: rgba(220, 38, 38, 0.18);
+  background: rgba(239, 68, 68, 0.15);
   color: #fca5a5;
-  border: 1.5px solid rgba(220, 38, 38, 0.35);
-  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Hover effect on date label */

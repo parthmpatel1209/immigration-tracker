@@ -50,9 +50,9 @@ export default function SafeScoreCard({
                     </p>
                 </div>
                 <div className={styles.safeScoreGrid}>
-                    {renderRange("CEC", cecRange, "#3b82f6")}
+                    {renderRange("CEC", cecRange, "#ef4444")}
                     {renderRange("PNP", pnpRange, "#10b981")}
-                    {renderRange("Others", othersRange, "#8b5cf6")}
+                    {renderRange("Others", othersRange, "#f59e0b")}
                 </div>
                 <div className={styles.safeScoreTip}>
                     <AlertCircle className={styles.tipIcon} />

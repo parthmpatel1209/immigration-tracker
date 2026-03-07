@@ -123,9 +123,9 @@ export default function LineChartSection({
                         <Line
                             type="monotone"
                             dataKey="crs"
-                            stroke="#3b82f6"
+                            stroke="#ef4444"
                             strokeWidth={3}
-                            dot={{ r: 4, fill: "#3b82f6" }}
+                            dot={{ r: 4, fill: "#ef4444" }}
                             activeDot={{ r: 6 }}
                             name="CRS Score"
                         />

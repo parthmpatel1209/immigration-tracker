@@ -105,9 +105,9 @@ export default function ScoreDistributionChart({ data, safeScore, darkMode }: Sc
                                 fontSize: 12
                             }}
                         />
-                        <Scatter name="CEC" data={cecData} fill="#3b82f6" />
+                        <Scatter name="CEC" data={cecData} fill="#ef4444" />
                         <Scatter name="PNP" data={pnpData} fill="#10b981" />
-                        <Scatter name="Others" data={othersData} fill="#8b5cf6" />
+                        <Scatter name="Others" data={othersData} fill="#f59e0b" />
                     </ScatterChart>
                 </ResponsiveContainer>
             </div>

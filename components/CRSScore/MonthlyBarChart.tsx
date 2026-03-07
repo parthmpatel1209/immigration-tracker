@@ -31,16 +31,16 @@ export default function MonthlyBarChart({ data, darkMode }: MonthlyBarChartProps
                     <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                         <defs>
                             <linearGradient id="colorCEC" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.9} />
-                                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.4} />
+                                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.9} />
+                                <stop offset="95%" stopColor="#ef4444" stopOpacity={0.4} />
                             </linearGradient>
                             <linearGradient id="colorPNP" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="5%" stopColor="#10b981" stopOpacity={0.9} />
                                 <stop offset="95%" stopColor="#10b981" stopOpacity={0.4} />
                             </linearGradient>
                             <linearGradient id="colorOthers" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.9} />
-                                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0.4} />
+                                <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.9} />
+                                <stop offset="95%" stopColor="#f59e0b" stopOpacity={0.4} />
                             </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(107, 114, 128, 0.1)"} vertical={false} />

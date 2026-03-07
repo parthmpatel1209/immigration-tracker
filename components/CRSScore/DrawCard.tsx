@@ -59,7 +59,7 @@ export default function DrawCard({ draw, rank }: DrawCardProps) {
                 <div className={styles.cardCrs}>
                     <Hash
                         className={styles.cardIcon}
-                        style={{ color: isDark ? "#93c5fd" : "#3b82f6" }}
+                        style={{ color: isDark ? "#fca5a5" : "#ef4444" }}
                     />
                     <span className={styles.cardCrsValue}>{NA(draw.crs_cutoff)}</span>
                 </div>
