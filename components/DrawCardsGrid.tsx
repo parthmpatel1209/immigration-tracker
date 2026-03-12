@@ -163,7 +163,11 @@ function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
               <div className={styles.statValueRow}>
                 <Users size={16} className={styles.statIcon} />
                 <span className={styles.statValue}>
-                  {draw.invitations ? Number(draw.invitations).toLocaleString() : "N/A"}
+                  {draw.invitations != null
+                    ? /^\d+$/.test(draw.invitations)
+                      ? Number(draw.invitations).toLocaleString()
+                      : draw.invitations
+                    : "N/A"}
                 </span>
               </div>
             </div>

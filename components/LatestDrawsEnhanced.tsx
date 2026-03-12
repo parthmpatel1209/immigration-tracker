@@ -428,7 +428,11 @@ export default function LatestDrawsEnhanced() {
                                         </td>
                                         <td className={styles.td}>
                                             <span className={styles.invitations}>
-                                                {Number(draw.invitations).toLocaleString()}
+                                                {draw.invitations != null
+                                                    ? /^\d+$/.test(draw.invitations)
+                                                        ? Number(draw.invitations).toLocaleString()
+                                                        : draw.invitations
+                                                    : "N/A"}
                                             </span>
                                         </td>
                                     </tr>

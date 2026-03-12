@@ -134,7 +134,11 @@ export default function DataTable({
                                     </td>
                                     <td className={styles.td} data-label="Invitations">
                                         <span className={styles.invitations}>
-                                            {Number(draw.invitations).toLocaleString()}
+                                            {draw.invitations != null
+                                                ? /^\d+$/.test(draw.invitations)
+                                                    ? Number(draw.invitations).toLocaleString()
+                                                    : draw.invitations
+                                                : "N/A"}
                                         </span>
                                     </td>
                                 </tr>
