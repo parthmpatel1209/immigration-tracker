@@ -12,6 +12,9 @@ const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Immigration Data Tracker",
   description: "Track Canadian PR draws and CRS scores",
+  other: {
+    "google-adsense-account": "ca-pub-4445802556511218",
+  },
 };
 
 export default function RootLayout({
