@@ -23,15 +23,17 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.png" type="image/png" />
       </head>
 
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4445802556511218"
-        crossOrigin="anonymous"
-      />
-
       <body
         className={`${inter.variable} antialiased flex flex-col min-h-screen`}
       >
+        {/* Google AdSense */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4445802556511218"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+
         {/* Dismissible Top Banner */}
         <DisclaimerBanner />
 

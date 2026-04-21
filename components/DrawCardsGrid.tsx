@@ -7,6 +7,7 @@ import { Calendar, Users, Hash, MapPin, Activity } from "lucide-react";
 import styles from "./DrawCardsGrid.module.css";
 import CanadaPNPMap from "./CanadaPNPMap";
 import ChatBot from "@/components/ChatBot";
+import AdSenseAd from "@/components/AdSenseAd";
 
 // ──────────────────────────────────────────────────────────────
 // Types – EXACT same as DrawsTable (draw_province: string | null)
@@ -307,6 +308,7 @@ export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
       </div>
 
       {/* Canada PNP Map */}
+      <AdSenseAd adSlot="8160396935" style={{ margin: "1.5rem auto", maxWidth: "900px" }} />
       <section className={styles.mapSection}>
         <CanadaPNPMap />
       </section>

@@ -20,6 +20,7 @@ import {
     MonthlyData,
     categorizeProgram,
 } from "./";
+import AdSenseAd from "@/components/AdSenseAd";
 import styles from "./CRSScore.module.css";
 
 dayjs.extend(relativeTime);
@@ -359,6 +360,9 @@ function CRSScoresEnhanced() {
                         onYearChange={setSelectedYear}
                     />
 
+                    {/* Ad Unit */}
+                    <AdSenseAd adSlot="8160396935" style={{ margin: "1rem 0" }} />
+
                     <DataTable
                         draws={filteredDraws}
                         currentPage={currentPage}
@@ -384,6 +388,9 @@ function CRSScoresEnhanced() {
                         nonEETotal={summaryStats.NonEE}
                         grandTotal={summaryStats.total}
                     />
+
+                    {/* Ad Unit */}
+                    <AdSenseAd adSlot="8160396935" style={{ margin: "1.5rem 0" }} />
 
                     <LineChartSection
                         data={lineChartData}

@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Hash, Calendar, Award, MapPin, Target, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, Award, MapPin, Target, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { Draw, categorizeProgram } from "./";
 import FilterDropdown from "./FilterDropdown";
 import styles from "./CRSScore.module.css";
@@ -66,10 +66,6 @@ export default function DataTable({
                     <thead className={styles.thead}>
                         <tr>
                             <th className={styles.th}>
-                                <Hash className={styles.thIcon} />
-                                Round
-                            </th>
-                            <th className={styles.th}>
                                 <Calendar className={styles.thIcon} />
                                 Date
                             </th>
@@ -101,9 +97,6 @@ export default function DataTable({
                                         animationDelay: `${index * 0.02}s`,
                                     }}
                                 >
-                                    <td className={styles.td} data-label="Round">
-                                        <span className={styles.roundBadge}>#{draw.round}</span>
-                                    </td>
                                     <td className={styles.td} data-label="Date">
                                         <div className={styles.dateCell}>
                                             <div className={styles.datePrimary}>
@@ -145,7 +138,7 @@ export default function DataTable({
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={6} className={styles.emptyRow}>
+                                <td colSpan={5} className={styles.emptyRow}>
                                     <div className={styles.emptyState}>
                                         <Calendar className={styles.emptyIcon} />
                                         <p>No draws found for the selected filters</p>

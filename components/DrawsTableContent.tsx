@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpDown, Calendar, Users, Hash, MapPin } from "lucide-react";
+import { ArrowUpDown, Calendar, Users, Hash, MapPin } from "lucide-react"; // Hash kept for CRS row
 import dayjs from "dayjs";
 import styles from "./DrawsTable.module.css";
 
@@ -51,22 +51,6 @@ export default function DrawsTableContent({
           <table className={styles.table}>
             <thead className={styles.thead}>
               <tr>
-                <th
-                  onClick={() => toggleSort("date")}
-                  className={`${styles.th} ${styles.thSortable}`}
-                >
-                  <div className={styles.thContent}>
-                    <Hash className={styles.sortIcon} />
-                    Round
-                    {sortBy === "date" && (
-                      <ArrowUpDown
-                        className={`${styles.arrowIcon} ${
-                          sortOrder === "asc" ? styles.arrowIconAsc : ""
-                        }`}
-                      />
-                    )}
-                  </div>
-                </th>
                 <th className={styles.th}>Program</th>
                 <th className={styles.th}>
                   <MapPin className={styles.sortIcon} />
@@ -80,9 +64,8 @@ export default function DrawsTableContent({
                     CRS Cut-off
                     {sortBy === "crs" && (
                       <ArrowUpDown
-                        className={`${styles.arrowIcon} ${
-                          sortOrder === "asc" ? styles.arrowIconAsc : ""
-                        }`}
+                        className={`${styles.arrowIcon} ${sortOrder === "asc" ? styles.arrowIconAsc : ""
+                          }`}
                       />
                     )}
                   </div>
@@ -104,9 +87,6 @@ export default function DrawsTableContent({
                     key={draw.id}
                     className={`${styles.row} ${themeStyles.row}`}
                   >
-                    <td className={`${styles.cell} ${styles.round}`}>
-                      #{draw.round}
-                    </td>
                     <td className={styles.cell}>
                       <span className={`${styles.badge} ${themeStyles.badge}`}>
                         {draw.program}
@@ -138,7 +118,7 @@ export default function DrawsTableContent({
               ) : (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={5}
                     className={`${styles.emptyCell} ${themeStyles.emptyCell}`}
                   >
                     <div className={styles.emptyContent}>
@@ -177,9 +157,8 @@ export default function DrawsTableContent({
           ${darkMode ? styles.mobileCardDark : styles.mobileCardLight}
         `}
               >
-                {/* Header: Round + Program */}
+                {/* Header: Program */}
                 <div className="flex justify-between items-start mb-4">
-                  <div className={styles.mobileRound}>#{draw.round}</div>
                   <span
                     className={`
               ${styles.mobileBadge}

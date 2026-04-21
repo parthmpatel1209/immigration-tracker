@@ -198,9 +198,9 @@ export default function CanadaPNPMap() {
                 </div>
 
                 <div className={styles.cardBody}>
-                  {p.total === 0 ? (
+                  {p.note?.toLowerCase().includes("no pnp") || p.note?.toLowerCase().includes("no provincial") ? (
                     <div className={styles.noPnp}>
-                      {p.note || "No PNP Program"}
+                      {p.note}
                     </div>
                   ) : (
                     <>
@@ -208,40 +208,41 @@ export default function CanadaPNPMap() {
                       <div className={styles.statsRow}>
                         <div className={styles.statItem}>
                           <span className={styles.statLabel}>Total</span>
-                          <span className={styles.statValueCompact}>{p.total.toLocaleString()}</span>
+                          <span className={styles.statValueCompact}>
+                            {p.total > 0 ? p.total.toLocaleString() : "—"}
+                          </span>
                         </div>
                         <div className={styles.statItem}>
                           <span className={styles.statLabel}>Filled</span>
-                          <span className={styles.statValueCompact}>{p.filled.toLocaleString()}</span>
+                          <span className={styles.statValueCompact}>
+                            {p.total > 0 ? p.filled.toLocaleString() : "—"}
+                          </span>
                         </div>
                         <div className={styles.statItem}>
                           <span className={styles.statLabel}>Remaining</span>
                           <span className={`${styles.statValueCompact} ${styles.textGreen}`}>
-                            {p.remaining.toLocaleString()}
+                            {p.total > 0 ? p.remaining.toLocaleString() : "—"}
                           </span>
                         </div>
                       </div>
 
-                      {/* "Reveal" Gradient Progress Bar */}
+                      {/* Progress Bar */}
                       <div className="mt-4 mb-3">
                         <div className="flex justify-between text-xs font-medium" style={{ marginBottom: '0.75rem' }}>
                           <span className="text-gray-700 dark:text-gray-200">
-                            Quota Usage {Math.round(filledRatio * 100)}%
+                            {p.total > 0
+                              ? `Quota Usage ${Math.round(filledRatio * 100)}%`
+                              : "Quota data pending"}
                           </span>
                         </div>
                         <div className={styles.revealProgressTrack}>
                           {/* The Full Gradient (Fixed underneath) */}
                           <div className={styles.revealProgressGradient} />
-
-                          {/* The Mask (Slides from left to right to reveal gradient? No, slides from Right to Left to un-cover) */}
-                          {/* Actually, it's easier to just animate the Width of a container that Holds the Gradient, 
-                              and the Gradient inside that container is W-Full of the PARENT (Track). 
-                              No, that squeezes. 
-                              The 'Mask' approach: Overlay a gray div on the right. */}
+                          {/* Mask overlay – covers unfilled portion */}
                           <motion.div
                             className={styles.revealProgressMask}
                             initial={{ width: "100%" }}
-                            animate={{ width: `${100 - (filledRatio * 100)}%` }}
+                            animate={{ width: p.total > 0 ? `${100 - (filledRatio * 100)}%` : "100%" }}
                             transition={{ duration: 1.2, ease: "easeOut" }}
                           />
                         </div>
