@@ -34,7 +34,7 @@ export default function SafeScoreCard({
                 />
                 <span>{category}</span>
             </div>
-            <div className={styles.safeScoreRange}>
+            <div className={styles.safeScoreRange} style={{ color: color }}>
                 {range
                     ? `${range.min} - ${range.max}`
                     : "No data"}
@@ -52,10 +52,10 @@ export default function SafeScoreCard({
                     </p>
                 </div>
                 <div className={styles.safeScoreGrid}>
-                    {renderRange("CEC", cecRange, "#991b1b")}
-                    {renderRange("PNP", pnpRange, "#065f46")}
-                    {renderRange("Category Based", categoryBasedRange, "#1e40af")}
-                    {renderRange("Other", nonEERange, "#334155")}
+                    {renderRange("CEC", cecRange, "#ef4444")}
+                    {renderRange("PNP", pnpRange, "#10b981")}
+                    {renderRange("Category Based", categoryBasedRange, "#3b82f6")}
+                    {renderRange("Other", nonEERange, "#64748b")}
                 </div>
                 <div className={styles.safeScoreTip}>
                     <AlertCircle className={styles.tipIcon} />

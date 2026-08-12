@@ -19,13 +19,19 @@ import {
     ScatterDataPoint,
     MonthlyData,
     categorizeProgram,
+    computeDeltas,
 } from "./";
 import AdSenseAd from "@/components/AdSenseAd";
 import styles from "./CRSScore.module.css";
 
 dayjs.extend(relativeTime);
 
-function CRSScoresEnhanced() {
+interface CRSScoresEnhancedProps {
+    onNavigateToTab?: (tab: string, subView?: string) => void;
+    initialViewMode?: "table" | "analytics";
+}
+
+function CRSScoresEnhanced({ onNavigateToTab, initialViewMode }: CRSScoresEnhancedProps) {
     // State
     const [draws, setDraws] = useState<Draw[]>([]);
     const [selectedFilter, setSelectedFilter] = useState<string>("All");
@@ -35,10 +41,111 @@ function CRSScoresEnhanced() {
     const [itemsPerPage, setItemsPerPage] = useState(20);
     const [lineChartFilter, setLineChartFilter] = useState("CEC");
     const [lineChartYear, setLineChartYear] = useState("2025");
-    const [viewMode, setViewMode] = useState<"table" | "analytics">("table");
+    const [viewMode, setViewMode] = useState<"table" | "analytics">(initialViewMode || "table");
+
+    // Sync viewMode when initialViewMode prop changes
+    useEffect(() => {
+        if (initialViewMode) {
+            setViewMode(initialViewMode);
+        }
+    }, [initialViewMode]);
     const [sortBy, setSortBy] = useState<"date" | "crs" | "invitations">("date");
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
     const [darkMode, setDarkMode] = useState(false);
+
+    // Score widget state
+    const [userScore, setUserScore] = useState<string>("");
+    const [scoreResult, setScoreResult] = useState<{
+        checked: boolean;
+        score: number;
+        qualifiedCount: number;
+        totalChecked: number;
+        minCutoff: number;
+        maxCutoff: number;
+        neededPoints: number;
+    } | null>(null);
+
+    // Dynamic 12-month KPI stats
+    const kpis = useMemo(() => {
+        if (draws.length === 0) {
+            return { current: 0, currentSub: "", average: 0, high: 0, low: 0, count: 0 };
+        }
+
+        const sortedDraws = [...draws]
+            .filter((d) => d.draw_date && dayjs(d.draw_date, "MM/DD/YYYY", true).isValid())
+            .sort(
+                (a, b) =>
+                    dayjs(b.draw_date, "MM/DD/YYYY").valueOf() -
+                    dayjs(a.draw_date, "MM/DD/YYYY").valueOf()
+            );
+
+        if (sortedDraws.length === 0) {
+            return { current: 0, currentSub: "", average: 0, high: 0, low: 0, count: 0 };
+        }
+
+        const latestDraw = sortedDraws[0];
+        const current = Number(latestDraw.crs_cutoff) || 0;
+        const currentSub = latestDraw.draw_date
+            ? dayjs(latestDraw.draw_date).format("MMM DD, YYYY")
+            : "";
+
+        const latestDate = dayjs(latestDraw.draw_date);
+        const oneYearAgo = latestDate.subtract(1, "year");
+
+        const recentDraws = sortedDraws.filter((d) => {
+            const date = dayjs(d.draw_date);
+            const crs = Number(d.crs_cutoff);
+            return date.isAfter(oneYearAgo) && !isNaN(crs) && crs > 0;
+        });
+
+        if (recentDraws.length === 0) {
+            return { current, currentSub, average: current, high: current, low: current, count: 1 };
+        }
+
+        const scores = recentDraws.map((d) => Number(d.crs_cutoff));
+        const high = Math.max(...scores);
+        const low = Math.min(...scores);
+        const average = Math.round(
+            scores.reduce((a, b) => a + b, 0) / scores.length
+        );
+
+        return { current, currentSub, average, high, low, count: recentDraws.length };
+    }, [draws]);
+
+    // Score widget check handler
+    const handleCheckScore = (e: React.FormEvent) => {
+        e.preventDefault();
+        const scoreNum = Number(userScore);
+        if (isNaN(scoreNum) || scoreNum <= 0) return;
+
+        const sortedDraws = [...draws]
+            .filter((d) => {
+                const crs = Number(d.crs_cutoff);
+                return !isNaN(crs) && crs > 0 && d.draw_date && dayjs(d.draw_date).isValid();
+            })
+            .sort((a, b) => dayjs(b.draw_date).valueOf() - dayjs(a.draw_date).valueOf())
+            .slice(0, 15);
+
+        if (sortedDraws.length === 0) return;
+
+        const cutoffs = sortedDraws.map((d) => Number(d.crs_cutoff));
+        const qualified = cutoffs.filter((c) => scoreNum >= c);
+        const minCutoff = Math.min(...cutoffs);
+        const maxCutoff = Math.max(...cutoffs);
+
+        const latestCutoff = kpis.current || cutoffs[0] || 0;
+        const neededPoints = scoreNum < latestCutoff ? latestCutoff - scoreNum : 0;
+
+        setScoreResult({
+            checked: true,
+            score: scoreNum,
+            qualifiedCount: qualified.length,
+            totalChecked: sortedDraws.length,
+            minCutoff,
+            maxCutoff,
+            neededPoints,
+        });
+    };
 
     // Detect dark mode
     useEffect(() => {
@@ -66,7 +173,13 @@ function CRSScoresEnhanced() {
             try {
                 const res = await fetch("/api/draws");
                 const data: Draw[] = await res.json();
-                setDraws(data);
+                
+                // Filter out invalid dates and compute deltas
+                const processed = computeDeltas(
+                    data.filter((d) => d.draw_date && dayjs(d.draw_date).isValid())
+                );
+                
+                setDraws(processed);
             } catch (err) {
                 console.error("Failed to fetch draws:", err);
             } finally {
@@ -110,8 +223,8 @@ function CRSScoresEnhanced() {
 
     // Helper to map UI labels to internal categories
     const mapFilterToCategory = (filter: string): string => {
-        if (filter === "CEC - Category Based") return "CategoryBased";
-        if (filter === "Other") return "NonEE";
+        if (filter === "CEC - Category Based" || filter === "Category Based") return "CategoryBased";
+        if (filter === "Other" || filter === "Others") return "NonEE";
         return filter; // All, CEC, PNP
     };
 
@@ -381,6 +494,34 @@ function CRSScoresEnhanced() {
                 <>
                     <DisclaimerBanner />
 
+                    {/* KPI Strip */}
+                    <div className={styles.kpiGrid}>
+                        <div className={styles.kpiCard}>
+                            <div className={styles.kpiGlowLine} style={{ background: "linear-gradient(90deg, #111827, #6b7280)" }} />
+                            <div className={styles.kpiLabel}>Current Cutoff</div>
+                            <div className={`${styles.kpiValue} ${styles.kpiValueSlate}`}>{kpis.current || "—"}</div>
+                            <div className={styles.kpiSub}>Draw date: {kpis.currentSub || "—"}</div>
+                        </div>
+                        <div className={styles.kpiCard}>
+                            <div className={styles.kpiGlowLine} style={{ background: "linear-gradient(90deg, #0ea5e9, #3b82f6)" }} />
+                            <div className={styles.kpiLabel}>12-Mo Average</div>
+                            <div className={`${styles.kpiValue} ${styles.kpiValueBlue}`}>{kpis.average || "—"}</div>
+                            <div className={styles.kpiSub}>Across {kpis.count || 0} draws</div>
+                        </div>
+                        <div className={styles.kpiCard}>
+                            <div className={styles.kpiGlowLine} style={{ background: "linear-gradient(90deg, #ef4444, #b91c1c)" }} />
+                            <div className={styles.kpiLabel}>12-Mo High</div>
+                            <div className={`${styles.kpiValue} ${styles.kpiValueRed}`}>{kpis.high || "—"}</div>
+                            <div className={styles.kpiSub}>Peak cutoff score</div>
+                        </div>
+                        <div className={styles.kpiCard}>
+                            <div className={styles.kpiGlowLine} style={{ background: "linear-gradient(90deg, #10b981, #059669)" }} />
+                            <div className={styles.kpiLabel}>12-Mo Low</div>
+                            <div className={`${styles.kpiValue} ${styles.kpiValueGreen}`}>{kpis.low || "—"}</div>
+                            <div className={styles.kpiSub}>Lowest cutoff score</div>
+                        </div>
+                    </div>
+
                     <SummaryCards
                         cecTotal={summaryStats.CEC}
                         pnpTotal={summaryStats.PNP}
@@ -407,6 +548,76 @@ function CRSScoresEnhanced() {
                     <MonthlyBarChart data={monthlyChartData} darkMode={darkMode} />
 
                     <ScoreDistributionChart data={distributionData} safeScore={safeLinePosition} darkMode={darkMode} />
+
+                    {/* Interactive "Where does my score land?" widget */}
+                    <div className={styles.scoreLandCard}>
+                        <h3 className={styles.scoreLandTitle}>Where does your score land?</h3>
+                        <p className={styles.scoreLandSubtitle}>
+                            Enter your CRS score to see how you compare against the 15 most recent draws.
+                        </p>
+                        <form onSubmit={handleCheckScore} className={styles.scoreLandForm}>
+                            <input
+                                type="number"
+                                placeholder="e.g. 485"
+                                min="0"
+                                max="1200"
+                                value={userScore}
+                                onChange={(e) => setUserScore(e.target.value)}
+                                className={styles.scoreLandInput}
+                                required
+                            />
+                            <button type="submit" className={styles.scoreLandBtn}>
+                                Check My Score
+                            </button>
+                        </form>
+
+                        {scoreResult && (
+                            <div
+                                className={`${styles.scoreLandResultPanel} ${
+                                    scoreResult.qualifiedCount === scoreResult.totalChecked
+                                        ? styles.scoreLandResultSuccess
+                                        : scoreResult.qualifiedCount > 0
+                                        ? styles.scoreLandResultWarning
+                                        : styles.scoreLandResultDanger
+                                }`}
+                            >
+                                <p className={styles.scoreLandResultText}>
+                                    {scoreResult.qualifiedCount === scoreResult.totalChecked ? (
+                                        <>
+                                            A score of <strong>{scoreResult.score}</strong> would have qualified in{" "}
+                                            <strong>all</strong> of the last {scoreResult.totalChecked} draws (Min cutoff:{" "}
+                                            <strong>{scoreResult.minCutoff}</strong>). You are in an excellent position!
+                                        </>
+                                    ) : scoreResult.qualifiedCount > 0 ? (
+                                        <>
+                                            A score of <strong>{scoreResult.score}</strong> would have qualified in{" "}
+                                            <strong>{scoreResult.qualifiedCount}</strong> of the last{" "}
+                                            {scoreResult.totalChecked} draws (Min cutoff:{" "}
+                                            <strong>{scoreResult.minCutoff}</strong>, Max cutoff:{" "}
+                                            <strong>{scoreResult.maxCutoff}</strong>).
+                                        </>
+                                    ) : (
+                                        <>
+                                            A score of <strong>{scoreResult.score}</strong> would not have qualified in any of
+                                            the last {scoreResult.totalChecked} draws. You would need{" "}
+                                            <strong>{scoreResult.neededPoints} more points</strong> to match the latest cutoff
+                                            of <strong>{kpis.current}</strong>.
+                                        </>
+                                    )}
+                                </p>
+                                <a
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        onNavigateToTab?.("Calculator");
+                                    }}
+                                    className={styles.scoreLandLink}
+                                >
+                                    Find out how to improve your score &rarr;
+                                </a>
+                            </div>
+                        )}
+                    </div>
 
                     <SafeScoreCard
                         cecRange={safeScoreInfo.CEC}

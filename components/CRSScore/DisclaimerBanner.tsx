@@ -10,8 +10,7 @@ export default function DisclaimerBanner() {
             <div className={styles.disclaimerContent}>
                 <h4 className={styles.disclaimerTitle}>Data Accuracy Notice</h4>
                 <p className={styles.disclaimerText}>
-                    The analytics presented here are based on historical draw data and may contain inaccuracies,
-                    especially for the <strong>"Others"</strong> category (French-language, Healthcare, etc.).
+                    The analytics presented here are based on historical draw data and may contain inaccuracies.
                     Always verify official information directly with{" "}
                     <a
                         href="https://www.canada.ca/en/immigration-refugees-citizenship.html"

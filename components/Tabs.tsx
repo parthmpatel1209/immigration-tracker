@@ -29,9 +29,9 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  /* ---- Detect mobile (≤640px) --------------------------------- */
+  /* ---- Detect mobile (≤768px) --------------------------------- */
   useEffect(() => {
-    const mql = window.matchMedia("(max-width: 640px)");
+    const mql = window.matchMedia("(max-width: 768px)");
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     setIsMobile(mql.matches);
     mql.addEventListener("change", handler);
@@ -160,6 +160,7 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
     <div style={{ fontFamily: "system-ui, sans-serif", width: "100%" }}>
       {/* Header ----------------------------------------------------- */}
       <div
+        className={hideHeaderOnMobile ? "mobile-header-hide" : undefined}
         style={{
           display: isMobile && hideHeaderOnMobile ? "none" : "flex",
           alignItems: "center",
@@ -500,6 +501,11 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
         }
         .no-scrollbar::-webkit-scrollbar {
           display: none;
+        }
+        @media (max-width: 768px) {
+          .mobile-header-hide {
+            display: none !important;
+          }
         }
       `}</style>
     </div>

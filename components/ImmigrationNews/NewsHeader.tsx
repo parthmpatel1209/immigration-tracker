@@ -1,5 +1,6 @@
 // ImmigrationNews/NewsHeader.tsx
 import styles from "./ImmigrationNews.module.css";
+import { NewsVersion } from "./types";
 
 interface Props {
   showFilters: boolean;
@@ -69,7 +70,14 @@ const languages = [
   { code: 'he', name: 'עברית (Hebrew)', flag: '🇮🇱' },
 ];
 
-export function NewsHeader({ showFilters, onToggleFilters, theme, selectedLanguage, onLanguageChange, translating }: Props) {
+export function NewsHeader({
+  showFilters,
+  onToggleFilters,
+  theme,
+  selectedLanguage,
+  onLanguageChange,
+  translating,
+}: Props) {
   // Fallback so UI never crashes even if theme is undefined
   const safeTheme = theme ?? {
     border: "#e5e7eb",

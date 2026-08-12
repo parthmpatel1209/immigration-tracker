@@ -1,4 +1,6 @@
 // ImmigrationNews/types.ts
+export type NewsVersion = "1.0" | "2.0";
+
 export interface NewsItem {
   id: number;
   title: string;
@@ -9,6 +11,10 @@ export interface NewsItem {
   url?: string;
   program?: string;
   image_url?: string | null;
+  media_type?: "supabase_image" | "instagram_reel" | "external_image";
+  instagram_url?: string | null;
+  instagram_reel_id?: string | null;
+  cover_image_url?: string | null;
 }
 
 export const PROGRAM_COLORS: Record<string, { light: string; dark: string }> = {

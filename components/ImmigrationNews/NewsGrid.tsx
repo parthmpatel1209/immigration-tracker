@@ -1,15 +1,16 @@
 // ImmigrationNews/NewsGrid.tsx
 import { NewsCard } from "./NewsCard";
 import styles from "./ImmigrationNews.module.css";
-import { NewsItem } from "./types";
+import { NewsItem, NewsVersion } from "./types";
 
 interface Props {
   news: NewsItem[];
   darkMode: boolean;
   theme: any;
+  onItemClick?: (item: NewsItem) => void;
 }
 
-export function NewsGrid({ news, darkMode, theme }: Props) {
+export function NewsGrid({ news, darkMode, theme, onItemClick }: Props) {
   if (news.length === 0) {
     return (
       <div className={styles.noResults} style={{ color: theme.textMuted }}>
@@ -27,6 +28,7 @@ export function NewsGrid({ news, darkMode, theme }: Props) {
           index={index}
           darkMode={darkMode}
           theme={theme}
+          onItemClick={onItemClick}
         />
       ))}
     </div>

@@ -1,4 +1,5 @@
-import { ProgramCategory } from "./types";
+import dayjs from "dayjs";
+import { Draw, ProgramCategory } from "./types";
 
 export function NA(value: any, fallback = "N/A"): string {
     if (value === null || value === undefined || value === "") {
@@ -68,3 +69,36 @@ export const BADGE_COLORS: Record<
         dark: { bg: "#1e293b", text: "#94a3b8" },
     },
 };
+
+export function computeDeltas(rawDraws: Draw[]): Draw[] {
+    // Sort oldest first to calculate changes progressively
+    const chronDraws = [...rawDraws].sort(
+        (a, b) => dayjs(a.draw_date).valueOf() - dayjs(b.draw_date).valueOf()
+    );
+
+    const lastCrsByCategory: Record<string, number> = {};
+
+    const drawsWithDelta = chronDraws.map((d) => {
+        const category = categorizeProgram(d.program);
+        const currentCrs = Number(d.crs_cutoff);
+        let delta = 0;
+
+        if (!isNaN(currentCrs) && d.crs_cutoff != null) {
+            const lastCrs = lastCrsByCategory[category];
+            if (lastCrs !== undefined) {
+                delta = currentCrs - lastCrs;
+            }
+            lastCrsByCategory[category] = currentCrs;
+        }
+
+        return {
+            ...d,
+            delta,
+        };
+    });
+
+    // Return sorted newest first
+    return drawsWithDelta.sort(
+        (a, b) => dayjs(b.draw_date).valueOf() - dayjs(a.draw_date).valueOf()
+    );
+}

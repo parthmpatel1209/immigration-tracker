@@ -8,6 +8,7 @@ import {
     Legend,
     ResponsiveContainer,
     ReferenceLine,
+    Label,
 } from "recharts";
 import styles from "./CRSScore.module.css";
 import { ScatterDataPoint } from "./types";
@@ -20,8 +21,7 @@ interface ScoreDistributionChartProps {
 
 export default function ScoreDistributionChart({ data, safeScore, darkMode }: ScoreDistributionChartProps) {
     const axisColor = darkMode ? "#9ca3af" : "#6b7280";
-    const tooltipBg = darkMode ? "rgba(31, 41, 55, 0.95)" : "rgba(255, 255, 255, 0.95)";
-    const tooltipColor = darkMode ? "#f3f4f6" : "#374151";
+    const gridColor = darkMode ? "rgba(255, 255, 255, 0.08)" : "rgba(107, 114, 128, 0.08)";
 
     // Split data by category for coloring and legend
     const cecData = data.filter(d => d.category === "CEC");
@@ -32,22 +32,58 @@ export default function ScoreDistributionChart({ data, safeScore, darkMode }: Sc
     // Static X-axis categories to ensure order
     const xDomain = ["CEC", "PNP", "CategoryBased", "NonEE"];
 
+    const categoryColors = {
+        CEC: "#ef4444",
+        PNP: "#10b981",
+        CategoryBased: "#3b82f6",
+        NonEE: "#64748b",
+    };
+
+    // Custom Glassmorphic Tooltip
+    const CustomTooltip = ({ active, payload }: any) => {
+        if (active && payload && payload.length) {
+            const dataPoint = payload[0].payload;
+            const color = categoryColors[dataPoint.category as keyof typeof categoryColors] || "#ef4444";
+            
+            return (
+                <div
+                    className={styles.chartTooltipGlass}
+                    style={{
+                        borderLeft: `4px solid ${color}`,
+                        minWidth: "180px",
+                    }}
+                >
+                    <p className={styles.chartTooltipTitle} style={{ color, marginBottom: "0.25rem" }}>
+                        {dataPoint.program}
+                    </p>
+                    <div className={styles.chartTooltipItem}>
+                        CRS Score: <strong className={styles.chartTooltipValue}>{dataPoint.crs}</strong>
+                    </div>
+                    <div className={styles.chartTooltipItem} style={{ fontSize: "0.75rem", opacity: 0.85 }}>
+                        {dataPoint.date}
+                    </div>
+                </div>
+            );
+        }
+        return null;
+    };
+
     return (
         <div className={styles.chartSection}>
             <div className={styles.chartHeader}>
-                <h3 className={styles.sectionTitle} style={{ marginBottom: 0 }}>
+                <h3 className={styles.sectionTitle} style={{ margin: 0 }}>
                     CRS Score Distribution by Category
                 </h3>
             </div>
             <div className={styles.chartContainer}>
                 <ResponsiveContainer width="100%" height={450}>
-                    <ScatterChart margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(107, 114, 128, 0.1)"} vertical={false} />
+                    <ScatterChart margin={{ top: 20, right: 10, left: -10, bottom: 5 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                         <XAxis
                             dataKey="category"
                             type="category"
                             stroke={axisColor}
-                            tick={{ fontSize: 12, fill: axisColor }}
+                            tick={{ fontSize: 11, fill: axisColor }}
                             axisLine={false}
                             tickLine={false}
                             allowDuplicatedCategory={false}
@@ -59,36 +95,16 @@ export default function ScoreDistributionChart({ data, safeScore, darkMode }: Sc
                             type="number"
                             name="CRS Score"
                             stroke={axisColor}
-                            tick={{ fontSize: 12, fill: axisColor }}
+                            tick={{ fontSize: 11, fill: axisColor }}
                             axisLine={false}
                             tickLine={false}
-                            dx={-10}
+                            dx={-5}
                             domain={['dataMin - 20', 'dataMax + 20']}
-                            label={{ value: 'CRS Score', angle: -90, position: 'insideLeft', fill: axisColor, style: { textAnchor: 'middle' }, offset: 0 }}
+                            label={{ value: 'CRS Score', angle: -90, position: 'insideLeft', fill: axisColor, style: { textAnchor: 'middle', fontSize: 11 }, offset: 5 }}
                         />
                         <Tooltip
-                            cursor={{ strokeDasharray: '3 3' }}
-                            content={({ active, payload }) => {
-                                if (active && payload && payload.length) {
-                                    const data = payload[0].payload;
-                                    return (
-                                        <div style={{
-                                            backgroundColor: tooltipBg,
-                                            border: "none",
-                                            borderRadius: "12px",
-                                            boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-                                            padding: "12px",
-                                            color: tooltipColor,
-                                            borderLeft: `4px solid ${payload[0].color}`
-                                        }}>
-                                            <p style={{ fontWeight: 600, marginBottom: "0.25rem", color: payload[0].color }}>{data.program}</p>
-                                            <p style={{ fontSize: "0.9rem", margin: 0 }}>CRS Score: <strong>{data.crs}</strong></p>
-                                            <p style={{ fontSize: "0.85rem", opacity: 0.8, margin: 0 }}>{data.date}</p>
-                                        </div>
-                                    );
-                                }
-                                return null;
-                            }}
+                            cursor={{ strokeDasharray: '3 3', stroke: darkMode ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)" }}
+                            content={<CustomTooltip />}
                         />
                         <Legend
                             wrapperStyle={{ paddingTop: "20px" }}
@@ -99,17 +115,20 @@ export default function ScoreDistributionChart({ data, safeScore, darkMode }: Sc
                             stroke="#ef4444"
                             strokeDasharray="5 5"
                             strokeWidth={1.5}
-                            label={{
-                                position: 'insideTopRight',
-                                value: `Safe Score: ${safeScore}`,
-                                fill: '#ef4444',
-                                fontSize: 12
-                            }}
-                        />
-                        <Scatter name="CEC" data={cecData} fill="#991b1b" />
-                        <Scatter name="PNP" data={pnpData} fill="#10b981" />
-                        <Scatter name="Category Based" data={catBasedData} fill="#1e40af" />
-                        <Scatter name="Other" data={nonEEData} fill="#334155" />
+                        >
+                            <Label
+                                value={`Safe Score: ${safeScore}`}
+                                position="insideTopRight"
+                                fill="#ef4444"
+                                fontSize={11}
+                                fontWeight="bold"
+                                offset={10}
+                            />
+                        </ReferenceLine>
+                        <Scatter name="CEC" data={cecData} fill={categoryColors.CEC} />
+                        <Scatter name="PNP" data={pnpData} fill={categoryColors.PNP} />
+                        <Scatter name="Category Based" data={catBasedData} fill={categoryColors.CategoryBased} />
+                        <Scatter name="Other" data={nonEEData} fill={categoryColors.NonEE} />
                     </ScatterChart>
                 </ResponsiveContainer>
             </div>

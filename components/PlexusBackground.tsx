@@ -115,7 +115,7 @@ const PlexusBackground: React.FC = () => {
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
                         const opacity = 1 - dist / connectionDistance;
-                        ctx.strokeStyle = color.replace('opacity', (opacity * 0.3).toString()); // Increased from 0.15
+                        ctx.strokeStyle = color.replace('opacity', (opacity * 0.12).toString()); // Subtle connections
                         ctx.lineWidth = 0.5;
                         ctx.stroke();
                     }
@@ -126,8 +126,8 @@ const PlexusBackground: React.FC = () => {
         const render = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const particleColor = isDark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(228, 61, 60, 0.9)';
-            const lineColor = isDark ? 'rgba(255, 255, 255, opacity)' : 'rgba(228, 61, 60, opacity)';
+            const particleColor = isDark ? 'rgba(255, 255, 255, 0.3)' : 'rgba(211, 47, 47, 0.3)';
+            const lineColor = isDark ? 'rgba(255, 255, 255, opacity)' : 'rgba(211, 47, 47, opacity)';
 
             particles.forEach(p => {
                 p.update(canvas.width, canvas.height);

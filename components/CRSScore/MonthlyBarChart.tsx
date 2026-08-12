@@ -18,8 +18,57 @@ interface MonthlyBarChartProps {
 
 export default function MonthlyBarChart({ data, darkMode }: MonthlyBarChartProps) {
     const axisColor = darkMode ? "#9ca3af" : "#6b7280";
-    const tooltipBg = darkMode ? "rgba(31, 41, 55, 0.95)" : "rgba(255, 255, 255, 0.95)";
-    const tooltipColor = darkMode ? "#f3f4f6" : "#374151";
+    const gridColor = darkMode ? "rgba(255, 255, 255, 0.08)" : "rgba(107, 114, 128, 0.08)";
+
+    // Custom Detailed Breakdown Tooltip
+    const CustomTooltip = ({ active, payload, label }: any) => {
+        if (active && payload && payload.length) {
+            const dataPoint = payload[0].payload;
+            const total =
+                (dataPoint.CEC || 0) +
+                (dataPoint.PNP || 0) +
+                (dataPoint.CategoryBased || 0) +
+                (dataPoint.NonEE || 0);
+
+            return (
+                <div className={styles.chartTooltipGlass} style={{ minWidth: "220px" }}>
+                    <p className={styles.chartTooltipTitle}>{label}</p>
+                    <table className={styles.chartTooltipTable}>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th style={{ textAlign: "right" }}>Invited</th>
+                                <th style={{ textAlign: "right" }}>Share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {payload.map((item: any) => {
+                                const val = Number(item.value) || 0;
+                                const percent = total > 0 ? Math.round((val / total) * 100) : 0;
+                                return (
+                                    <tr key={item.name} style={{ color: item.color }}>
+                                        <td style={{ fontWeight: 600 }}>{item.name}</td>
+                                        <td style={{ textAlign: "right", fontWeight: 700 }}>
+                                            {val.toLocaleString()}
+                                        </td>
+                                        <td style={{ textAlign: "right", opacity: 0.85 }}>
+                                            {percent}%
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                            <tr style={{ borderTop: darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.1)", fontWeight: 700 }}>
+                                <td>Total</td>
+                                <td style={{ textAlign: "right" }}>{total.toLocaleString()}</td>
+                                <td style={{ textAlign: "right" }}>100%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            );
+        }
+        return null;
+    };
 
     return (
         <div className={styles.chartSection}>
@@ -28,53 +77,44 @@ export default function MonthlyBarChart({ data, darkMode }: MonthlyBarChartProps
             </h3>
             <div className={styles.chartContainer}>
                 <ResponsiveContainer width="100%" height={400}>
-                    <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <BarChart data={data} margin={{ top: 20, right: 10, left: -10, bottom: 5 }}>
                         <defs>
                             <linearGradient id="colorCEC" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#991b1b" stopOpacity={0.9} />
-                                <stop offset="95%" stopColor="#991b1b" stopOpacity={0.4} />
+                                <stop offset="5%" stopColor="#ef4444" stopOpacity={0.9} />
+                                <stop offset="95%" stopColor="#b91c1c" stopOpacity={0.4} />
                             </linearGradient>
                             <linearGradient id="colorPNP" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#065f46" stopOpacity={0.9} />
-                                <stop offset="95%" stopColor="#065f46" stopOpacity={0.4} />
+                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.9} />
+                                <stop offset="95%" stopColor="#059669" stopOpacity={0.4} />
                             </linearGradient>
                             <linearGradient id="colorCategoryBased" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#1e40af" stopOpacity={0.9} />
-                                <stop offset="95%" stopColor="#1e40af" stopOpacity={0.4} />
+                                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.9} />
+                                <stop offset="95%" stopColor="#1d4ed8" stopOpacity={0.4} />
                             </linearGradient>
                             <linearGradient id="colorNonEE" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="5%" stopColor="#334155" stopOpacity={0.9} />
-                                <stop offset="95%" stopColor="#334155" stopOpacity={0.4} />
+                                <stop offset="5%" stopColor="#64748b" stopOpacity={0.9} />
+                                <stop offset="95%" stopColor="#475569" stopOpacity={0.4} />
                             </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? "rgba(255, 255, 255, 0.1)" : "rgba(107, 114, 128, 0.1)"} vertical={false} />
+                        <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                         <XAxis
                             dataKey="month"
                             stroke={axisColor}
-                            tick={{ fontSize: 12, fill: axisColor }}
+                            tick={{ fontSize: 11, fill: axisColor }}
                             axisLine={false}
                             tickLine={false}
                             dy={10}
                         />
                         <YAxis
                             stroke={axisColor}
-                            tick={{ fontSize: 12, fill: axisColor }}
+                            tick={{ fontSize: 11, fill: axisColor }}
                             axisLine={false}
                             tickLine={false}
-                            dx={-10}
+                            dx={-5}
                         />
                         <Tooltip
-                            cursor={{ fill: darkMode ? 'rgba(255, 255, 255, 0.05)' : 'rgba(107, 114, 128, 0.05)' }}
-                            contentStyle={{
-                                backgroundColor: tooltipBg,
-                                border: "none",
-                                borderRadius: "12px",
-                                boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
-                                padding: "12px",
-                                color: tooltipColor,
-                            }}
-                            itemStyle={{ padding: "2px 0", color: tooltipColor }}
-                            labelStyle={{ color: tooltipColor, marginBottom: "0.5rem", fontWeight: 600 }}
+                            cursor={{ fill: darkMode ? 'rgba(255, 255, 255, 0.04)' : 'rgba(107, 114, 128, 0.04)' }}
+                            content={<CustomTooltip />}
                         />
                         <Legend
                             wrapperStyle={{ paddingTop: "20px" }}
@@ -83,7 +123,7 @@ export default function MonthlyBarChart({ data, darkMode }: MonthlyBarChartProps
                         <Bar
                             dataKey="CEC"
                             fill="url(#colorCEC)"
-                            radius={[6, 6, 0, 0]}
+                            radius={[4, 4, 0, 0]}
                             name="CEC"
                             stackId="a"
                             maxBarSize={50}
@@ -91,7 +131,7 @@ export default function MonthlyBarChart({ data, darkMode }: MonthlyBarChartProps
                         <Bar
                             dataKey="PNP"
                             fill="url(#colorPNP)"
-                            radius={[6, 6, 0, 0]}
+                            radius={[4, 4, 0, 0]}
                             name="PNP"
                             stackId="a"
                             maxBarSize={50}
@@ -99,7 +139,7 @@ export default function MonthlyBarChart({ data, darkMode }: MonthlyBarChartProps
                         <Bar
                             dataKey="CategoryBased"
                             fill="url(#colorCategoryBased)"
-                            radius={[6, 6, 0, 0]}
+                            radius={[4, 4, 0, 0]}
                             name="Category Based"
                             stackId="a"
                             maxBarSize={50}
@@ -107,7 +147,7 @@ export default function MonthlyBarChart({ data, darkMode }: MonthlyBarChartProps
                         <Bar
                             dataKey="NonEE"
                             fill="url(#colorNonEE)"
-                            radius={[6, 6, 0, 0]}
+                            radius={[4, 4, 0, 0]}
                             name="Other"
                             stackId="a"
                             maxBarSize={50}

@@ -22,12 +22,16 @@ import MyJourney from "@/components/MyJourney/MyJourney";
 
 export default function HomePage() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [crsInitialViewMode, setCrsInitialViewMode] = useState<"table" | "analytics">("table");
 
   // Helper to find tab index by name and switch
-  const handleTabNavigation = (tabName: string) => {
+  const handleTabNavigation = (tabName: string, subView?: string) => {
     const index = tabs.findIndex((t) => t.label === tabName || (t.label.includes(tabName)));
     if (index !== -1) {
       setActiveIndex(index);
+      if (tabName === "CRS Scores") {
+        setCrsInitialViewMode(subView === "analytics" ? "analytics" : "table");
+      }
       const tabsSection = document.getElementById("tabs-section");
       if (tabsSection) {
         tabsSection.scrollIntoView({ behavior: "smooth" });
@@ -38,7 +42,7 @@ export default function HomePage() {
   const tabs = [
     { label: "Home", content: <Home onNavigateToTab={handleTabNavigation} /> },
     { label: "Latest Draw", content: <DrawCardsGrid onNavigateToTab={handleTabNavigation} /> },
-    { label: "CRS Scores", content: <CRSScoresEnhanced /> },
+    { label: "CRS Scores", content: <CRSScoresEnhanced onNavigateToTab={handleTabNavigation} initialViewMode={crsInitialViewMode} /> },
     { label: "Calculator", content: <Calculator />, badge: "Popular" },
     { label: "News", content: <ImmigrationNews /> },
     { label: "My Journey", content: <MyJourney /> },
@@ -58,7 +62,7 @@ export default function HomePage() {
 
   return (
     <main
-      className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black transition-all duration-500 pb-[80px] md:pb-0"
+      className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black transition-all duration-500 pb-[95px] md:pb-0 pt-0"
     >
       <Header />
 

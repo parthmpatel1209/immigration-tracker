@@ -1,16 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { motion } from "framer-motion";
-import { Calendar, Users, Hash, MapPin, Activity } from "lucide-react";
+import {
+  Users,
+  Hash,
+  MapPin,
+  Activity,
+  RefreshCw,
+  ExternalLink,
+} from "lucide-react";
 import styles from "./DrawCardsGrid.module.css";
 import CanadaPNPMap from "./CanadaPNPMap";
 import ChatBot from "@/components/ChatBot";
 import AdSenseAd from "@/components/AdSenseAd";
 
+dayjs.extend(relativeTime);
+
 // ──────────────────────────────────────────────────────────────
-// Types – EXACT same as DrawsTable (draw_province: string | null)
+// Types & Interfaces
 // ──────────────────────────────────────────────────────────────
 interface Draw {
   id: number;
@@ -20,215 +30,88 @@ interface Draw {
   crs_cutoff?: string | null;
   invitations?: string | null;
   draw_date: string;
+  category?: string;
+  delta?: number;
 }
 
 interface DrawCardsGridProps {
-  onNavigateToTab?: (tabName: string) => void;
+  onNavigateToTab?: (tabName: string, subView?: string) => void;
 }
 
-// ──────────────────────────────────────────────────────────────
-// Badge Colors (Light & Dark Mode)
-// ──────────────────────────────────────────────────────────────
-const BADGE_COLORS: Record<
-  string,
-  { light: { bg: string; text: string }; dark: { bg: string; text: string } }
-> = {
-  "Express Entry": {
-    light: { bg: "#fee2e2", text: "#b91c1c" },
-    dark: { bg: "#450a0a", text: "#fca5a5" },
-  },
-  PNP: {
-    light: { bg: "#d1fae5", text: "#065f46" },
-    dark: { bg: "#064e3b", text: "#a7f3d0" },
-  },
-  CEC: {
-    light: { bg: "#fecdd3", text: "#9f1239" },
-    dark: { bg: "#4c0519", text: "#fda4af" },
-  },
-  FSW: {
-    light: { bg: "#fef3c7", text: "#92400e" },
-    dark: { bg: "#78350f", text: "#fde68a" },
-  },
-  default: {
-    light: { bg: "#e5e7eb", text: "#374151" },
-    dark: { bg: "#374151", text: "#d1d5db" },
-  },
+// Category Badge Color Mapping
+const BADGE_CLASSES: Record<string, string> = {
+  "Express Entry": styles.badgeEE,
+  PNP: styles.badgePNP,
+  CEC: styles.badgeCEC,
+  FSW: styles.badgeFSW,
+  STEM: styles.badgeSTEM,
+  French: styles.badgeFrench,
+  Healthcare: styles.badgeHealthcare,
+  Trade: styles.badgeTrade,
+  General: styles.badgeGeneral,
 };
 
-// ──────────────────────────────────────────────────────────────
 // Helper: Display "N/A" for null/undefined/empty
-// ──────────────────────────────────────────────────────────────
 const NA = (value: any, fallback = "N/A"): string => {
   if (value == null) return fallback;
   if (typeof value === "string" && value.trim() === "") return fallback;
   return String(value);
 };
 
-// ──────────────────────────────────────────────────────────────
-// Content Processors
-// ──────────────────────────────────────────────────────────────
+// Program Categorization Helper
 const getProgramCategory = (program: string): string => {
   const p = program.toLowerCase();
+  if (p.includes("stem")) return "STEM";
+  if (p.includes("french") || p.includes("francophone")) return "French";
   if (p.includes("provincial") || p.includes("pnp")) return "PNP";
+  if (p.includes("healthcare")) return "Healthcare";
+  if (p.includes("trade")) return "Trade";
   if (p.includes("canadian experience class") || p.includes("cec")) return "CEC";
   if (p.includes("federal skilled worker") || p.includes("fsw")) return "FSW";
-  if (p.includes("federal skilled trades") || p.includes("fst")) return "FST";
-  if (p.includes("express entry")) return "Express Entry";
   return "General";
 };
 
-// ──────────────────────────────────────────────────────────────
-// DrawCard Component
-// ──────────────────────────────────────────────────────────────
-function DrawCard({ draw, rank }: { draw: Draw; rank: 1 | 2 | 3 }) {
-  const [isDark, setIsDark] = useState(false);
+// Pre-compute score deltas compared to the previous draw of the same category
+const computeDeltas = (rawDraws: Draw[]): Draw[] => {
+  // Sort oldest first to calculate changes progressively
+  const chronDraws = [...rawDraws].sort(
+    (a, b) => dayjs(a.draw_date).valueOf() - dayjs(b.draw_date).valueOf()
+  );
 
-  useEffect(() => {
-    const checkDarkMode = () => {
-      setIsDark(document.documentElement.classList.contains("dark"));
-    };
-    checkDarkMode();
-    const observer = new MutationObserver(checkDarkMode);
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    return () => observer.disconnect();
-  }, []);
+  const lastCrsByCategory: Record<string, number> = {};
 
-  const category = getProgramCategory(draw.program);
-  const badge = BADGE_COLORS[category] ?? BADGE_COLORS.default;
-  const colors = isDark ? badge.dark : badge.light;
+  const drawsWithDelta = chronDraws.map((d) => {
+    const category = getProgramCategory(d.program);
+    const currentCrs = Number(d.crs_cutoff);
+    let delta = 0;
 
-  const formattedDate = dayjs(draw.draw_date).isValid()
-    ? dayjs(draw.draw_date).format("MMM D, YYYY")
-    : NA(draw.draw_date);
-
-  const rankLabel = rank === 1 ? "Latest Draw" : rank === 2 ? "Previous Draw" : "Older Draw";
-
-  // Footer: Province logic
-  const renderFooterContent = () => {
-    const isPNP = draw.program.toLowerCase().includes("pnp") || draw.program.toLowerCase().includes("provincial");
-    const province = draw.draw_province?.trim();
-
-    if (isPNP && province) {
-      return (
-        <div className={styles.provinceTag}>
-          <MapPin size={14} />
-          {province}
-        </div>
-      );
+    if (!isNaN(currentCrs) && d.crs_cutoff != null) {
+      const lastCrs = lastCrsByCategory[category];
+      if (lastCrs !== undefined) {
+        delta = currentCrs - lastCrs;
+      }
+      lastCrsByCategory[category] = currentCrs;
     }
-    return null;
-  };
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -8 }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      className={styles.card}
-      style={{ "--badge-bg": colors.bg, "--badge-text": colors.text } as React.CSSProperties}
-    >
-      <div className={styles.glass}>
-        {/* Glow Effects */}
-        <div className={styles.glow} />
-        <div className={styles.glowBorder} />
+    return {
+      ...d,
+      category,
+      delta,
+    };
+  });
 
-        {/* Top Meta: Rank & Date */}
-        <div className={styles.topMeta}>
-          <span className={styles.rankLabel}>{rankLabel}</span>
-          <span className={styles.dateLabel}>{formattedDate}</span>
-        </div>
-
-        {/* Main Content */}
-        <div className={styles.mainContent}>
-          <div className={styles.programHeader}>
-            <span className={styles.categoryBadge}>{category}</span>
-            <div className={styles.programTitleWrapper}>
-              <h3 className={styles.programTitle} title={draw.program}>
-                {draw.program}
-              </h3>
-            </div>
-          </div>
-
-          <div className={styles.statsGrid}>
-            <div className={styles.statBox}>
-              <p className={styles.statLabel}>CRS Cutoff</p>
-              <div className={styles.statValueRow}>
-                <Hash size={16} className={styles.statIcon} />
-                <span className={styles.statValue}>{NA(draw.crs_cutoff)}</span>
-              </div>
-            </div>
-
-            <div className={styles.statBox}>
-              <p className={styles.statLabel}>Invitations</p>
-              <div className={styles.statValueRow}>
-                <Users size={16} className={styles.statIcon} />
-                <span className={styles.statValue}>
-                  {draw.invitations != null
-                    ? /^\d+$/.test(draw.invitations)
-                      ? Number(draw.invitations).toLocaleString()
-                      : draw.invitations
-                    : "N/A"}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className={styles.cardFooter}>
-          <span className={styles.roundNumber}>#{NA(draw.round)}</span>
-          {renderFooterContent()}
-        </div>
-      </div>
-    </motion.div>
+  // Return sorted newest first
+  return drawsWithDelta.sort(
+    (a, b) => dayjs(b.draw_date).valueOf() - dayjs(a.draw_date).valueOf()
   );
-}
+};
 
-// ──────────────────────────────────────────────────────────────
-// Skeleton Card (Loading State)
-// ──────────────────────────────────────────────────────────────
-function SkeletonCard() {
-  return (
-    <div className={styles.card}>
-      <div className={styles.glass}>
-        <header className={styles.header}>
-          <div className={`${styles.skeleton} ${styles.skelTitle}`} />
-          <div className={`${styles.skeleton} ${styles.skelBadge}`} />
-        </header>
-
-        <div className={styles.crs}>
-          <div className={`${styles.skeleton} ${styles.skelIcon}`} />
-          <div className={`${styles.skeleton} ${styles.skelCrs}`} />
-        </div>
-
-        <div className={styles.stats}>
-          <div className={styles.stat}>
-            <div className={`${styles.skeleton} ${styles.skelIconSm}`} />
-            <div className={`${styles.skeleton} ${styles.skelValue}`} />
-          </div>
-          <div className={styles.stat}>
-            <div className={`${styles.skeleton} ${styles.skelIconSm}`} />
-            <div className={`${styles.skeleton} ${styles.skelValue}`} />
-          </div>
-        </div>
-
-        <footer className={styles.footer}>
-          <div className={`${styles.skeleton} ${styles.skelFooter}`} />
-        </footer>
-      </div>
-    </div>
-  );
-}
-
-// ──────────────────────────────────────────────────────────────
-// Main Component: DrawCardsGrid – fetches & sorts like table
-// ──────────────────────────────────────────────────────────────
 export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
-  const [draws, setDraws] = useState<Draw[]>([]);
+  const [allDraws, setAllDraws] = useState<Draw[]>([]);
   const [loading, setLoading] = useState(true);
   const [isDark, setIsDark] = useState(false);
 
+  // Sync dark mode
   useEffect(() => {
     const checkDarkMode = () => setIsDark(document.documentElement.classList.contains("dark"));
     checkDarkMode();
@@ -237,73 +120,180 @@ export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
     return () => observer.disconnect();
   }, []);
 
+  // Fetch Draws data
   useEffect(() => {
     const fetchDraws = async () => {
       try {
-        const res = await fetch("/api/draws", { cache: 'no-store' });
+        const res = await fetch("/api/draws", { cache: "no-store" });
         if (!res.ok) throw new Error("Failed to fetch draws");
-
         const data: Draw[] = await res.json();
 
-        // Relaxed sorting logic
-        const validDraws = data
-          .filter((d) => dayjs(d.draw_date).isValid())
-          .sort(
-            (a, b) =>
-              dayjs(b.draw_date).valueOf() -
-              dayjs(a.draw_date).valueOf()
-          );
+        // Filter out invalid dates and compute deltas
+        const processed = computeDeltas(
+          data.filter((d) => d.draw_date && dayjs(d.draw_date).isValid())
+        );
 
-        setDraws(validDraws.slice(0, 3));
+        setAllDraws(processed);
       } catch (err) {
         console.error("Error fetching draws:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchDraws();
   }, []);
 
+  // Get overall latest draw
+  const latestDraw = useMemo(() => {
+    return allDraws[0] || null;
+  }, [allDraws]);
+
   return (
     <div className={styles.pageWrapper}>
-      {/* Top Section with seamless background */}
+      {/* Decorative Canvas Background Elements */}
+      <div className={styles.glowCanvas} aria-hidden="true">
+        <div className={styles.canvasBlobRed}></div>
+        <div className={styles.canvasBlobBlue}></div>
+      </div>
+
       <div className={styles.resultsContainer}>
-        <div className={styles.root}>
-          <div className={styles.grid}>
+        {/* Page Header */}
+        <div className={styles.pageHeader}>
+          <span className={styles.sectionLabel}>Express Entry & PNP</span>
+          <h1 className={styles.pageTitle}>Draw Results</h1>
+          <p className={styles.pageSubtitle}>
+            <RefreshCw size={13} className={styles.syncIcon} />
             {loading ? (
+              "Loading latest draw parameters..."
+            ) : latestDraw ? (
               <>
-                <SkeletonCard />
-                <SkeletonCard />
-                <SkeletonCard />
+                Last updated {dayjs(latestDraw.draw_date).format("MMMM DD, YYYY")} · Source:{" "}
+                <a
+                  href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/submit-profile/rounds-invitations.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.sourceLink}
+                >
+                  IRCC Official
+                </a>
               </>
-            ) : draws.length === 0 ? (
-              <p className={styles.empty}>No draw data available.</p>
             ) : (
-              draws.map((draw, index) => (
-                <DrawCard
-                  key={draw.id}
-                  draw={draw}
-                  rank={(index + 1) as 1 | 2 | 3}
-                />
-              ))
+              "No draws loaded."
             )}
-          </div>
+          </p>
         </div>
 
-        {/* More Data / Analytics Button */}
-        <div className={styles.moreButtonContainer}>
-          <button
-            onClick={() => onNavigateToTab?.("CRS Scores")}
-            className={styles.moreButton}
-          >
-            <div className={styles.moreButtonGlow} />
-            <Activity size={20} className={styles.moreButtonIcon} />
-            <span className={styles.moreButtonText}>More Analytics & Historical Data</span>
-            <div className={styles.moreButtonBadge}>
-              <Hash size={14} />
+        {/* Latest Draw Large Hero Card */}
+        <div className={styles.latestCardContainer}>
+          {loading ? (
+            <div className={styles.skeletonHeroCard}>
+              <div className={styles.skelBadge}></div>
+              <div className={styles.skelMetrics}></div>
             </div>
-          </button>
+          ) : latestDraw ? (
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className={styles.latestHeroCard}
+            >
+              <div className={styles.cardGlowBorder} />
+              <div className={styles.heroCardHeader}>
+                <div className={styles.heroBadgeRow}>
+                  <span className={styles.heroCardBadge}>Latest Draw</span>
+                  <span className={styles.heroDrawNumber}>Draw #{NA(latestDraw.round)}</span>
+                </div>
+                <span className={styles.heroDrawDate}>
+                  {dayjs(latestDraw.draw_date).format("MMMM D, YYYY")}
+                </span>
+              </div>
+
+              <div className={styles.heroMetricsGrid}>
+                {/* Score */}
+                <div className={styles.heroMetricItem}>
+                  <span className={styles.heroMetricLabel}>CRS Cutoff Score</span>
+                  <div className={styles.heroMetricValueRow}>
+                    <Hash size={24} className={styles.heroMetricIcon} />
+                    <span className={styles.heroMetricValue}>{NA(latestDraw.crs_cutoff)}</span>
+                  </div>
+                </div>
+
+                {/* Invitations */}
+                <div className={styles.heroMetricItem}>
+                  <span className={styles.heroMetricLabel}>Invitations Issued</span>
+                  <div className={styles.heroMetricValueRow}>
+                    <Users size={24} className={styles.heroMetricIcon} />
+                    <span className={styles.heroMetricValue}>
+                      {latestDraw.invitations != null
+                        ? Number(latestDraw.invitations).toLocaleString()
+                        : "N/A"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Score change Comparison */}
+                <div className={styles.heroMetricItem}>
+                  <span className={styles.heroMetricLabel}>vs Prev (Same Program)</span>
+                  <div className={styles.heroMetricValueRow}>
+                    <Activity size={24} className={styles.heroMetricIcon} />
+                    {latestDraw.delta !== undefined ? (
+                      <span
+                        className={`${styles.heroMetricValue} ${
+                          latestDraw.delta > 0
+                            ? styles.deltaUp
+                            : latestDraw.delta < 0
+                            ? styles.deltaDown
+                            : styles.deltaFlat
+                        }`}
+                      >
+                        {latestDraw.delta > 0 ? "+" : ""}
+                        {latestDraw.delta === 0 ? "No change" : latestDraw.delta}
+                      </span>
+                    ) : (
+                      <span className={styles.heroMetricValue}>—</span>
+                    )}
+                  </div>
+                  <span className={styles.comparisonSub}>
+                    {latestDraw.delta !== undefined && latestDraw.delta > 0
+                      ? "Score increased"
+                      : latestDraw.delta !== undefined && latestDraw.delta < 0
+                      ? "Score decreased"
+                      : ""}
+                  </span>
+                </div>
+              </div>
+
+              <div className={styles.heroCardFooter}>
+                <div className={styles.heroCardProgram}>
+                  <strong>Program:</strong> {latestDraw.program}
+                  {latestDraw.draw_province && (
+                    <span className={styles.heroProvinceTag}>
+                      <MapPin size={12} />
+                      {latestDraw.draw_province}
+                    </span>
+                  )}
+                </div>
+                <div className={styles.heroCardActions}>
+                  <button
+                    onClick={() => onNavigateToTab?.("CRS Scores", "analytics")}
+                    className={styles.compareBtn}
+                  >
+                    Compare Trends
+                  </button>
+                  <a
+                    href="https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/express-entry/submit-profile/rounds-invitations.html"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.sourceExternalBtn}
+                  >
+                    IRCC Source <ExternalLink size={12} />
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <div className={styles.emptyHero}>No draws data found.</div>
+          )}
         </div>
       </div>
 

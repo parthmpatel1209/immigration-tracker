@@ -6,6 +6,7 @@ export interface Draw {
     invitations: string;
     draw_date: string;
     draw_province: string | null;
+    delta?: number;
 }
 
 export interface TrendDataPoint {

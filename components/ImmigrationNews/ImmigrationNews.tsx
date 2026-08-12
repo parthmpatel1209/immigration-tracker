@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import styles from "./ImmigrationNews.module.css";
-import { NewsItem } from "./types";
+import { NewsItem, NewsVersion } from "./types";
 import { useNewsFilters } from "./hooks/useNewsFilters";
 import { NewsHeader } from "./NewsHeader";
 import { NewsFilters } from "./NewsFilters";
@@ -55,6 +55,11 @@ export default function ImmigrationNews() {
   const theme = darkMode ? DARK : LIGHT;
 
   const { filtered, ...filterProps } = useNewsFilters(news);
+
+  // All news data (both classic and Reels) displayed together
+  const displayNews = useMemo(() => {
+    return filterProps.specificDate ? filtered : news;
+  }, [filterProps.specificDate, filtered, news]);
 
   // Dark mode detection
   useEffect(() => {
@@ -159,11 +164,11 @@ export default function ImmigrationNews() {
 
   const handleNavigateModal = (direction: "prev" | "next") => {
     if (!selectedNewsItem) return;
-    const currentIndex = news.findIndex((n) => n.id === selectedNewsItem.id);
+    const currentIndex = displayNews.findIndex((n) => n.id === selectedNewsItem.id);
     if (direction === "prev" && currentIndex > 0) {
-      setSelectedNewsItem(news[currentIndex - 1]);
-    } else if (direction === "next" && currentIndex < news.length - 1) {
-      setSelectedNewsItem(news[currentIndex + 1]);
+      setSelectedNewsItem(displayNews[currentIndex - 1]);
+    } else if (direction === "next" && currentIndex < displayNews.length - 1) {
+      setSelectedNewsItem(displayNews[currentIndex + 1]);
     }
   };
 
@@ -185,7 +190,7 @@ export default function ImmigrationNews() {
       {selectedNewsItem && (
         <NewsModal
           item={selectedNewsItem}
-          allItems={news}
+          allItems={displayNews}
           onClose={handleCloseModal}
           onNavigate={handleNavigateModal}
         />
@@ -204,7 +209,7 @@ export default function ImmigrationNews() {
 
       {!isMobile && (
         <NewsTicker
-          items={news}
+          items={displayNews}
           onItemClick={handleNewsItemClick}
           onDateFilter={filterProps.setSpecificDate}
         />
@@ -213,12 +218,12 @@ export default function ImmigrationNews() {
       {/* Conditional Rendering based on Device Type */}
       {!isMobile ? (
         <div className={styles.desktopGridWrapper}>
-          <NewsGrid news={filterProps.specificDate ? filtered : news} darkMode={darkMode} theme={theme} />
+          <NewsGrid news={displayNews} darkMode={darkMode} theme={theme} onItemClick={handleNewsItemClick} />
         </div>
       ) : (
         <div className={styles.mobileFeedWrapper}>
           <MobileNewsCarouselGrouped
-            news={filterProps.specificDate ? filtered : news}
+            news={displayNews}
             darkMode={darkMode}
             theme={theme}
             onItemClick={handleNewsItemClick}
@@ -230,7 +235,7 @@ export default function ImmigrationNews() {
       {!isMobile && (
         <NewsFooter
           total={totalCount}
-          shown={news.length}
+          shown={displayNews.length}
           theme={theme}
         />
       )}

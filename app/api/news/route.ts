@@ -53,14 +53,30 @@ export async function GET(request: Request) {
     }
 
     const transformedData = data.map((item: any) => {
-      let image_url: string | null = null;
+      let image_url: string | null = item.cover_image_url ?? null;
 
-      if (item.image_path) {
+      if (!image_url && item.image_path) {
         const { data: urlData } = supabase.storage
           .from("images")
           .getPublicUrl(item.image_path);
         image_url = urlData.publicUrl;
       }
+
+      const instagram_url = item.instagram_url ? item.instagram_url.trim() : null;
+      let instagram_reel_id = item.instagram_reel_id ?? null;
+      if (!instagram_reel_id && instagram_url) {
+        const match = instagram_url.match(/(?:reel|p)\/([A-Za-z0-9_-]+)/);
+        if (match) instagram_reel_id = match[1];
+      }
+
+      // Automatic fallback to server-side Instagram thumbnail proxy if no custom image is provided
+      if (!image_url && instagram_reel_id) {
+        image_url = `/api/news/thumbnail?reel_id=${instagram_reel_id}`;
+      }
+
+      const media_type = (instagram_reel_id || instagram_url || item.media_type === "instagram_reel")
+        ? "instagram_reel"
+        : (item.media_type || "supabase_image");
 
       return {
         id: item.id,
@@ -72,6 +88,10 @@ export async function GET(request: Request) {
         url: item.url ?? undefined,
         program: item.program ?? undefined,
         image_url,
+        media_type,
+        instagram_url,
+        instagram_reel_id,
+        cover_image_url: item.cover_image_url ?? null,
       };
     });
 

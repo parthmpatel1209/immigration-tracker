@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { ChevronRight, Layers } from "lucide-react";
-import { NewsItem, PROGRAM_COLORS } from "./types";
+import { ChevronRight, Layers, Play } from "lucide-react";
+import { NewsItem, NewsVersion, PROGRAM_COLORS } from "./types";
 
 interface Props {
     news: NewsItem[];
@@ -25,8 +25,10 @@ const MobileNewsCarouselGrouped = ({
 }: Props) => {
     if (news.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center p-12 text-center text-gray-500">
-                No news available.
+            <div className="flex flex-col items-center justify-center p-12 text-center text-gray-500 gap-2">
+                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                    No news available.
+                </p>
             </div>
         );
     }
@@ -89,16 +91,17 @@ const MobileNewsCarouselGrouped = ({
 
                             const badgeBg = darkMode ? badgeColor.dark : badgeColor.light;
                             const badgeText = darkMode ? '#000' : '#fff';
+                            const isReel = item.media_type === "instagram_reel" || Boolean(item.instagram_reel_id);
 
                             return (
                                 <div
                                     key={item.id}
                                     className="flex-shrink-0 snap-center"
-                                    style={{ width: 'min(82vw, 340px)' }}
+                                    style={{ width: 'min(86vw, 360px)' }}
                                 >
                                     <div
                                         onClick={() => onItemClick && onItemClick(item)}
-                                        className="relative h-[440px] w-full bg-slate-900 rounded-[48px] overflow-hidden shadow-2xl transition-all active:scale-[0.98] border border-white/10"
+                                        className="relative h-[520px] w-full bg-slate-900 rounded-[48px] overflow-hidden shadow-2xl transition-all active:scale-[0.98]"
                                     >
                                         {/* Image Content Only */}
                                         {item.image_url ? (
@@ -106,13 +109,33 @@ const MobileNewsCarouselGrouped = ({
                                                 src={item.image_url}
                                                 alt=""
                                                 className="w-full h-full object-cover"
-                                                style={{ width: '100%', height: '100%' }}
+                                                style={{ width: '100%', height: '100%', transform: 'scale(1.05)' }}
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).style.display = "none";
+                                                    const ph = e.currentTarget.nextElementSibling as HTMLElement;
+                                                    if (ph) ph.style.display = "flex";
+                                                }}
                                             />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-slate-800">
+                                        ) : null}
+                                        <div
+                                            className="w-full h-full flex flex-col items-center justify-center p-6 text-center text-white"
+                                            style={{
+                                                display: item.image_url ? "none" : "flex",
+                                                background: isReel
+                                                    ? "linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%)"
+                                                    : "#1e293b"
+                                            }}
+                                        >
+                                            {isReel ? (
+                                                <div className="flex flex-col items-center gap-2">
+                                                    <Play size={48} fill="currentColor" />
+                                                    <span className="font-extrabold text-lg tracking-wide">Instagram Reel</span>
+                                                    <span className="text-xs opacity-80">Tap to watch video</span>
+                                                </div>
+                                            ) : (
                                                 <Layers className="text-slate-600 w-8 h-8" />
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
 
                                         {/* Subtle overlay for badge legibility */}
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
@@ -128,6 +151,8 @@ const MobileNewsCarouselGrouped = ({
                                                 </span>
                                             </div>
                                         )}
+
+
                                     </div>
                                 </div>
                             );

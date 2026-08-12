@@ -47,8 +47,16 @@
 .header {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (max-width: 767px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -86,7 +94,15 @@
 .headerActions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.75rem;
+}
+
+@media (max-width: 767px) {
+  .headerActions {
+    justify-content: space-between;
+    width: 100%;
+  }
 }
 
 .languageSelector {
@@ -521,15 +537,16 @@
 /* ------------------------------------------------- */
 .card {
   perspective: 1200px;
-  height: 100%;
-  border-radius: 0.75rem;
-  border: 1px solid transparent;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  transition: box-shadow 0.3s ease;
+  height: 480px;
+  border-radius: 1.5rem;
+  border: none;
+  overflow: hidden;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .card:hover {
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
 /* Flipper container */
@@ -540,6 +557,8 @@
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
   cursor: pointer;
+  border-radius: 1.25rem;
+  overflow: hidden;
 }
 
 /* Flipped state (manual tap or swipe) */
@@ -581,7 +600,7 @@
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 0.75rem;
+  border-radius: 1.25rem;
   overflow: hidden;
 }
 
@@ -628,7 +647,7 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: .75rem;
+  border-radius: 1.25rem;
   overflow: hidden;
   -webkit-backface-visibility: 0;
   pointer-events: none;
@@ -638,8 +657,10 @@
 /* FRONT: Image ------------------------------------------- */
 .cardFront {
   z-index: 2;
-  background: #fff;
+  background: transparent;
   position: relative;
+  border-radius: 1.25rem;
+  overflow: hidden;
 }
 
 .cardImage {
@@ -648,11 +669,13 @@
   object-fit: cover;
   object-position: center;
   display: block;
-  transition: transform .3s ease;
+  border-radius: 1.5rem;
+  transform: scale(1.05);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card:hover .cardImage {
-  transform: scale(1.04);
+  transform: scale(1.08);
 }
 
 /* Image placeholder -------------------------------------- */
@@ -1298,4 +1321,108 @@ cardBack .footer {
   50% {
     opacity: 0.8;
   }
+}
+
+/* ------------------------------------------------- */
+/* VERSION SWITCHER (v1.0 Classic vs v2.0 Reels)    */
+/* ------------------------------------------------- */
+.versionSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 9999px;
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+:global(.dark) .versionSwitcher {
+  background: rgba(15, 23, 42, 0.55);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.versionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #64748b;
+  background: transparent;
+}
+
+:global(.dark) .versionBtn {
+  color: #94a3b8;
+}
+
+.versionBtn:hover {
+  color: #1e293b;
+}
+
+:global(.dark) .versionBtn:hover {
+  color: #f1f5f9;
+}
+
+.versionBtnActive {
+  background: rgba(255, 255, 255, 0.75) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(20px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(200%) !important;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+:global(.dark) .versionBtnActive {
+  background: rgba(220, 38, 38, 0.35) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(239, 68, 68, 0.5) !important;
+  backdrop-filter: blur(20px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(200%) !important;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+.versionBadgeSparkle {
+  display: inline-block;
+  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+/* Reel Overlay Badge on Cards */
+.reelCardBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 9999px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+}
+
+.reelBadgeIcon {
+  width: 12px;
+  height: 12px;
+  color: #ec4899;
+  flex-shrink: 0;
 }

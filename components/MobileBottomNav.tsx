@@ -8,6 +8,7 @@ import {
     Newspaper,
     MoreHorizontal,
     ChevronUp,
+    ChevronDown,
     Activity,
     GraduationCap,
     MapPin,
@@ -59,23 +60,19 @@ export default function MobileBottomNav({
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
 
-            // Show if: 
-            // 1. Scrolling up
-            // 2. Near top of page
-            // 3. Page is very short (no scroll space)
-            if (currentScrollY < lastScrollY || currentScrollY < 100 || (document.documentElement.scrollHeight - window.innerHeight < 100)) {
+            // Show if scrolling up, near top, or at bottom
+            if (currentScrollY < lastScrollY || currentScrollY < 100 || (document.documentElement.scrollHeight - window.innerHeight - currentScrollY < 100)) {
                 setIsVisible(true);
+            } else if (currentScrollY > lastScrollY && currentScrollY > 120 && !isMoreOpen) {
+                setIsVisible(false);
             }
-            // We never set isVisible(false) here because the user wants it to "always appear"
-            // But having this logic ensures that if the browser hides its bars, 
-            // our component reacts and translates itself back into view.
 
             setLastScrollY(currentScrollY);
         };
 
         window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
-    }, [lastScrollY]);
+    }, [lastScrollY, isMoreOpen]);
 
     // Tabs configuration
     const moreTabsInfo = [
@@ -104,15 +101,17 @@ export default function MobileBottomNav({
         <div
             style={{
                 position: 'fixed',
-                bottom: 0,
-                left: 0,
-                right: 0,
+                bottom: 'max(env(safe-area-inset-bottom), 10px)',
+                left: '12px',
+                right: '12px',
+                maxWidth: '460px',
+                margin: '0 auto',
                 zIndex: 9999,
-                fontFamily: 'system-ui, sans-serif',
-                display: isMobile ? 'block' : 'none', // Keep mounted, just hide via CSS
-                transform: isVisible ? 'translateY(0)' : 'translateY(100%)',
+                fontFamily: 'system-ui, -apple-system, sans-serif',
+                display: isMobile ? 'block' : 'none',
+                transform: isVisible ? 'translateY(0)' : 'translateY(120%)',
                 opacity: isVisible ? 1 : 0,
-                transition: 'transform 0.3s ease, opacity 0.3s ease',
+                transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease',
                 willChange: 'transform',
                 backfaceVisibility: 'hidden',
                 WebkitBackfaceVisibility: 'hidden'
@@ -125,38 +124,39 @@ export default function MobileBottomNav({
                     style={{
                         position: 'fixed',
                         inset: 0,
-                        backgroundColor: 'rgba(0,0,0,0.3)',
-                        backdropFilter: 'blur(4px)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.35)',
+                        backdropFilter: 'blur(6px)',
+                        WebkitBackdropFilter: 'blur(6px)',
                         zIndex: -1
                     }}
                 />
             )}
 
-            {/* More Menu Content */}
+            {/* More Menu Content (Expands Upwards from Floating Glass Dock) */}
             <div
                 style={{
                     position: 'absolute',
-                    bottom: '100%',
+                    bottom: 'calc(100% + 10px)',
                     left: 0,
                     right: 0,
-                    padding: '0 1rem 1rem 1rem',
-                    transform: isMoreOpen ? 'translateY(0)' : 'translateY(20px)',
+                    transform: isMoreOpen ? 'translateY(0) scale(1)' : 'translateY(16px) scale(0.96)',
                     opacity: isMoreOpen ? 1 : 0,
                     pointerEvents: isMoreOpen ? 'all' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
             >
                 <div
                     style={{
-                        backgroundColor: isDark ? 'rgba(17, 24, 39, 0.95)' : 'rgba(255, 255, 255, 0.95)',
-                        backdropFilter: 'blur(20px)',
-                        borderRadius: '24px',
-                        border: `1px solid ${isDark ? 'rgba(75, 85, 99, 0.4)' : 'rgba(229, 231, 235, 0.5)'}`,
-                        boxShadow: '0 20px 50px -12px rgba(0, 0, 0, 0.5)',
+                        backgroundColor: isDark ? 'rgba(15, 23, 42, 0.88)' : 'rgba(255, 255, 255, 0.85)',
+                        backdropFilter: 'blur(30px) saturate(200%)',
+                        WebkitBackdropFilter: 'blur(30px) saturate(200%)',
+                        borderRadius: '26px',
+                        border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.7)'}`,
+                        boxShadow: '0 20px 50px -10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
                         overflow: 'hidden'
                     }}
                 >
-                    <div style={{ padding: '1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                    <div style={{ padding: '0.85rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
                         {moreTabsInfo.map((item) => (
                             <button
                                 key={item.index}
@@ -164,23 +164,24 @@ export default function MobileBottomNav({
                                 style={{
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: '0.75rem',
-                                    padding: '0.75rem',
+                                    gap: '0.65rem',
+                                    padding: '0.65rem 0.85rem',
                                     borderRadius: '16px',
                                     border: 'none',
                                     cursor: 'pointer',
-                                    transition: 'all 0.2s',
+                                    transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
                                     backgroundColor: activeIndex === item.index
                                         ? '#dc2626'
-                                        : (isDark ? 'rgba(31, 41, 55, 0.5)' : 'rgba(249, 250, 251, 0.5)'),
-                                    color: activeIndex === item.index ? 'white' : (isDark ? '#d1d5db' : '#374151')
+                                        : (isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(241, 245, 249, 0.7)'),
+                                    color: activeIndex === item.index ? 'white' : (isDark ? '#e2e8f0' : '#334155'),
+                                    boxShadow: activeIndex === item.index ? '0 4px 12px rgba(220, 38, 38, 0.35)' : 'none'
                                 }}
                             >
                                 <div style={{ color: activeIndex === item.index ? 'white' : '#ef4444' }}>
                                     {item.icon}
                                 </div>
                                 <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                                    <span style={{ fontSize: '11px', fontWeight: 'bold' }}>{tabs[item.index].label}</span>
+                                    <span style={{ fontSize: '11px', fontWeight: '700' }}>{tabs[item.index].label}</span>
                                     {tabs[item.index].badge && (
                                         <span style={{
                                             fontSize: '8px',
@@ -202,7 +203,7 @@ export default function MobileBottomNav({
                     </div>
 
                     {/* Theme Toggle Button */}
-                    <div style={{ padding: '0 1rem 1rem 1rem' }}>
+                    <div style={{ padding: '0 0.85rem 0.85rem 0.85rem' }}>
                         <button
                             onClick={() => {
                                 document.documentElement.classList.toggle("dark");
@@ -212,60 +213,63 @@ export default function MobileBottomNav({
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                gap: '0.75rem',
-                                padding: '0.75rem',
+                                gap: '0.65rem',
+                                padding: '0.65rem',
                                 borderRadius: '16px',
-                                border: `1px dashed ${isDark ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.1)'}`,
+                                border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}`,
                                 cursor: 'pointer',
                                 transition: 'all 0.2s',
-                                backgroundColor: isDark ? 'rgba(55, 65, 81, 0.4)' : 'rgba(243, 244, 246, 0.5)',
-                                color: isDark ? '#fde68a' : '#4b5563'
+                                backgroundColor: isDark ? 'rgba(30, 41, 59, 0.5)' : 'rgba(241, 245, 249, 0.6)',
+                                color: isDark ? '#fde68a' : '#475569'
                             }}
                         >
-                            {isDark ? <Sun size={20} /> : <Moon size={20} />}
-                            <span style={{ fontSize: '13px', fontWeight: 'bold' }}>
+                            {isDark ? <Sun size={18} /> : <Moon size={18} />}
+                            <span style={{ fontSize: '12px', fontWeight: '700' }}>
                                 Switch to {isDark ? 'Light' : 'Dark'} Mode
                             </span>
                         </button>
                     </div>
 
-                    <div style={{ padding: '0.5rem', textAlign: 'center', backgroundColor: isDark ? 'rgba(31, 41, 55, 0.3)' : 'rgba(249, 250, 251, 0.3)' }}>
-                        <div style={{ width: '40px', height: '4px', backgroundColor: isDark ? '#4b5563' : '#d1d5db', borderRadius: '2px', margin: '0 auto' }} />
+                    <div style={{ padding: '0.4rem', textAlign: 'center', backgroundColor: isDark ? 'rgba(15, 23, 42, 0.4)' : 'rgba(248, 250, 252, 0.4)' }}>
+                        <div style={{ width: '36px', height: '4px', backgroundColor: isDark ? '#475569' : '#cbd5e1', borderRadius: '2px', margin: '0 auto' }} />
                     </div>
                 </div>
             </div>
 
-            {/* Main Bottom Bar */}
+            {/* iOS Floating Liquid Glass Dock */}
             <div
                 style={{
-                    height: '70px',
-                    backgroundColor: isDark ? 'rgba(17, 24, 39, 0.9)' : 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(20px)',
-                    borderTop: `1px solid ${isDark ? 'rgba(75, 85, 99, 0.4)' : 'rgba(229, 231, 235, 0.5)'}`,
+                    height: '64px',
+                    backgroundColor: isDark ? 'rgba(15, 23, 42, 0.78)' : 'rgba(255, 255, 255, 0.75)',
+                    backdropFilter: 'blur(25px) saturate(200%)',
+                    WebkitBackdropFilter: 'blur(25px) saturate(200%)',
+                    borderRadius: '26px',
+                    border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.65)'}`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-around',
-                    padding: '0 1rem',
-                    paddingBottom: 'max(env(safe-area-inset-bottom), 12px)',
-                    boxShadow: '0 -4px 20px rgba(0,0,0,0.05)'
+                    padding: '4px 6px',
+                    boxShadow: isDark
+                        ? '0 16px 40px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
+                        : '0 16px 40px -8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8)'
                 }}
             >
                 <TabButton
-                    icon={<Home size={22} />}
+                    icon={<Home size={20} />}
                     label="Home"
                     isActive={activeIndex === 0}
                     onClick={() => handleTabClick(0)}
                     isDark={isDark}
                 />
                 <TabButton
-                    icon={<TrendingUp size={22} />}
+                    icon={<TrendingUp size={20} />}
                     label="Draws"
                     isActive={activeIndex === 1}
                     onClick={() => handleTabClick(1)}
                     isDark={isDark}
                 />
                 <TabButton
-                    icon={<Calculator size={22} />}
+                    icon={<Calculator size={20} />}
                     label="Calc"
                     isActive={activeIndex === 3}
                     onClick={() => handleTabClick(3)}
@@ -273,7 +277,7 @@ export default function MobileBottomNav({
                     isDark={isDark}
                 />
                 <TabButton
-                    icon={<Newspaper size={22} />}
+                    icon={<Newspaper size={20} />}
                     label="News"
                     isActive={activeIndex === 4}
                     onClick={() => handleTabClick(4)}
@@ -285,37 +289,31 @@ export default function MobileBottomNav({
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        gap: '4px',
-                        background: 'none',
-                        border: 'none',
+                        justifyContent: 'center',
+                        gap: '2px',
+                        padding: '6px 12px',
+                        height: '52px',
+                        borderRadius: '18px',
+                        background: isMoreOpen
+                            ? (isDark ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(185, 28, 28, 0.95))' : 'linear-gradient(135deg, rgba(239, 68, 68, 0.92), rgba(220, 38, 38, 0.95))')
+                            : (isMoreActive ? (isDark ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.12)') : 'transparent'),
+                        border: isMoreOpen
+                            ? '1px solid rgba(255, 255, 255, 0.3)'
+                            : 'none',
                         cursor: 'pointer',
-                        transition: 'all 0.3s',
-                        color: (isMoreActive || isMoreOpen) ? '#ef4444' : (isDark ? '#9ca3af' : '#6b7280'),
+                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                        color: isMoreOpen ? '#ffffff' : (isMoreActive ? '#ef4444' : (isDark ? '#94a3b8' : '#64748b')),
+                        boxShadow: isMoreOpen ? '0 4px 14px rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4)' : 'none',
                         position: 'relative'
                     }}
                 >
                     <div style={{
-                        padding: '6px',
-                        borderRadius: '12px',
-                        backgroundColor: isMoreOpen ? (isDark ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.1)') : 'transparent',
                         transform: isMoreOpen ? 'rotate(180deg)' : 'none',
-                        transition: 'all 0.3s'
+                        transition: 'transform 0.3s ease'
                     }}>
-                        {isMoreOpen ? <ChevronUp size={22} /> : <MoreHorizontal size={22} />}
+                        <MoreHorizontal size={20} />
                     </div>
-                    <span style={{ fontSize: '10px', fontWeight: '500' }}>More</span>
-                    {isMoreActive && !isMoreOpen && (
-                        <div style={{
-                            position: 'absolute',
-                            top: '4px',
-                            right: '4px',
-                            width: '8px',
-                            height: '8px',
-                            backgroundColor: '#ef4444',
-                            borderRadius: '50%',
-                            border: `2px solid ${isDark ? '#111827' : 'white'}`
-                        }} />
-                    )}
+                    <span style={{ fontSize: '10px', fontWeight: isMoreOpen || isMoreActive ? '700' : '500' }}>More</span>
                 </button>
             </div>
         </div>
@@ -344,22 +342,27 @@ function TabButton({
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                gap: '4px',
-                background: 'none',
-                border: 'none',
+                justifyContent: 'center',
+                gap: '2px',
+                padding: '6px 12px',
+                height: '52px',
+                borderRadius: '18px',
+                background: isActive
+                    ? (isDark
+                        ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(185, 28, 28, 0.95))'
+                        : 'linear-gradient(135deg, rgba(239, 68, 68, 0.92), rgba(220, 38, 38, 0.95))')
+                    : 'transparent',
+                border: isActive
+                    ? '1px solid rgba(255, 255, 255, 0.3)'
+                    : 'none',
                 cursor: 'pointer',
-                transition: 'all 0.3s',
-                color: isActive ? '#ef4444' : (isDark ? '#9ca3af' : '#6b7280'),
+                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+                color: isActive ? '#ffffff' : (isDark ? '#94a3b8' : '#64748b'),
+                boxShadow: isActive ? '0 4px 14px rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4)' : 'none',
                 position: 'relative'
             }}
         >
-            <div style={{
-                padding: '6px',
-                borderRadius: '12px',
-                backgroundColor: isActive ? (isDark ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.1)') : 'transparent',
-                transform: isActive ? 'scale(1.1)' : 'scale(1)',
-                transition: 'all 0.3s'
-            }}>
+            <div>
                 {icon}
             </div>
             <span style={{ fontSize: '10px', fontWeight: isActive ? '700' : '500' }}>{label}</span>
@@ -367,27 +370,17 @@ function TabButton({
                 <span style={{
                     position: 'absolute',
                     top: '-2px',
-                    right: '-4px',
+                    right: '-2px',
                     fontSize: '8px',
-                    padding: '1px 4px',
-                    backgroundColor: '#ef4444',
-                    color: 'white',
+                    padding: '1px 5px',
+                    backgroundColor: isActive ? '#ffffff' : '#ef4444',
+                    color: isActive ? '#dc2626' : 'white',
                     borderRadius: '9999px',
                     fontWeight: '900',
-                    boxShadow: '0 2px 4px rgba(239, 68, 68, 0.5)'
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
                 }}>
                     {badge}
                 </span>
-            )}
-            {isActive && (
-                <div style={{
-                    position: 'absolute',
-                    bottom: '-6px',
-                    width: '4px',
-                    height: '4px',
-                    backgroundColor: '#ef4444',
-                    borderRadius: '50%'
-                }} />
             )}
         </button>
     );

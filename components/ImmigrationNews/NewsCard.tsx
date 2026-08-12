@@ -1,17 +1,18 @@
 // components/ImmigrationNews/NewsCard.tsx
 import { useEffect, useRef } from "react";
-import { Calendar, ExternalLink, X } from "lucide-react";
+import { Calendar, ExternalLink, X, Play } from "lucide-react";
 import styles from "./ImmigrationNews.module.css";
-import { NewsItem, PROGRAM_COLORS } from "./types";
+import { NewsItem, NewsVersion, PROGRAM_COLORS } from "./types";
 
 interface Props {
   item: NewsItem;
   index: number;
   darkMode: boolean;
   theme: any;
+  onItemClick?: (item: NewsItem) => void;
 }
 
-export function NewsCard({ item, index, darkMode, theme }: Props) {
+export function NewsCard({ item, index, darkMode, theme, onItemClick }: Props) {
   const touchStartX = useRef<number | null>(null);
   const isSwiping = useRef(false);
   const flipperRef = useRef<HTMLDivElement>(null);
@@ -132,6 +133,12 @@ export function NewsCard({ item, index, darkMode, theme }: Props) {
             return;
           }
 
+          // Trigger onItemClick if provided
+          if (onItemClick) {
+            onItemClick(item);
+            return;
+          }
+
           // Toggle flip — works perfectly both ways (front to back AND back to front)
           const flipper = e.currentTarget as HTMLElement;
           flipper.classList.toggle(styles.flipped);
@@ -153,6 +160,8 @@ export function NewsCard({ item, index, darkMode, theme }: Props) {
             />
           ) : null}
 
+
+
           {item.published_at && (
             <div className={styles.dateLabel}>
               {getRelativeDate(item.published_at)}
@@ -161,9 +170,23 @@ export function NewsCard({ item, index, darkMode, theme }: Props) {
 
           <div
             className={styles.imagePlaceholder}
-            style={{ display: item.image_url ? "none" : "flex" }}
+            style={{
+              display: item.image_url ? "none" : "flex",
+              background: (item.media_type === "instagram_reel" || item.instagram_reel_id)
+                ? "linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%)"
+                : undefined,
+              color: "#ffffff"
+            }}
           >
-            No Image
+            {(item.media_type === "instagram_reel" || item.instagram_reel_id) ? (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem", padding: "1.5rem", textAlign: "center" }}>
+                <Play size={44} fill="currentColor" />
+                <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "0.5px" }}>Instagram Reel</span>
+                <span style={{ fontSize: "0.75rem", opacity: 0.85 }}>Tap to watch video</span>
+              </div>
+            ) : (
+              "No Image"
+            )}
           </div>
         </div>
 
