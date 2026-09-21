@@ -43,6 +43,75 @@ export function getRange(scores: number[]) {
     return { min, max };
 }
 
+/**
+ * Intelligent formatter for program badges to prevent text overflow on mobile/desktop.
+ * Strips redundant prefixes (e.g. "Express Entry - ") and versioning tags,
+ * while mapping long occupational and provincial stream descriptions to concise badges.
+ */
+export function formatProgramBadge(program: string): string {
+    if (!program) return "General";
+
+    let clean = program.trim();
+
+    // 1. Remove redundant leading "Express Entry - " or "Express Entry: "
+    clean = clean.replace(/^Express Entry\s*[:-]\s*/i, "");
+
+    // 2. Remove trailing administrative version tags like ", 2026-Version 1", "(Version 1)"
+    clean = clean.replace(/[,]?\s*(\d{4}-)?Version\s*\d+/gi, "");
+    clean = clean.replace(/\(Version\s*\d+\)/gi, "");
+
+    // 3. Simplify common category-based draw strings
+    if (/french language proficiency/i.test(clean)) {
+        return "French Proficiency";
+    }
+    if (/healthcare/i.test(clean) && clean.length > 25) {
+        return clean.includes("Early Childhood") ? "Healthcare & Childcare" : "Healthcare Occupations";
+    }
+    if (/stem occupations/i.test(clean)) {
+        return "STEM Occupations";
+    }
+    if (/trade occupations/i.test(clean)) {
+        return "Trade Occupations";
+    }
+    if (/agriculture/i.test(clean)) {
+        return "Agriculture & Agri-Food";
+    }
+    if (/transport/i.test(clean)) {
+        return "Transport Occupations";
+    }
+    if (/physicians with canadian work experience/i.test(clean)) {
+        return "Physicians in Canada";
+    }
+
+    // 4. Simplify long provincial employer job offer / stream strings
+    if (clean.includes("Employer Job Offer:")) {
+        clean = clean.replace(/^Employer Job Offer:\s*/i, "OINP: ");
+    }
+    if (clean.startsWith("Alberta Express Entry")) {
+        clean = clean.replace(/^Alberta Express Entry\s*–\s*/i, "AAIP: ");
+    }
+    if (clean.startsWith("Quebec PSTQ")) {
+        clean = clean.replace(/^Quebec PSTQ\s*-\s*All 4 streams.*/i, "Quebec PSTQ (All Streams)");
+        clean = clean.replace(/^Quebec PSTQ\s*-\s*All 4 Streams.*/i, "Quebec PSTQ (All Streams)");
+    }
+    if (clean.includes("BCPNP - Skills Immigration (Care:")) {
+        return "BCPNP - Care & Build";
+    }
+    if (clean.includes("MPNP - Skilled Worker in Manitoba (Post-secondary")) {
+        return "MPNP - Skilled Worker";
+    }
+
+    // Trim any dangling parens or dashes
+    clean = clean.replace(/\s*-\s*$/, "").replace(/\(\s*\)$/, "").trim();
+
+    // If still over 40 chars, truncate cleanly with ellipsis
+    if (clean.length > 40) {
+        return clean.substring(0, 38).trim() + "…";
+    }
+
+    return clean;
+}
+
 // Badge colors for draw cards
 export const BADGE_COLORS: Record<
     string,

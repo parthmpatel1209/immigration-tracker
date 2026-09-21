@@ -62,12 +62,12 @@ export default function HomePage() {
 
   return (
     <main
-      className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black transition-all duration-500 pb-[95px] md:pb-0 pt-0"
+      className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 transition-colors duration-300 pb-[95px] md:pb-0 pt-0"
     >
       <Header />
 
-      <section id="tabs-section" className="max-w-[1600px] mx-auto px-0 md:px-4 pb-8 mt-4 md:mt-8">
-        <div className="backdrop-blur-xl bg-white/80 dark:bg-transparent rounded-2xl shadow-2xl border border-gray-200 dark:border-white/10 overflow-hidden">
+      <section id="tabs-section" className="max-w-[1540px] mx-auto px-2 md:px-6 pb-12 mt-2 md:mt-4">
+        <div className="bg-white/95 dark:bg-[#0f172a]/95 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800/80 overflow-hidden backdrop-blur-md">
           <Tabs
             tabs={tabs}
             activeIndex={activeIndex}

@@ -127,10 +127,14 @@ export default function Footer({ onNavigateToContact }: FooterProps) {
 
           {/* Disclaimer */}
           <div className={styles.disclaimerSection}>
-            <div className={styles.disclaimerLabel}>⚠️ Disclaimer</div>
+            <div className={styles.disclaimerLabel}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#d97706" }}></span>
+                Notice & Disclaimer
+              </span>
+            </div>
             <div className={styles.disclaimerText}>
-              This website is NOT affiliated with IRCC. All data is for informational purposes only and may be outdated.
-              Verify all details at <a href="https://www.canada.ca/en/immigration-refugees-citizenship.html" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-500">IRCC</a> and consult an RCIC or lawyer before making immigration decisions.
+              This platform is an independent intelligence tool and is not affiliated with Immigration, Refugees and Citizenship Canada (IRCC). All data is compiled from public IRCC gazettes for informational purposes. Verify official requirements at <a href="https://www.canada.ca/en/immigration-refugees-citizenship.html" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-500">IRCC (canada.ca)</a> and consult an authorized Regulated Canadian Immigration Consultant (RCIC) or immigration lawyer before making legal decisions.
             </div>
           </div>
         </div>

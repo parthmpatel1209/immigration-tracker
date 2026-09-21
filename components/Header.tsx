@@ -2,7 +2,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 
 /* ---------- ALL ICONS ---------- */
 import BearIcon from "@/icons/bear.png";

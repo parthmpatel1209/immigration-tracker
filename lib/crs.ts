@@ -435,14 +435,23 @@ export function calculateSkillTransferability(
 //   studies_canada_3_or_more_years (30)
 //   french_nclc7_english_clb5_plus (50)
 //   french_nclc7_english_clb4_or_less (25)
+//
+// NOTE: "French bonus" applies when the applicant has FRENCH NCLC 7+ across all abilities.
+// frenchCLB  = the CLB record for the applicant's French test results.
+// englishCLB = the CLB record for the applicant's English test results.
+// If the applicant's first language IS French (frenchIsFirst=true), then
+//   frenchCLB  = clb (first language),
+//   englishCLB = secondClb (second language, may be null)
+// If the applicant's first language is English (default),
+//   frenchCLB  = secondClb (second language),
+//   englishCLB = clb (first language)
 // -------------------------------------------------------
 export function calculateAdditionalPoints(
   breakdown: BreakdownRow[],
   sibling: boolean,
   frenchCLB: Record<string, number | null> | null,
-  englishCLB: Record<string, number | null>,
+  englishCLB: Record<string, number | null> | null,
   educationInCanada: string,
-  arrangedEmployment: string, // kept for signature compat but job offer pts removed Mar 25 2025
   nomination: boolean
 ): number {
   let total = 0;
@@ -464,16 +473,19 @@ export function calculateAdditionalPoints(
     total += getPointsFor(breakdown, "additional", "studies_canada_3_or_more_years", false);
   }
 
-  // French language bonus
-  // Applies when second language is French (NCLC 7+) with or without English
+  // French language bonus (NCLC 7+ in all four abilities)
+  // Official rule: Bonus applies if French meets NCLC 7+ across all 4 skills.
+  // Extra 25 pts if English < CLB 5 (or no English test); 50 pts if English >= CLB 5.
   if (frenchCLB) {
     const frenchMin = Math.min(
       ...(["listening", "reading", "writing", "speaking"].map((s) => frenchCLB[s] ?? 0))
     );
     if (frenchMin >= 7) {
-      const englishMin = Math.min(
-        ...(["listening", "reading", "writing", "speaking"].map((s) => englishCLB[s] ?? 0))
-      );
+      const englishMin = englishCLB
+        ? Math.min(
+            ...(["listening", "reading", "writing", "speaking"].map((s) => englishCLB[s] ?? 0))
+          )
+        : 0;
       const key = englishMin >= 5
         ? "french_nclc7_english_clb5_plus"
         : "french_nclc7_english_clb4_or_less";
@@ -481,8 +493,7 @@ export function calculateAdditionalPoints(
     }
   }
 
-  // NOTE: As of March 25, 2025, arranged employment (LMIA job offer) points are REMOVED.
-  // arrangedEmployment parameter is kept for API compatibility but contributes 0 points.
+  // NOTE: As of March 25, 2025, arranged employment (LMIA job offer) points are REMOVED from CRS.
 
   return Math.min(600, total);
 }
@@ -498,13 +509,14 @@ export function calculateCRS({
   education,
   spouseEducation,
   canadianWorkYears,
+  spouseCanadianWorkYears,
   foreignWorkYears,
   certificate,
   secondClb,
   sibling,
   educationInCanada,
-  arrangedEmployment,
   nomination,
+  frenchIsFirst,
   breakdown,
 }: {
   age: number;
@@ -514,13 +526,15 @@ export function calculateCRS({
   education: string;
   spouseEducation?: string;
   canadianWorkYears: number;
+  spouseCanadianWorkYears?: number;
   foreignWorkYears: number;
   certificate: boolean;
   secondClb?: any;
   sibling: boolean;
   educationInCanada: string;
-  arrangedEmployment: string;
   nomination: boolean;
+  /** true if applicant's first language is French (so secondClb is English, clb is French) */
+  frenchIsFirst?: boolean;
   breakdown: BreakdownRow[];
 }) {
   if (!breakdown || breakdown.length === 0) {
@@ -560,7 +574,9 @@ export function calculateCRS({
     if (spouseClb) {
       spouseLanguagePoints = calculateLanguagePoints(breakdown, spouseClb, true, "spouse_first_language");
     }
-    // Spouse Canadian work is not in the form yet → 0
+    if (spouseCanadianWorkYears && spouseCanadianWorkYears > 0) {
+      spouseCanadianWorkPoints = calculateSpouseCanadianWorkPoints(breakdown, spouseCanadianWorkYears);
+    }
   }
 
   // ── Core total (capped) ───────────────────────────────
@@ -582,15 +598,18 @@ export function calculateCRS({
   );
 
   // ── Additional Points (Max 600) ───────────────────────
-  // secondClb is used as the "French" CLB when the user enters French as their second language.
-  // englishCLB is the applicant's first language CLB.
+  // French bonus: identify which CLB belongs to French vs English.
+  // If frenchIsFirst=true: first language (clb) is French, second (secondClb) is English.
+  // If frenchIsFirst=false (default): first language is English, second (secondClb) is French.
+  const frenchCLB  = frenchIsFirst ? clb : (secondClb ?? null);
+  const englishCLB = frenchIsFirst ? (secondClb ?? null) : clb;
+
   const additionalPoints = calculateAdditionalPoints(
     breakdown,
     sibling,
-    secondClb ?? null,
-    clb,
+    frenchCLB,
+    englishCLB,
     educationInCanada,
-    arrangedEmployment,
     nomination
   );
 

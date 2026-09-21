@@ -6,25 +6,29 @@ import styles from "./ProvinceTicker.module.css";
 import MapleIcon from "@/icons/maple.png";
 
 const PROVINCES = [
-    "Ontario OINP",
-    "British Columbia PNP",
-    "Alberta AAIP",
-    "Saskatchewan SINP",
-    "Manitoba MPNP",
-    "Nova Scotia NSNP",
-    "New Brunswick NBPNP",
-    "Prince Edward Island PEI PNP",
-    "Newfoundland & Labrador NLPNP",
-    "Yukon YNP",
-    "Northwest Territories NTNP",
+    { name: "Ontario", stream: "OINP", status: "Active" },
+    { name: "British Columbia", stream: "BC PNP", status: "Tech / Skilled" },
+    { name: "Alberta", stream: "AAIP", status: "Express Entry" },
+    { name: "Saskatchewan", stream: "SINP", status: "Occupations In-Demand" },
+    { name: "Manitoba", stream: "MPNP", status: "Skilled Worker" },
+    { name: "Nova Scotia", stream: "NSNP", status: "Labour Market Priorities" },
+    { name: "New Brunswick", stream: "NBPNP", status: "Express Entry Stream" },
+    { name: "Prince Edward Island", stream: "PEI PNP", status: "Schedule Verified" },
+    { name: "Newfoundland & Labrador", stream: "NLPNP", status: "Priority Skills" },
+    { name: "Yukon", stream: "YNP", status: "Critical Impact Worker" },
+    { name: "Northwest Territories", stream: "NTNP", status: "Employer-Driven" },
 ];
 
-// Duplicating the list to ensure seamless looping
 const TICKER_ITEMS = [...PROVINCES, ...PROVINCES, ...PROVINCES];
 
 export default function ProvinceTicker() {
     return (
         <div className={styles.tickerWrapper}>
+            <div className={styles.leadBadge}>
+                <span className={styles.leadDot} />
+                <span>PNP Wire</span>
+            </div>
+
             <div className={styles.fadeLeft} />
             <div className={styles.fadeRight} />
 
@@ -36,22 +40,24 @@ export default function ProvinceTicker() {
                         x: {
                             repeat: Infinity,
                             repeatType: "loop",
-                            duration: 25,
+                            duration: 35,
                             ease: "linear",
                         },
                     }}
                 >
                     {TICKER_ITEMS.map((item, index) => (
                         <div key={index} className={styles.tickerItem}>
-                            <span className={styles.text}>{item}</span>
+                            <span className={styles.provinceName}>{item.name}</span>
+                            <span className={styles.streamBadge}>{item.stream}</span>
+                            <span className={styles.statusLabel}>{item.status}</span>
                             <div className={styles.separator}>
                                 <Image
                                     src={MapleIcon}
                                     alt="maple"
-                                    width={14}
-                                    height={14}
+                                    width={12}
+                                    height={12}
                                     className={styles.icon}
-                                    unoptimized // Since it's a local import
+                                    unoptimized
                                 />
                             </div>
                         </div>

@@ -309,85 +309,45 @@ export default function Tabs({ tabs, activeIndex: controlledIndex, onTabChange, 
                       e.currentTarget.style.backgroundColor = "transparent";
                   }}
                 >
-                  {/* Individual Liquid Glass Layer - Fades In/Out */}
+                  {/* Modern Precision Active Indicator Pill */}
                   <div
                     style={{
                       position: "absolute",
                       inset: 0,
                       background: isDark
-                        ? "linear-gradient(135deg, rgba(220, 38, 38, 0.35), rgba(185, 28, 28, 0.35))"
-                        : "linear-gradient(135deg, rgba(254, 226, 226, 1), rgba(255, 241, 241, 1))",
+                        ? "#1e293b"
+                        : "#ffffff",
                       borderRadius: "9999px",
-                      backdropFilter: "blur(12px)",
-                      WebkitBackdropFilter: "blur(12px)",
                       boxShadow: isDark
-                        ? "0 4px 20px rgba(239, 68, 68, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
-                        : "0 4px 12px rgba(239, 68, 68, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9)",
-                      border: isDark
-                        ? "1px solid rgba(239, 68, 68, 0.35)"
-                        : "1px solid rgba(254, 202, 202, 0.9)",
+                        ? "0 2px 8px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.08)"
+                        : "0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04), 0 0 0 1px rgba(0, 0, 0, 0.04)",
                       opacity: isActive ? 1 : 0,
-                      transition: "opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+                      transition: "all 0.2s cubic-bezier(0.16, 1, 0.3, 1)",
                       pointerEvents: "none",
                       zIndex: -1,
-                      overflow: "hidden",
                     }}
-                  >
-                    {/* Shine overlay - only visible when active */}
-                    {isActive && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 0,
-                          left: "-100%",
-                          width: "200%",
-                          height: "100%",
-                          background: "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)",
-                          animation: "shine 3s infinite",
-                        }}
-                      />
-                    )}
-                  </div>
+                  />
 
                   {tab.label}
                   {tab.badge && (
                     <span
                       style={{
                         position: "absolute",
-                        top: "-5px",
+                        top: "-4px",
                         right: "-4px",
-                        background: isDark
-                          ? "linear-gradient(135deg, rgba(220, 38, 38, 0.95), rgba(185, 28, 28, 0.95))"
-                          : "linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(220, 38, 38, 0.95))",
+                        background: "var(--primary)",
                         color: "white",
-                        fontSize: "0.55rem",
+                        fontSize: "0.6rem",
                         fontWeight: "700",
-                        padding: "1px 5px",
+                        padding: "1px 6px",
                         borderRadius: "9999px",
-                        boxShadow: isDark
-                          ? "0 2px 4px rgba(185, 28, 28, 0.35)"
-                          : "0 2px 4px rgba(239, 68, 68, 0.3)",
-                        border: "1px solid rgba(255, 255, 255, 0.4)",
-                        backdropFilter: "blur(4px)",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.5px",
+                        letterSpacing: "0.03em",
+                        boxShadow: "0 1px 3px rgba(197, 34, 34, 0.3)",
                         zIndex: 10,
-                        animation: "pulse-badge 2.5s infinite",
                         whiteSpace: "nowrap",
                       }}
                     >
                       {tab.badge}
-                      {/* Shine effect */}
-                      <span style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: "linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)",
-                        borderRadius: "9999px",
-                        pointerEvents: "none",
-                      }}></span>
                     </span>
                   )}
                 </button>

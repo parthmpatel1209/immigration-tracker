@@ -10,6 +10,7 @@ interface ResultProps {
         canadianWorkPoints?: number;
         spouseEducationPoints?: number;
         spouseLanguagePoints?: number;
+        spouseCanadianWorkPoints?: number;
         skillTransferabilityPoints?: number;
         additionalPoints?: number;
         total: number;
@@ -68,6 +69,12 @@ export default function ResultsBreakdown({ result, hasSpouse }: ResultProps) {
                             <div className={styles.breakdownLabel}>Spouse Language</div>
                             <div className={styles.breakdownValue}>{result.spouseLanguagePoints}</div>
                         </div>
+                        {(result.spouseCanadianWorkPoints ?? 0) > 0 && (
+                            <div className={styles.breakdownItem}>
+                                <div className={styles.breakdownLabel}>Spouse Cdn Work</div>
+                                <div className={styles.breakdownValue}>{result.spouseCanadianWorkPoints}</div>
+                            </div>
+                        )}
                     </>
                 )}
 

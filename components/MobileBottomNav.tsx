@@ -4,25 +4,32 @@ import React, { useEffect, useState } from "react";
 import {
     Home,
     TrendingUp,
+    BarChart3,
     Calculator,
     Newspaper,
     MoreHorizontal,
-    ChevronUp,
-    ChevronDown,
-    Activity,
-    GraduationCap,
-    MapPin,
-    Bell,
+    Compass,
+    Award,
+    HelpCircle,
+    Sparkles,
     Heart,
     Mail,
     Sun,
-    Moon
+    Moon,
+    X
 } from "lucide-react";
+import styles from "./MobileBottomNav.module.css";
+
+interface TabItem {
+    label: string;
+    badge?: string;
+    hidden?: boolean;
+}
 
 interface MobileBottomNavProps {
     activeIndex: number;
     onTabChange: (index: number) => void;
-    tabs: { label: string; badge?: string }[];
+    tabs: TabItem[];
 }
 
 export default function MobileBottomNav({
@@ -33,8 +40,10 @@ export default function MobileBottomNav({
     const [isMoreOpen, setIsMoreOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
     const [isDark, setIsDark] = useState(false);
+    const [isVisible, setIsVisible] = useState(true);
+    const [lastScrollY, setLastScrollY] = useState(0);
 
-    // Detect mobile and dark mode
+    // Detect mobile viewport and dark mode
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth <= 768);
         const checkDark = () => setIsDark(document.documentElement.classList.contains("dark"));
@@ -52,16 +61,17 @@ export default function MobileBottomNav({
         };
     }, []);
 
-    // Scroll reveal logic
-    const [isVisible, setIsVisible] = useState(true);
-    const [lastScrollY, setLastScrollY] = useState(0);
-
+    // Intelligent scroll reveal behavior
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
 
-            // Show if scrolling up, near top, or at bottom
-            if (currentScrollY < lastScrollY || currentScrollY < 100 || (document.documentElement.scrollHeight - window.innerHeight - currentScrollY < 100)) {
+            // Always visible if scrolling up, near page top, or near bottom
+            if (
+                currentScrollY < lastScrollY ||
+                currentScrollY < 100 ||
+                (document.documentElement.scrollHeight - window.innerHeight - currentScrollY < 120)
+            ) {
                 setIsVisible(true);
             } else if (currentScrollY > lastScrollY && currentScrollY > 120 && !isMoreOpen) {
                 setIsVisible(false);
@@ -74,16 +84,6 @@ export default function MobileBottomNav({
         return () => window.removeEventListener("scroll", handleScroll);
     }, [lastScrollY, isMoreOpen]);
 
-    // Tabs configuration
-    const moreTabsInfo = [
-        { index: 2, icon: <Activity size={18} /> },
-        { index: 5, icon: <MapPin size={18} /> }, // My Journey
-        { index: 6, icon: <GraduationCap size={18} /> },
-        { index: 7, icon: <Bell size={18} /> },
-        { index: 8, icon: <Heart size={18} /> },
-        { index: 9, icon: <Mail size={18} /> },
-    ];
-
     const handleTabClick = (index: number) => {
         onTabChange(index);
         setIsMoreOpen(false);
@@ -94,294 +94,168 @@ export default function MobileBottomNav({
         }
     };
 
-    const moreTabIndices = moreTabsInfo.map(t => t.index);
-    const isMoreActive = moreTabIndices.includes(activeIndex);
+    const toggleTheme = () => {
+        const html = document.documentElement;
+        if (html.classList.contains("dark")) {
+            html.classList.remove("dark");
+            setIsDark(false);
+        } else {
+            html.classList.add("dark");
+            setIsDark(true);
+        }
+    };
+
+    // Primary items displayed directly in the icon-only dock
+    const primaryDockTabs = [
+        { index: 0, label: "Home", icon: <Home size={21} strokeWidth={2.2} /> },
+        { index: 1, label: "Draws", icon: <TrendingUp size={21} strokeWidth={2.2} /> },
+        { index: 2, label: "CRS Scores", icon: <BarChart3 size={21} strokeWidth={2.2} /> },
+        { index: 3, label: "Calculator", icon: <Calculator size={21} strokeWidth={2.2} />, hasBadge: true },
+        { index: 4, label: "News", icon: <Newspaper size={21} strokeWidth={2.2} /> },
+    ];
+
+    // Secondary items accessible via the expanding Liquid Glass drawer
+    const moreDrawerTabs = [
+        { index: 5, label: "My Journey", icon: <Compass size={17} strokeWidth={2.2} /> },
+        { index: 7, label: "PR Pathways", icon: <Award size={17} strokeWidth={2.2} /> },
+        { index: 8, label: "What Is...?", icon: <HelpCircle size={17} strokeWidth={2.2} /> },
+        { index: 9, label: "Early Access", icon: <Sparkles size={17} strokeWidth={2.2} /> },
+        { index: 10, label: "Support Us", icon: <Heart size={17} strokeWidth={2.2} /> },
+        { index: 11, label: "Contact", icon: <Mail size={17} strokeWidth={2.2} /> },
+    ];
+
+    // Check if any tab inside the More drawer is currently active
+    const isMoreActive = moreDrawerTabs.some(t => t.index === activeIndex) || activeIndex === 6;
+
+    if (!isMobile) return null;
 
     return (
-        <div
-            style={{
-                position: 'fixed',
-                bottom: 'max(env(safe-area-inset-bottom), 10px)',
-                left: '12px',
-                right: '12px',
-                maxWidth: '460px',
-                margin: '0 auto',
-                zIndex: 9999,
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                display: isMobile ? 'block' : 'none',
-                transform: isVisible ? 'translateY(0)' : 'translateY(120%)',
-                opacity: isVisible ? 1 : 0,
-                transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease',
-                willChange: 'transform',
-                backfaceVisibility: 'hidden',
-                WebkitBackfaceVisibility: 'hidden'
-            }}
-        >
-            {/* Backdrop for More Menu */}
+        <>
+            {/* Frosted Dimming Backdrop when More Drawer is open */}
             {isMoreOpen && (
                 <div
+                    className={styles.backdrop}
                     onClick={() => setIsMoreOpen(false)}
-                    style={{
-                        position: 'fixed',
-                        inset: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.35)',
-                        backdropFilter: 'blur(6px)',
-                        WebkitBackdropFilter: 'blur(6px)',
-                        zIndex: -1
-                    }}
+                    aria-hidden="true"
                 />
             )}
 
-            {/* More Menu Content (Expands Upwards from Floating Glass Dock) */}
+            {/* Main Floating Liquid Glass Container */}
             <div
-                style={{
-                    position: 'absolute',
-                    bottom: 'calc(100% + 10px)',
-                    left: 0,
-                    right: 0,
-                    transform: isMoreOpen ? 'translateY(0) scale(1)' : 'translateY(16px) scale(0.96)',
-                    opacity: isMoreOpen ? 1 : 0,
-                    pointerEvents: isMoreOpen ? 'all' : 'none',
-                    transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
-                }}
+                className={`${styles.container} ${isVisible ? styles.visible : styles.hidden}`}
+                role="navigation"
+                aria-label="Mobile Navigation"
             >
+                {/* Expanding "More" Liquid Glass Sheet */}
                 <div
-                    style={{
-                        backgroundColor: isDark ? 'rgba(15, 23, 42, 0.88)' : 'rgba(255, 255, 255, 0.85)',
-                        backdropFilter: 'blur(30px) saturate(200%)',
-                        WebkitBackdropFilter: 'blur(30px) saturate(200%)',
-                        borderRadius: '26px',
-                        border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.7)'}`,
-                        boxShadow: '0 20px 50px -10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
-                        overflow: 'hidden'
-                    }}
+                    className={`${styles.moreDrawer} ${isMoreOpen ? styles.moreDrawerOpen : styles.moreDrawerClosed}`}
+                    aria-hidden={!isMoreOpen}
                 >
-                    <div style={{ padding: '0.85rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.6rem' }}>
-                        {moreTabsInfo.map((item) => (
-                            <button
-                                key={item.index}
-                                onClick={() => handleTabClick(item.index)}
-                                style={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.65rem',
-                                    padding: '0.65rem 0.85rem',
-                                    borderRadius: '16px',
-                                    border: 'none',
-                                    cursor: 'pointer',
-                                    transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
-                                    backgroundColor: activeIndex === item.index
-                                        ? '#dc2626'
-                                        : (isDark ? 'rgba(30, 41, 59, 0.6)' : 'rgba(241, 245, 249, 0.7)'),
-                                    color: activeIndex === item.index ? 'white' : (isDark ? '#e2e8f0' : '#334155'),
-                                    boxShadow: activeIndex === item.index ? '0 4px 12px rgba(220, 38, 38, 0.35)' : 'none'
-                                }}
-                            >
-                                <div style={{ color: activeIndex === item.index ? 'white' : '#ef4444' }}>
-                                    {item.icon}
-                                </div>
-                                <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                                    <span style={{ fontSize: '11px', fontWeight: '700' }}>{tabs[item.index].label}</span>
-                                    {tabs[item.index].badge && (
-                                        <span style={{
-                                            fontSize: '8px',
-                                            padding: '1px 4px',
-                                            backgroundColor: '#ef4444',
-                                            color: 'white',
-                                            borderRadius: '9999px',
-                                            width: 'fit-content',
-                                            marginTop: '2px',
-                                            textTransform: 'uppercase',
-                                            fontWeight: '900'
-                                        }}>
-                                            {tabs[item.index].badge}
-                                        </span>
-                                    )}
-                                </div>
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Theme Toggle Button */}
-                    <div style={{ padding: '0 0.85rem 0.85rem 0.85rem' }}>
+                    <div className={styles.drawerHeader}>
+                        <span className={styles.drawerTitle}>More Destinations</span>
                         <button
-                            onClick={() => {
-                                document.documentElement.classList.toggle("dark");
-                            }}
+                            type="button"
+                            onClick={() => setIsMoreOpen(false)}
+                            aria-label="Close menu"
                             style={{
-                                width: '100%',
+                                background: 'transparent',
+                                border: 'none',
+                                color: isDark ? '#94a3b8' : '#64748b',
+                                cursor: 'pointer',
                                 display: 'flex',
                                 alignItems: 'center',
-                                justifyContent: 'center',
-                                gap: '0.65rem',
-                                padding: '0.65rem',
-                                borderRadius: '16px',
-                                border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}`,
-                                cursor: 'pointer',
-                                transition: 'all 0.2s',
-                                backgroundColor: isDark ? 'rgba(30, 41, 59, 0.5)' : 'rgba(241, 245, 249, 0.6)',
-                                color: isDark ? '#fde68a' : '#475569'
+                                padding: '4px'
                             }}
                         >
-                            {isDark ? <Sun size={18} /> : <Moon size={18} />}
-                            <span style={{ fontSize: '12px', fontWeight: '700' }}>
-                                Switch to {isDark ? 'Light' : 'Dark'} Mode
-                            </span>
+                            <X size={18} />
                         </button>
                     </div>
 
-                    <div style={{ padding: '0.4rem', textAlign: 'center', backgroundColor: isDark ? 'rgba(15, 23, 42, 0.4)' : 'rgba(248, 250, 252, 0.4)' }}>
-                        <div style={{ width: '36px', height: '4px', backgroundColor: isDark ? '#475569' : '#cbd5e1', borderRadius: '2px', margin: '0 auto' }} />
+                    <div className={styles.drawerGrid}>
+                        {moreDrawerTabs.map((item) => {
+                            const isSelected = activeIndex === item.index;
+                            return (
+                                <button
+                                    key={item.index}
+                                    type="button"
+                                    onClick={() => handleTabClick(item.index)}
+                                    className={`${styles.drawerTile} ${isSelected ? styles.drawerTileActive : ''}`}
+                                    aria-label={item.label}
+                                >
+                                    <span className={styles.drawerTileIcon}>
+                                        {item.icon}
+                                    </span>
+                                    <span className={styles.drawerTileLabel}>
+                                        {item.label}
+                                    </span>
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Quick Theme Switcher Pill */}
+                    <div className={styles.drawerFooter}>
+                        <button
+                            type="button"
+                            onClick={toggleTheme}
+                            className={styles.themeButton}
+                            aria-label={`Switch to ${isDark ? 'Light' : 'Dark'} Mode`}
+                        >
+                            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                            <span>Switch to {isDark ? "Light" : "Dark"} Mode</span>
+                        </button>
+                        <div className={styles.drawerHandle} />
                     </div>
                 </div>
-            </div>
 
-            {/* iOS Floating Liquid Glass Dock */}
-            <div
-                style={{
-                    height: '64px',
-                    backgroundColor: isDark ? 'rgba(15, 23, 42, 0.78)' : 'rgba(255, 255, 255, 0.75)',
-                    backdropFilter: 'blur(25px) saturate(200%)',
-                    WebkitBackdropFilter: 'blur(25px) saturate(200%)',
-                    borderRadius: '26px',
-                    border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.65)'}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-around',
-                    padding: '4px 6px',
-                    boxShadow: isDark
-                        ? '0 16px 40px -8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15)'
-                        : '0 16px 40px -8px rgba(0, 0, 0, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.8)'
-                }}
-            >
-                <TabButton
-                    icon={<Home size={20} />}
-                    label="Home"
-                    isActive={activeIndex === 0}
-                    onClick={() => handleTabClick(0)}
-                    isDark={isDark}
-                />
-                <TabButton
-                    icon={<TrendingUp size={20} />}
-                    label="Draws"
-                    isActive={activeIndex === 1}
-                    onClick={() => handleTabClick(1)}
-                    isDark={isDark}
-                />
-                <TabButton
-                    icon={<Calculator size={20} />}
-                    label="Calc"
-                    isActive={activeIndex === 3}
-                    onClick={() => handleTabClick(3)}
-                    badge={tabs[3].badge}
-                    isDark={isDark}
-                />
-                <TabButton
-                    icon={<Newspaper size={20} />}
-                    label="News"
-                    isActive={activeIndex === 4}
-                    onClick={() => handleTabClick(4)}
-                    isDark={isDark}
-                />
-                <button
-                    onClick={() => setIsMoreOpen(!isMoreOpen)}
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '2px',
-                        padding: '6px 12px',
-                        height: '52px',
-                        borderRadius: '18px',
-                        background: isMoreOpen
-                            ? (isDark ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(185, 28, 28, 0.95))' : 'linear-gradient(135deg, rgba(239, 68, 68, 0.92), rgba(220, 38, 38, 0.95))')
-                            : (isMoreActive ? (isDark ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.12)') : 'transparent'),
-                        border: isMoreOpen
-                            ? '1px solid rgba(255, 255, 255, 0.3)'
-                            : 'none',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                        color: isMoreOpen ? '#ffffff' : (isMoreActive ? '#ef4444' : (isDark ? '#94a3b8' : '#64748b')),
-                        boxShadow: isMoreOpen ? '0 4px 14px rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4)' : 'none',
-                        position: 'relative'
-                    }}
-                >
-                    <div style={{
-                        transform: isMoreOpen ? 'rotate(180deg)' : 'none',
-                        transition: 'transform 0.3s ease'
-                    }}>
-                        <MoreHorizontal size={20} />
-                    </div>
-                    <span style={{ fontSize: '10px', fontWeight: isMoreOpen || isMoreActive ? '700' : '500' }}>More</span>
-                </button>
-            </div>
-        </div>
-    );
-}
+                {/* Floating Island Liquid Glass Dock */}
+                <div className={styles.dock}>
+                    {primaryDockTabs.map((tab) => {
+                        const isActive = activeIndex === tab.index;
+                        return (
+                            <button
+                                key={tab.index}
+                                type="button"
+                                onClick={() => handleTabClick(tab.index)}
+                                className={`${styles.iconButton} ${isActive ? styles.activeButton : ''}`}
+                                aria-label={tab.label}
+                                title={tab.label}
+                                aria-current={isActive ? "page" : undefined}
+                            >
+                                {tab.icon}
+                                {tab.hasBadge && (
+                                    <span
+                                        className={styles.jewelBadge}
+                                        aria-label="Popular"
+                                    />
+                                )}
+                            </button>
+                        );
+                    })}
 
-function TabButton({
-    icon,
-    label,
-    isActive,
-    onClick,
-    badge,
-    isDark
-}: {
-    icon: React.ReactNode;
-    label: string;
-    isActive: boolean;
-    onClick: () => void;
-    badge?: string;
-    isDark: boolean;
-}) {
-    return (
-        <button
-            onClick={onClick}
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '2px',
-                padding: '6px 12px',
-                height: '52px',
-                borderRadius: '18px',
-                background: isActive
-                    ? (isDark
-                        ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.95), rgba(185, 28, 28, 0.95))'
-                        : 'linear-gradient(135deg, rgba(239, 68, 68, 0.92), rgba(220, 38, 38, 0.95))')
-                    : 'transparent',
-                border: isActive
-                    ? '1px solid rgba(255, 255, 255, 0.3)'
-                    : 'none',
-                cursor: 'pointer',
-                transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                color: isActive ? '#ffffff' : (isDark ? '#94a3b8' : '#64748b'),
-                boxShadow: isActive ? '0 4px 14px rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4)' : 'none',
-                position: 'relative'
-            }}
-        >
-            <div>
-                {icon}
+                    {/* "More" Trigger Icon */}
+                    <button
+                        type="button"
+                        onClick={() => setIsMoreOpen(!isMoreOpen)}
+                        className={`${styles.iconButton} ${isMoreOpen || isMoreActive ? styles.activeButton : ''}`}
+                        aria-label="More Features"
+                        title="More Features"
+                        aria-expanded={isMoreOpen}
+                    >
+                        <div
+                            style={{
+                                transform: isMoreOpen ? 'rotate(90deg)' : 'none',
+                                transition: 'transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
+                        >
+                            <MoreHorizontal size={22} strokeWidth={2.2} />
+                        </div>
+                    </button>
+                </div>
             </div>
-            <span style={{ fontSize: '10px', fontWeight: isActive ? '700' : '500' }}>{label}</span>
-            {badge && (
-                <span style={{
-                    position: 'absolute',
-                    top: '-2px',
-                    right: '-2px',
-                    fontSize: '8px',
-                    padding: '1px 5px',
-                    backgroundColor: isActive ? '#ffffff' : '#ef4444',
-                    color: isActive ? '#dc2626' : 'white',
-                    borderRadius: '9999px',
-                    fontWeight: '900',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
-                }}>
-                    {badge}
-                </span>
-            )}
-        </button>
+        </>
     );
 }

@@ -113,4 +113,16 @@ export const INFO_CONTENT = {
             <p>You must have a valid nomination certificate from a province or territory through one of their Provincial Nominee Programs (PNPs).</p>
         </>
     ),
+
+    spouseCanadianWork: (
+        <>
+            <p>Canadian work experience in the last 10 years for your spouse or common-law partner. Must be:</p>
+            <ul>
+                <li>Paid, full-time (or equivalent part-time)</li>
+                <li>Physically performed in Canada</li>
+                <li>In a TEER 0, 1, 2, or 3 occupation</li>
+            </ul>
+            <p>Maximum 10 points for spouse with 5+ years of Canadian experience.</p>
+        </>
+    ),
 };

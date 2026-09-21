@@ -1,28 +1,31 @@
 "use client";
 
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo } from "react";
 import dayjs from "dayjs";
+import Image from "next/image";
+import { motion } from "framer-motion";
 import {
-    Heart,
-    ArrowRight,
-    Globe,
-    Users,
     TrendingUp,
-    Activity,
     Calculator,
+    Activity,
     Newspaper,
     MapPin,
     GraduationCap,
-    CheckCircle2,
     Bell,
+    Heart,
+    ArrowRight,
     ChevronUp,
     ChevronDown,
     ChevronsUpDown,
-    BarChart2,
     Award,
     Sparkles,
+    ShieldCheck,
+    CheckCircle2,
+    Users,
+    Calendar,
+    Target,
+    BarChart3
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
     AreaChart,
     Area,
@@ -32,12 +35,10 @@ import {
     Tooltip as ChartTooltip,
     ResponsiveContainer,
 } from "recharts";
+
 import styles from "./Home.module.css";
-import CLBConverter from './CLBConverter';
-import ProvinceTicker from './ProvinceTicker';
-import AnimatedCounter from './AnimatedCounter';
-import PlexusBackground from './PlexusBackground';
-import Image from 'next/image';
+import CLBConverter from "./CLBConverter";
+import ProvinceTicker from "./ProvinceTicker";
 
 interface HomeProps {
     onNavigateToTab?: (tabName: string) => void;
@@ -76,20 +77,20 @@ const getCelpipScore = (val: string): number => {
     return isNaN(p) ? 0 : p;
 };
 
-const getIeltsCLB = (type: 'R' | 'L' | 'W' | 'S', score: number): number => {
-    if (type === 'R') {
+const getIeltsCLB = (type: "R" | "L" | "W" | "S", score: number): number => {
+    if (type === "R") {
         if (score >= 8.0) return 10; if (score >= 7.0) return 9; if (score >= 6.5) return 8; if (score >= 6.0) return 7; if (score >= 5.0) return 6; return 4;
     }
-    if (type === 'L') {
+    if (type === "L") {
         if (score >= 8.5) return 10; if (score >= 8.0) return 9; if (score >= 7.5) return 8; if (score >= 6.0) return 7; if (score >= 5.5) return 6; return 4;
     }
     if (score >= 7.5) return 10; if (score >= 7.0) return 9; if (score >= 6.5) return 8; if (score >= 6.0) return 7; if (score >= 5.5) return 6; return 4;
 };
 
-const getPteCLB = (type: 'R' | 'L' | 'W' | 'S', score: number): number => {
-    if (type === 'R') { if (score >= 88) return 10; if (score >= 78) return 9; if (score >= 69) return 8; if (score >= 60) return 7; return 5; }
-    if (type === 'W') { if (score >= 90) return 10; if (score >= 88) return 9; if (score >= 79) return 8; if (score >= 69) return 7; return 5; }
-    if (type === 'L') { if (score >= 89) return 10; if (score >= 82) return 9; if (score >= 71) return 8; if (score >= 60) return 7; return 5; }
+const getPteCLB = (type: "R" | "L" | "W" | "S", score: number): number => {
+    if (type === "R") { if (score >= 88) return 10; if (score >= 78) return 9; if (score >= 69) return 8; if (score >= 60) return 7; return 5; }
+    if (type === "W") { if (score >= 90) return 10; if (score >= 88) return 9; if (score >= 79) return 8; if (score >= 69) return 7; return 5; }
+    if (type === "L") { if (score >= 89) return 10; if (score >= 82) return 9; if (score >= 71) return 8; if (score >= 60) return 7; return 5; }
     if (score >= 89) return 10; if (score >= 84) return 9; if (score >= 76) return 8; if (score >= 68) return 7; return 5;
 };
 
@@ -106,6 +107,16 @@ export default function Home({ onNavigateToTab }: HomeProps) {
     const [clbTest, setClbTest] = useState<TestType>("IELTS");
     const [clbScores, setClbScores] = useState({ r: "7.0", w: "7.0", l: "7.5", s: "7.0" });
 
+    // Live Draw Statistics State
+    const [drawStats, setDrawStats] = useState({
+        score: "510",
+        program: "Canadian Experience Class",
+        invitations: "3,200",
+        date: "Latest IRCC Draw",
+        delta: "-4 pts",
+        isPositiveDelta: false,
+    });
+
     // Sync dark mode
     useEffect(() => {
         const root = document.documentElement;
@@ -121,82 +132,7 @@ export default function Home({ onNavigateToTab }: HomeProps) {
         return () => observer.disconnect();
     }, []);
 
-    const handleNavigate = (tabName: string) => {
-        if (onNavigateToTab) {
-            onNavigateToTab(tabName);
-        }
-    };
-
-    // Calculate Inline CLB
-    const getClb = (f: 'r' | 'w' | 'l' | 's') => {
-        const val = clbScores[f];
-        if (clbTest === "CELPIP") return getCelpipScore(val);
-        if (clbTest === "IELTS") {
-            const types = { r: 'R', w: 'W', l: 'L', s: 'S' } as const;
-            return getIeltsCLB(types[f], parseFloat(val));
-        }
-        if (clbTest === "PTE") {
-            const types = { r: 'R', w: 'W', l: 'L', s: 'S' } as const;
-            return getPteCLB(types[f], parseInt(val) || 0);
-        }
-        return 4;
-    };
-
-    const inlineCLBLevels = useMemo(() => {
-        const r = getClb('r');
-        const w = getClb('w');
-        const l = getClb('l');
-        const s = getClb('s');
-        const minVal = Math.min(r, w, l, s);
-        return { r, w, l, s, min: minVal };
-    }, [clbScores, clbTest]);
-
-    // Handle Quick CLB Reset/Defaults
-    const handleQuickCLBDefault = (testType: TestType) => {
-        setClbTest(testType);
-        if (testType === "IELTS") setClbScores({ r: "7.0", w: "7.0", l: "7.5", s: "7.0" });
-        if (testType === "CELPIP") setClbScores({ r: "9", w: "9", l: "9", s: "9" });
-        if (testType === "PTE") setClbScores({ r: "78", w: "88", l: "82", s: "84" });
-    };
-
-    const features = [
-        {
-            icon: TrendingUp,
-            title: "Latest Draws",
-            description: "Real-time updates on Express Entry and PNP draws",
-            action: "Latest Draw",
-            stats: "Updated 2h ago"
-        },
-        {
-            icon: Calculator,
-            title: "CRS Calculator",
-            description: "Calculate your score accurately in seconds",
-            action: "Calculator",
-            badge: "Popular"
-        },
-        {
-            icon: Activity,
-            title: "Score Analytics",
-            description: "Historical trends and cutoff predictions",
-            action: "CRS Scores",
-        },
-        {
-            icon: Newspaper,
-            title: "Pathways & News",
-            description: "Latest policy changes and immigration routes",
-            action: "News",
-        }
-    ];
-
-    const secondaryActions = [
-        { icon: MapPin, label: "PR Pathways", action: "PR Pathways" },
-        { icon: GraduationCap, label: "FAQ & Guides", action: "What Is...?" },
-        { icon: Bell, label: "Early Access", action: "Early Access" },
-        { icon: Heart, label: "Support Us", action: "Support" },
-    ];
-
-    const [drawStats, setDrawStats] = useState({ score: "0", invitations: "0", date: "Loading..." });
-
+    // Fetch and compute real live draw analytics
     useEffect(() => {
         const fetchLatestDraw = async () => {
             try {
@@ -212,26 +148,115 @@ export default function Home({ onNavigateToTab }: HomeProps) {
 
                         if (sorted.length > 0) {
                             const latest = sorted[0];
+                            const prev = sorted[1];
+                            let deltaStr = "Benchmark";
+                            let isPositive = false;
+
+                            if (prev && latest.crs_cutoff && prev.crs_cutoff) {
+                                const diff = Number(latest.crs_cutoff) - Number(prev.crs_cutoff);
+                                if (!isNaN(diff)) {
+                                    deltaStr = diff > 0 ? `+${diff} pts` : diff < 0 ? `${diff} pts` : "0 pts";
+                                    isPositive = diff <= 0; // Negative or zero is positive for candidates
+                                }
+                            }
+
                             setDrawStats({
-                                score: latest.crs_cutoff || "N/A",
+                                score: latest.crs_cutoff ? String(latest.crs_cutoff) : "N/A",
+                                program: latest.program || latest.draw_name || "Express Entry",
                                 invitations: latest.invitations ? Number(latest.invitations).toLocaleString() : "N/A",
-                                date: dayjs(latest.draw_date).format("MMM DD, YYYY")
+                                date: dayjs(latest.draw_date).format("MMM DD, YYYY"),
+                                delta: deltaStr,
+                                isPositiveDelta: isPositive,
                             });
                         }
                     }
                 }
             } catch (err) {
-                console.error("Error fetching hero stats:", err);
-                setDrawStats({ score: "Error", invitations: "Error", date: "Error" });
+                console.error("Error fetching live draw stats:", err);
             }
         };
         fetchLatestDraw();
     }, []);
 
-    const quickStats = [
-        { label: "Last Draw Cutoff", value: drawStats.score, sub: "CRS Score", icon: TrendingUp },
-        { label: "Invitations Issued", value: drawStats.invitations, sub: "Express Entry", icon: Users },
-        { label: "Update Frequency", value: "Bi-Weekly", sub: "Average", icon: Activity },
+    const handleNavigate = (tabName: string) => {
+        if (onNavigateToTab) {
+            onNavigateToTab(tabName);
+        }
+    };
+
+    // Calculate Inline CLB
+    const getClb = (f: "r" | "w" | "l" | "s") => {
+        const val = clbScores[f];
+        if (clbTest === "CELPIP") return getCelpipScore(val);
+        if (clbTest === "IELTS") {
+            const types = { r: "R", w: "W", l: "L", s: "S" } as const;
+            return getIeltsCLB(types[f], parseFloat(val));
+        }
+        if (clbTest === "PTE") {
+            const types = { r: "R", w: "W", l: "L", s: "S" } as const;
+            return getPteCLB(types[f], parseInt(val) || 0);
+        }
+        return 4;
+    };
+
+    const inlineCLBLevels = useMemo(() => {
+        const r = getClb("r");
+        const w = getClb("w");
+        const l = getClb("l");
+        const s = getClb("s");
+        const minVal = Math.min(r, w, l, s);
+        return { r, w, l, s, min: minVal };
+    }, [clbScores, clbTest]);
+
+    // Handle Quick CLB Reset/Defaults
+    const handleQuickCLBDefault = (testType: TestType) => {
+        setClbTest(testType);
+        if (testType === "IELTS") setClbScores({ r: "7.0", w: "7.0", l: "7.5", s: "7.0" });
+        if (testType === "CELPIP") setClbScores({ r: "9", w: "9", l: "9", s: "9" });
+        if (testType === "PTE") setClbScores({ r: "78", w: "88", l: "82", s: "84" });
+    };
+
+    // Core Operations Deck Cards
+    const operationsCards = [
+        {
+            icon: TrendingUp,
+            title: "Latest Express Entry Draws",
+            description: "Real-time draw history, cutoff trajectories, and invitation quota distributions across all streams.",
+            action: "Latest Draw",
+            meta: "Live IRCC sync",
+            badge: "Live Feed",
+        },
+        {
+            icon: Calculator,
+            title: "Comprehensive CRS Calculator",
+            description: "Assess your Comprehensive Ranking System score across Human Capital, Spouse, and Skill Transferability.",
+            action: "Calculator",
+            meta: "Accurate point rules",
+            badge: "Popular",
+        },
+        {
+            icon: Activity,
+            title: "Cutoff Trends & Score Analytics",
+            description: "Interactive historical trendlines, category cutoff distributions, and draw frequency metrics.",
+            action: "CRS Scores",
+            meta: "Historical depth",
+            badge: "Analytics",
+        },
+        {
+            icon: Newspaper,
+            title: "Immigration Pathways & News",
+            description: "Provincial allocations (PNP), category-based selection mandates, and official gazette dispatches.",
+            action: "News",
+            meta: "Policy updates",
+            badge: "Gazette",
+        },
+    ];
+
+    const secondaryTools = [
+        { icon: MapPin, label: "PR Pathways Directory", sub: "Federal & Provincial", action: "PR Pathways" },
+        { icon: GraduationCap, label: "Immigration FAQ & Guides", sub: "Legal framework", action: "What Is...?" },
+        { icon: Bell, label: "Priority Notifications", sub: "Instant draw alerts", action: "Early Access" },
+        { icon: Heart, label: "Support Open Intelligence", sub: "Community sponsored", action: "Support" },
     ];
 
     const sortedData = useMemo(() => {
@@ -255,10 +280,10 @@ export default function Home({ onNavigateToTab }: HomeProps) {
         n == null ? <span className={styles.cellPending}>Pending</span> : n.toLocaleString();
 
     const SortIcon = ({ col }: { col: SortKey }) => {
-        if (sortKey !== col) return <ChevronsUpDown size={13} className={styles.sortIconInactive} />;
+        if (sortKey !== col) return <ChevronsUpDown size={13} style={{ opacity: 0.4 }} />;
         return sortDir === "asc"
-            ? <ChevronUp size={13} className={styles.sortIconActive} />
-            : <ChevronDown size={13} className={styles.sortIconActive} />;
+            ? <ChevronUp size={13} style={{ color: "var(--primary)" }} />
+            : <ChevronDown size={13} style={{ color: "var(--primary)" }} />;
     };
 
     // Recharts Data Prep
@@ -266,15 +291,15 @@ export default function Home({ onNavigateToTab }: HomeProps) {
         return RAW_DATA.map(d => ({
             year: d.year.toString(),
             value: d[selectedMetric] || 0,
-            isProjected: d.notes.includes("Target")
+            isProjected: d.notes.includes("Target"),
         }));
     }, [selectedMetric]);
 
     const metricLabels = {
-        pr: "Permanent Residents",
-        study: "Study Permits",
-        work: "Work Permits",
-        citizenship: "Citizenship Grants"
+        pr: "Permanent Residents (Admissions)",
+        study: "Study Permit Holders",
+        work: "Work Permit Holders",
+        citizenship: "Citizenship Grants",
     };
 
     const CELPIP_OPTIONS = ["12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "M"];
@@ -282,27 +307,13 @@ export default function Home({ onNavigateToTab }: HomeProps) {
 
     return (
         <div className={styles.container}>
-            {/* Ambient Aurora Gradient Canvas */}
-            <div className={styles.auroraContainer} aria-hidden="true">
-                <div className={`${styles.auroraBlob} ${styles.auroraRed}`}></div>
-                <div className={`${styles.auroraBlob} ${styles.auroraBlue}`}></div>
-            </div>
-
             {/* Hero Section */}
             <section className={styles.hero}>
-                <PlexusBackground />
                 <div className={styles.heroContent}>
-                    <motion.div 
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className={styles.badge}
-                    >
-                        <div className={styles.badgePulse}></div>
-                        <span>Live Immigration Tracker</span>
-                    </motion.div>
+                    <div className={styles.badge}>
+                        <span>Immigration Intelligence & Data Platform</span>
+                    </div>
 
-                    {/* KEPT EXACTLY UNCHANGED AS REQUESTED */}
                     <h1 className={styles.heroTitle}>
                         Your Path to <span className={styles.gradient}>
                             C<Image src="/journey/maple.png" alt="" width={64} height={64} className={styles.titleIcon} priority />NADA
@@ -310,171 +321,242 @@ export default function Home({ onNavigateToTab }: HomeProps) {
                         Starts Here
                     </h1>
 
-                    <motion.p 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.8 }}
-                        className={styles.heroSubtitle}
-                    >
+                    <p className={styles.heroSubtitle}>
                         Navigate your Canadian immigration journey with real-time data, accurate CRS calculations, and comprehensive pathway insights that empower your decisions every step of the way.
-                    </motion.p>
+                    </p>
 
-                    {/* Redesigned Quick Stats Banner */}
-                    <motion.div 
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3, duration: 0.8 }}
-                        className={styles.heroStats}
-                    >
-                        {quickStats.map((stat, idx) => (
-                            <div key={idx} className={styles.heroStatItem}>
-                                <div className={styles.heroStatIcon}>
-                                    <stat.icon size={20} />
+                    {/* Executive Live Intelligence Bar */}
+                    <div className={styles.intelligenceBar}>
+                        {/* 1. Latest Cutoff Score */}
+                        <div
+                            className={styles.intelligenceCard}
+                            onClick={() => handleNavigate("CRS Scores")}
+                            title="View CRS score analytics"
+                        >
+                            <div className={styles.intelligenceTop}>
+                                <div className={styles.intelligenceIconWrap}>
+                                    <TrendingUp size={18} />
                                 </div>
-                                <div className={styles.heroStatText}>
-                                    <div className={styles.heroStatValue}>
-                                        <AnimatedCounter value={stat.value} />
-                                    </div>
-                                    <div className={styles.heroStatLabel}>{stat.label}</div>
-                                </div>
+                                <span className={styles.intelligenceBadge}>
+                                    {drawStats.delta}
+                                </span>
                             </div>
-                        ))}
-                    </motion.div>
+                            <div className={styles.intelligenceValue}>{drawStats.score}</div>
+                            <div className={styles.intelligenceLabel}>Latest CRS Cutoff</div>
+                            <div className={styles.intelligenceMeta}>{drawStats.program}</div>
+                        </div>
+
+                        {/* 2. Invitations Issued */}
+                        <div
+                            className={styles.intelligenceCard}
+                            onClick={() => handleNavigate("Latest Draw")}
+                            title="View latest draw details"
+                        >
+                            <div className={styles.intelligenceTop}>
+                                <div className={styles.intelligenceIconWrap} style={{ color: "var(--secondary)", background: "rgba(2, 132, 199, 0.08)" }}>
+                                    <Users size={18} />
+                                </div>
+                                <span className={styles.intelligenceBadge} style={{ background: "rgba(2, 132, 199, 0.08)", color: "#0369a1", borderColor: "rgba(2, 132, 199, 0.2)" }}>
+                                    ITAs Issued
+                                </span>
+                            </div>
+                            <div className={styles.intelligenceValue}>{drawStats.invitations}</div>
+                            <div className={styles.intelligenceLabel}>Round Invitations</div>
+                            <div className={styles.intelligenceMeta}>Express Entry Round</div>
+                        </div>
+
+                        {/* 3. Last Draw Date */}
+                        <div
+                            className={styles.intelligenceCard}
+                            onClick={() => handleNavigate("Latest Draw")}
+                            title="View draw history"
+                        >
+                            <div className={styles.intelligenceTop}>
+                                <div className={styles.intelligenceIconWrap} style={{ color: "#059669", background: "rgba(16, 185, 129, 0.08)" }}>
+                                    <Calendar size={18} />
+                                </div>
+                                <span className={styles.intelligenceBadgeNeutral}>
+                                    Bi-Weekly
+                                </span>
+                            </div>
+                            <div className={styles.intelligenceValue} style={{ fontSize: "1.25rem", paddingTop: "0.25rem", paddingBottom: "0.15rem" }}>
+                                {drawStats.date}
+                            </div>
+                            <div className={styles.intelligenceLabel}>Last Draw Date</div>
+                            <div className={styles.intelligenceMeta}>IRCC Official Gazette</div>
+                        </div>
+
+                        {/* 4. Federal PR Target */}
+                        <div
+                            className={styles.intelligenceCard}
+                            onClick={() => {
+                                const targetSec = document.getElementById("historical-data-section");
+                                if (targetSec) targetSec.scrollIntoView({ behavior: "smooth" });
+                            }}
+                            title="View historical levels"
+                        >
+                            <div className={styles.intelligenceTop}>
+                                <div className={styles.intelligenceIconWrap} style={{ color: "#d97706", background: "rgba(245, 158, 11, 0.08)" }}>
+                                    <Target size={18} />
+                                </div>
+                                <span className={styles.intelligenceBadgeNeutral}>
+                                    2026 Plan
+                                </span>
+                            </div>
+                            <div className={styles.intelligenceValue}>380,000</div>
+                            <div className={styles.intelligenceLabel}>Annual PR Target</div>
+                            <div className={styles.intelligenceMeta}>Federal Immigration Levels</div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            {/* Province Ticker */}
+            {/* Provincial PNP Real-time Ticker */}
             <ProvinceTicker />
 
-            {/* Main Hub Section */}
+            {/* Core Operations Command Deck */}
             <section className={styles.hubSection}>
+                <div className={styles.sectionHeader}>
+                    <div className={styles.sectionHeading}>
+                        <h2 className={styles.sectionTitle}>Operations & Tool Suite</h2>
+                        <p className={styles.sectionSubtitle}>
+                            Verified utilities for Express Entry candidates and permanent residency applicants.
+                        </p>
+                    </div>
+                </div>
+
                 <div className={styles.hubGrid}>
-                    {features.map((feature, idx) => {
-                        const Icon = feature.icon;
+                    {operationsCards.map((card, idx) => {
+                        const Icon = card.icon;
                         return (
-                            <motion.div
+                            <div
                                 key={idx}
-                                whileHover={{ y: -6, scale: 1.015 }}
-                                whileTap={{ scale: 0.99 }}
                                 className={styles.hubCard}
-                                onClick={() => handleNavigate(feature.action)}
+                                onClick={() => handleNavigate(card.action)}
                             >
-                                <div className={`${styles.hubIcon} ${styles[`gradient${idx}`]}`}>
-                                    <Icon size={26} />
+                                <div className={styles.hubIconBox}>
+                                    <Icon size={22} />
                                 </div>
+
                                 <div className={styles.hubContent}>
-                                    <div className={styles.hubHeader}>
-                                        <h3 className={styles.hubTitle}>{feature.title}</h3>
-                                        {feature.badge && <span className={styles.hubBadge}>{feature.badge}</span>}
+                                    <div className={styles.hubTop}>
+                                        <h3 className={styles.hubCardTitle}>{card.title}</h3>
+                                        <span className={styles.hubCardBadge}>{card.badge}</span>
                                     </div>
-                                    <p className={styles.hubDescription}>{feature.description}</p>
-                                    {feature.stats && <div className={styles.hubStats}>{feature.stats}</div>}
+                                    <p className={styles.hubDescription}>{card.description}</p>
+                                    <div className={styles.hubFooter}>
+                                        <span className={styles.hubActionText}>
+                                            Launch Module <ArrowRight size={13} />
+                                        </span>
+                                        <span className={styles.hubMetadata}>{card.meta}</span>
+                                    </div>
                                 </div>
-                                <div className={styles.hubArrow}>
-                                    <ArrowRight size={18} />
-                                </div>
-                            </motion.div>
+                            </div>
                         );
                     })}
                 </div>
             </section>
 
-            {/* Secondary Actions */}
+            {/* Secondary Tools Strip */}
             <section className={styles.secondarySection}>
-                <div className={styles.sectionHeader}>
-                    <h2 className={styles.sectionTitle}>More Resources</h2>
-                </div>
                 <div className={styles.secondaryGrid}>
-                    {secondaryActions.map((item, idx) => (
-                        <motion.button
-                            key={idx}
-                            whileHover={{ y: -3 }}
-                            whileTap={{ scale: 0.97 }}
-                            className={styles.secondaryActionCard}
-                            onClick={() => handleNavigate(item.action)}
-                        >
-                            <item.icon size={20} className={styles.secondaryIcon} />
-                            <span>{item.label}</span>
-                        </motion.button>
-                    ))}
+                    {secondaryTools.map((tool, idx) => {
+                        const Icon = tool.icon;
+                        return (
+                            <button
+                                key={idx}
+                                className={styles.secondaryCard}
+                                onClick={() => handleNavigate(tool.action)}
+                            >
+                                <div className={styles.secondaryIconWrap}>
+                                    <Icon size={18} />
+                                </div>
+                                <div>
+                                    <div className={styles.secondaryLabel}>{tool.label}</div>
+                                    <div className={styles.secondarySub}>{tool.sub}</div>
+                                </div>
+                            </button>
+                        );
+                    })}
                 </div>
             </section>
 
-            {/* Redesigned Interactive CLB Language Widget */}
+            {/* Precision CLB Language Benchmark Tool */}
             <section className={styles.toolsSection}>
-                <div className={styles.quickEstimatorCard}>
-                    <div className={styles.estimatorHeader}>
-                        <div className={styles.estimatorTitleArea}>
-                            <Award className={styles.estimatorIcon} size={22} />
+                <div className={styles.clbCard}>
+                    <div className={styles.clbHeader}>
+                        <div className={styles.clbTitleArea}>
+                            <div className={styles.clbIconBox}>
+                                <Award size={22} />
+                            </div>
                             <div>
-                                <h3 className={styles.estimatorTitle}>CLB Language Score Estimator</h3>
-                                <p className={styles.estimatorSubtitle}>Estimate your Canadian Language Benchmark instantly</p>
+                                <h3 className={styles.clbMainTitle}>Canadian Language Benchmark (CLB) Estimator</h3>
+                                <p className={styles.clbMainSubtitle}>
+                                    Translate standard language test results into official IRCC CLB benchmarks.
+                                </p>
                             </div>
                         </div>
-                        <button 
-                            className={styles.estimatorFullBtn}
+
+                        <button
+                            className={styles.clbDetailedBtn}
                             onClick={() => setIsConverterOpen(true)}
                         >
                             Open Detailed Converter <ArrowRight size={14} />
                         </button>
                     </div>
 
-                    <div className={styles.estimatorGrid}>
-                        {/* Selector Tabs */}
-                        <div className={styles.estimatorControls}>
-                            <div className={styles.testSelector}>
-                                {(["IELTS", "CELPIP", "PTE"] as TestType[]).map(t => (
+                    <div className={styles.clbLayout}>
+                        <div className={styles.clbControls}>
+                            {/* Segmented Test Switcher */}
+                            <div className={styles.clbTestTabs}>
+                                {(["IELTS", "CELPIP", "PTE"] as TestType[]).map((t) => (
                                     <button
                                         key={t}
                                         onClick={() => handleQuickCLBDefault(t)}
-                                        className={`${styles.testBtn} ${clbTest === t ? styles.testBtnActive : ""}`}
+                                        className={`${styles.clbTabBtn} ${clbTest === t ? styles.clbTabBtnActive : ""}`}
                                     >
-                                        {t}
+                                        {t === "IELTS" ? "IELTS General" : t === "CELPIP" ? "CELPIP-General" : "PTE Core"}
                                     </button>
                                 ))}
                             </div>
-                            <p className={styles.testNote}>
-                                {clbTest === "IELTS" && "Select scores from standard IELTS General options."}
-                                {clbTest === "CELPIP" && "Select CELPIP-General levels directly."}
-                                {clbTest === "PTE" && "Type in your PTE Core raw test scores."}
-                            </p>
 
-                            {/* Inputs */}
-                            <div className={styles.inputBoxGrid}>
-                                {(["Reading", "Writing", "Listening", "Speaking"] as const).map(label => {
-                                    const keys = { Reading: 'r', Writing: 'w', Listening: 'l', Speaking: 's' } as const;
-                                    const field = keys[label];
+                            {/* 4 Skill Inputs Grid */}
+                            <div className={styles.clbInputsGrid}>
+                                {(["Reading", "Writing", "Listening", "Speaking"] as const).map((skill) => {
+                                    const keys = { Reading: "r", Writing: "w", Listening: "l", Speaking: "s" } as const;
+                                    const field = keys[skill];
                                     const val = clbScores[field];
                                     const singleCLB = getClb(field);
 
                                     return (
-                                        <div key={label} className={styles.inputFieldGroup}>
-                                            <label className={styles.inputLabel}>{label}</label>
+                                        <div key={skill} className={styles.clbInputGroup}>
+                                            <label className={styles.clbInputLabel}>{skill}</label>
                                             {clbTest === "PTE" ? (
                                                 <input
                                                     type="number"
                                                     value={val}
-                                                    onChange={e => setClbScores({ ...clbScores, [field]: e.target.value })}
-                                                    className={styles.numInput}
+                                                    onChange={(e) => setClbScores({ ...clbScores, [field]: e.target.value })}
+                                                    className={styles.clbNumInput}
                                                     placeholder="0-90"
                                                     min="0"
                                                     max="90"
                                                 />
                                             ) : (
-                                                <div className={styles.selectWrapper}>
+                                                <div className={styles.clbSelectWrapper}>
                                                     <select
                                                         value={val}
-                                                        onChange={e => setClbScores({ ...clbScores, [field]: e.target.value })}
-                                                        className={styles.selectInput}
+                                                        onChange={(e) => setClbScores({ ...clbScores, [field]: e.target.value })}
+                                                        className={styles.clbSelect}
                                                     >
-                                                        {(clbTest === "CELPIP" ? CELPIP_OPTIONS : IELTS_OPTIONS).map(o => (
+                                                        {(clbTest === "CELPIP" ? CELPIP_OPTIONS : IELTS_OPTIONS).map((o) => (
                                                             <option key={o} value={o}>{o}</option>
                                                         ))}
                                                     </select>
-                                                    <ChevronDown className={styles.selectArrow} size={14} />
+                                                    <ChevronDown className={styles.clbArrowIcon} size={14} />
                                                 </div>
                                             )}
-                                            <span className={`${styles.subCLBIndicator} ${singleCLB >= 9 ? styles.clbHighlight : ""}`}>
+
+                                            <span className={`${styles.clbBandPill} ${singleCLB >= 9 ? styles.clbBandPillGold : ""}`}>
                                                 CLB {singleCLB}
                                             </span>
                                         </div>
@@ -483,18 +565,49 @@ export default function Home({ onNavigateToTab }: HomeProps) {
                             </div>
                         </div>
 
-                        {/* Visual Circular Gauge */}
-                        <div className={styles.estimatorGauge}>
-                            <div className={styles.gaugeContainer}>
-                                <div className={`${styles.gaugeCircle} ${inlineCLBLevels.min >= 9 ? styles.gaugeGold : ""}`}>
-                                    <span className={styles.gaugeLabel}>Overall Benchmark</span>
-                                    <span className={styles.gaugeValue}>CLB {inlineCLBLevels.min}</span>
+                        {/* Executive Score & Bonus Display */}
+                        <div className={styles.clbResultBox}>
+                            <div>
+                                <div className={styles.clbResultHeader}>
+                                    <span className={styles.clbResultTag}>Overall Benchmark Result</span>
                                     {inlineCLBLevels.min >= 9 && (
-                                        <span className={styles.gaugeBadge}>
-                                            <Sparkles size={12} /> CRS Boost Eligible
+                                        <span className={styles.hubCardBadge}>
+                                            <Sparkles size={11} style={{ display: "inline", marginRight: 3 }} />
+                                            Golden CLB 9+
                                         </span>
                                     )}
                                 </div>
+
+                                <div className={styles.clbScoreRow}>
+                                    <span className={styles.clbMainScore}>CLB {inlineCLBLevels.min}</span>
+                                    <span className={styles.clbScaleNote}>Minimum Skill Level</span>
+                                </div>
+
+                                <p style={{ fontSize: "0.825rem", color: "#64748b", margin: "0 0 0.5rem" }}>
+                                    Band breakdown: R: {inlineCLBLevels.r} · W: {inlineCLBLevels.w} · L: {inlineCLBLevels.l} · S: {inlineCLBLevels.s}
+                                </p>
+                            </div>
+
+                            <div className={styles.clbStatusCallout}>
+                                {inlineCLBLevels.min >= 9 ? (
+                                    <>
+                                        <div className={styles.clbCalloutTitle}>
+                                            <CheckCircle2 size={15} /> Maximum CRS Skill Transferability
+                                        </div>
+                                        <span>
+                                            With all bands at CLB 9 or higher, you qualify for up to <strong>136 bonus points</strong> under CRS skill transferability combinations.
+                                        </span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className={styles.clbCalloutTitle}>
+                                            <Target size={15} /> Target CLB 9 for 136 Bonus Points
+                                        </div>
+                                        <span>
+                                            Reaching CLB 9 in all four abilities unlocks maximum CRS skill transferability points for post-secondary education and foreign work experience.
+                                        </span>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -503,154 +616,186 @@ export default function Home({ onNavigateToTab }: HomeProps) {
 
             <CLBConverter isOpen={isConverterOpen} onClose={() => setIsConverterOpen(false)} isDark={isDark} />
 
-            {/* Historical Immigration Data Table & Recharts Graph */}
-            <section className={styles.dataSection}>
-                <div className={styles.dataSectionHeader}>
-                    <div className={styles.dataSectionIcon}>
-                        <BarChart2 size={24} />
-                    </div>
-                    <div>
-                        <h2 className={styles.dataSectionTitle}>Canadian Immigration at a Glance</h2>
-                        <p className={styles.dataSectionSubtitle}>Historical trends (2010–2026) · Admissions & target data visualizations</p>
+            {/* Historical Admissions & Targets (2010–2026) */}
+            <section id="historical-data-section" className={styles.dataSection}>
+                <div className={styles.sectionHeader}>
+                    <div className={styles.sectionHeading}>
+                        <h2 className={styles.sectionTitle}>Canadian Immigration Admissions & Targets</h2>
+                        <p className={styles.sectionSubtitle}>
+                            Historical federal admissions (2010–2024) and government quota levels (2025–2026).
+                        </p>
                     </div>
                 </div>
 
-                {/* Dashboard Chart Component */}
-                <div className={styles.chartPanel}>
-                    <div className={styles.chartControls}>
-                        <h4 className={styles.chartTitle}>{metricLabels[selectedMetric]} Over Time</h4>
-                        <div className={styles.chartButtons}>
-                            {(["pr", "study", "work", "citizenship"] as MetricType[]).map(metric => (
+                {/* Trend Chart Component */}
+                <div className={styles.chartCard}>
+                    <div className={styles.chartHeader}>
+                        <div className={styles.chartTitleWrap}>
+                            <h3 className={styles.chartMainTitle}>{metricLabels[selectedMetric]}</h3>
+                            <p className={styles.chartSubtitle}>Historical annual counts and parliamentary levels plan</p>
+                        </div>
+
+                        <div className={styles.metricTabs}>
+                            {(["pr", "study", "work", "citizenship"] as MetricType[]).map((metric) => (
                                 <button
                                     key={metric}
                                     onClick={() => setSelectedMetric(metric)}
-                                    className={`${styles.chartTabBtn} ${selectedMetric === metric ? styles.chartTabBtnActive : ""}`}
+                                    className={`${styles.metricTabBtn} ${selectedMetric === metric ? styles.metricTabBtnActive : ""}`}
                                 >
-                                    {metric === "pr" ? "PR Target" : metric === "study" ? "Study" : metric === "work" ? "Work" : "Citizenship"}
+                                    {metric === "pr" ? "Permanent Residents" : metric === "study" ? "Study Permits" : metric === "work" ? "Work Permits" : "Citizenship"}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    <div className={styles.chartContainer}>
-                        <ResponsiveContainer width="100%" height={260}>
+                    <div className={styles.chartWrapper}>
+                        <ResponsiveContainer width="100%" height={280} minWidth={0}>
                             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorMetric" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor={isDark ? "#f87171" : "#d32f2f"} stopOpacity={0.4}/>
-                                        <stop offset="95%" stopColor={isDark ? "#f87171" : "#d32f2f"} stopOpacity={0}/>
+                                        <stop offset="5%" stopColor={isDark ? "#ef4444" : "#c52222"} stopOpacity={0.25} />
+                                        <stop offset="95%" stopColor={isDark ? "#ef4444" : "#c52222"} stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)"} />
-                                <XAxis 
-                                    dataKey="year" 
-                                    stroke={isDark ? "#9ca3af" : "#4b5563"} 
-                                    fontSize={11}
-                                    tickLine={false} 
+                                <CartesianGrid
+                                    strokeDasharray="3 3"
+                                    vertical={false}
+                                    stroke={isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}
+                                />
+                                <XAxis
+                                    dataKey="year"
+                                    stroke={isDark ? "#94a3b8" : "#64748b"}
+                                    fontSize={12}
+                                    tickLine={false}
                                     axisLine={false}
                                 />
-                                <YAxis 
-                                    stroke={isDark ? "#9ca3af" : "#4b5563"} 
-                                    fontSize={11}
-                                    tickLine={false} 
+                                <YAxis
+                                    stroke={isDark ? "#94a3b8" : "#64748b"}
+                                    fontSize={12}
+                                    tickLine={false}
                                     axisLine={false}
-                                    tickFormatter={(v) => v >= 1000 ? `${(v/1000).toFixed(0)}k` : v}
-                                    width={40}
+                                    tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}
+                                    width={45}
                                 />
-                                <ChartTooltip 
-                                    contentStyle={{ 
-                                        backgroundColor: isDark ? "#111827" : "#ffffff", 
-                                        borderColor: isDark ? "rgba(255,255,255,0.1)" : "#e5e7eb",
-                                        borderRadius: "12px",
-                                        color: isDark ? "#ffffff" : "#111827",
-                                        boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                                <ChartTooltip
+                                    contentStyle={{
+                                        backgroundColor: isDark ? "#0f172a" : "#ffffff",
+                                        borderColor: isDark ? "#1e293b" : "#e2e8f0",
+                                        borderRadius: "8px",
+                                        color: isDark ? "#f8fafc" : "#0f172a",
+                                        boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
                                         fontSize: "12px",
-                                        fontWeight: "600"
+                                        fontWeight: "600",
                                     }}
                                     formatter={(value: any) => [Number(value).toLocaleString(), metricLabels[selectedMetric]]}
                                 />
-                                <Area 
-                                    type="monotone" 
-                                    dataKey="value" 
-                                    stroke={isDark ? "#f87171" : "#d32f2f"} 
-                                    strokeWidth={3}
-                                    fillOpacity={1} 
-                                    fill="url(#colorMetric)" 
+                                <Area
+                                    type="monotone"
+                                    dataKey="value"
+                                    stroke={isDark ? "#ef4444" : "#c52222"}
+                                    strokeWidth={2.5}
+                                    fillOpacity={1}
+                                    fill="url(#colorMetric)"
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                {/* Styled Table Wrapper */}
-                <div className={styles.tableWrapper}>
-                    <table className={styles.dataTable}>
-                        <thead>
-                            <tr>
-                                <th className={styles.th} onClick={() => handleSort("year")}>
-                                    <span className={styles.thInner}>Year <SortIcon col="year" /></span>
-                                </th>
-                                <th className={styles.th} onClick={() => handleSort("pr")}>
-                                    <span className={styles.thInner}>Permanent Residents <SortIcon col="pr" /></span>
-                                </th>
-                                <th className={styles.th} onClick={() => handleSort("study")}>
-                                    <span className={styles.thInner}>Study Permits <SortIcon col="study" /></span>
-                                </th>
-                                <th className={styles.th} onClick={() => handleSort("work")}>
-                                    <span className={styles.thInner}>Work Permits <SortIcon col="work" /></span>
-                                </th>
-                                <th className={styles.th} onClick={() => handleSort("citizenship")}>
-                                    <span className={styles.thInner}>Citizenship Grants <SortIcon col="citizenship" /></span>
-                                </th>
-                                <th className={`${styles.th} ${styles.thNote}`}>
-                                    <span className={styles.thInner}>Notes</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {sortedData.map((row) => (
-                                <tr
-                                    key={row.year}
-                                    className={`${styles.tr} ${row.notes === "COVID impact" ? styles.trCovid : ""} ${row.notes === "Target / Cap" || row.notes === "Target" ? styles.trTarget : ""}`}
-                                >
-                                    <td className={`${styles.td} ${styles.tdYear}`}>{row.year}</td>
-                                    <td className={styles.td}>{fmt(row.pr)}</td>
-                                    <td className={styles.td}>{fmt(row.study)}</td>
-                                    <td className={styles.td}>{fmt(row.work)}</td>
-                                    <td className={styles.td}>{fmt(row.citizenship)}</td>
-                                    <td className={`${styles.td} ${styles.tdNote}`}>
-                                        {row.notes ? <span className={styles.noteTag}>{row.notes}</span> : null}
-                                    </td>
+                {/* Data Table */}
+                <div className={styles.tableCard}>
+                    <div className={styles.tableScrollArea}>
+                        <table className={styles.dataTable}>
+                            <thead>
+                                <tr>
+                                    <th className={styles.th} onClick={() => handleSort("year")}>
+                                        <span className={styles.thInner}>Year <SortIcon col="year" /></span>
+                                    </th>
+                                    <th className={styles.th} onClick={() => handleSort("pr")}>
+                                        <span className={styles.thInner}>Permanent Residents <SortIcon col="pr" /></span>
+                                    </th>
+                                    <th className={styles.th} onClick={() => handleSort("study")}>
+                                        <span className={styles.thInner}>Study Permits <SortIcon col="study" /></span>
+                                    </th>
+                                    <th className={styles.th} onClick={() => handleSort("work")}>
+                                        <span className={styles.thInner}>Work Permits <SortIcon col="work" /></span>
+                                    </th>
+                                    <th className={styles.th} onClick={() => handleSort("citizenship")}>
+                                        <span className={styles.thInner}>Citizenship Grants <SortIcon col="citizenship" /></span>
+                                    </th>
+                                    <th className={`${styles.th} ${styles.thNote}`}>
+                                        <span>Status / Classification</span>
+                                    </th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {sortedData.map((row) => (
+                                    <tr key={row.year} className={styles.tr}>
+                                        <td className={`${styles.td} ${styles.tdYear}`}>{row.year}</td>
+                                        <td className={styles.td}>{fmt(row.pr)}</td>
+                                        <td className={styles.td}>{fmt(row.study)}</td>
+                                        <td className={styles.td}>{fmt(row.work)}</td>
+                                        <td className={styles.td}>{fmt(row.citizenship)}</td>
+                                        <td className={`${styles.td} ${styles.tdNote}`}>
+                                            {row.notes === "COVID impact" && (
+                                                <span className={styles.pillCovid}>COVID Impact</span>
+                                            )}
+                                            {(row.notes === "Target / Cap" || row.notes === "Target") && (
+                                                <span className={styles.pillTarget}>Federal Target</span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <p className={styles.dataFootnote}>
-                    Sources: IRCC Annual Reports, Statistics Canada · Approximate figures (~) used where exact data unavailable · 2025–2026 figures are government targets
+                    Sources: Immigration, Refugees and Citizenship Canada (IRCC) Annual Reports to Parliament & Statistics Canada Gazette. Approximate figures (~) indicated where rounded in official releases. 2025–2026 figures represent parliamentary target quotas.
                 </p>
             </section>
 
-            {/* Redesigned CTA Section */}
+            {/* High-Trust Dispatch & Notification Suite */}
             <section className={styles.ctaSection}>
-                <div className={styles.ctaContent}>
-                    <div className={styles.ctaGraphics}>
-                        <div className={styles.ctaCircle1}></div>
-                        <div className={styles.ctaCircle2}></div>
-                        <div className={styles.ctaMapleOverlay}>🍁</div>
+                <div className={styles.ctaCard}>
+                    <div className={styles.ctaContent}>
+                        <div className={styles.ctaBadge}>
+                            <Bell size={13} />
+                            <span>Official Draw Dispatch</span>
+                        </div>
+
+                        <h2 className={styles.ctaHeading}>
+                            Never Miss an Express Entry Cutoff Update
+                        </h2>
+
+                        <p className={styles.ctaDescription}>
+                            Join candidates receiving instant notifications the moment IRCC releases new draw cutoffs, category selections, and Provincial Nominee rounds.
+                        </p>
+
+                        <button
+                            className={styles.ctaActionBtn}
+                            onClick={() => handleNavigate("Early Access")}
+                        >
+                            Join Priority Notifications Free
+                            <ArrowRight size={16} />
+                        </button>
+
+                        <div className={styles.ctaTrustRow}>
+                            <div className={styles.trustItem}>
+                                <ShieldCheck size={14} style={{ color: "var(--primary)" }} />
+                                <span>Zero Spam Guarantee</span>
+                            </div>
+                            <div className={styles.trustItem}>
+                                <CheckCircle2 size={14} style={{ color: "#10b981" }} />
+                                <span>Official Gazette Feed</span>
+                            </div>
+                            <div className={styles.trustItem}>
+                                <Sparkles size={14} style={{ color: "var(--secondary)" }} />
+                                <span>100% Free For Applicants</span>
+                            </div>
+                        </div>
                     </div>
-                    <h2 className={styles.ctaTitle}>Stay Ahead of the Curve</h2>
-                    <p className={styles.ctaText}>
-                        Join the waitlist for premium features including real-time alerts and personalized immigration roadmaps.
-                    </p>
-                    <button
-                        className={styles.ctaButton}
-                        onClick={() => handleNavigate("Early Access")}
-                    >
-                        Join the Waitlist
-                        <ArrowRight size={18} />
-                    </button>
                 </div>
             </section>
         </div>

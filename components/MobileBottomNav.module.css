@@ -1,0 +1,416 @@
+/* ==========================================================================
+   Apple Liquid Glass Mobile Bottom Navigation System
+   Inspired by DnV1eX/LiquidGlassKit & sanjaynela/liquid-glass-ios-system
+   ========================================================================== */
+
+/* Outer Floating Container */
+.container {
+    position: fixed;
+    bottom: max(env(safe-area-inset-bottom, 12px), 14px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(calc(100% - 24px), 430px);
+    margin: 0 auto;
+    z-index: 9999;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif;
+    pointer-events: none;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    will-change: transform, opacity;
+}
+
+.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.hidden {
+    transform: translateX(-50%) translateY(130%);
+    opacity: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Liquid Glass Dock (Floating Island)
+   -------------------------------------------------------------------------- */
+.dock {
+    pointer-events: auto;
+    position: relative;
+    height: 58px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 6px;
+    overflow: hidden;
+
+    /* Frosted Ultra-Thin Material */
+    -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.04);
+    backdrop-filter: blur(28px) saturate(200%) brightness(1.04);
+
+    /* Light Mode Liquid Glass */
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0.65) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 
+        0 16px 36px -8px rgba(0, 0, 0, 0.12),
+        0 6px 16px -4px rgba(0, 0, 0, 0.06),
+        inset 0 1.5px 0.5px 0 rgba(255, 255, 255, 0.95),
+        inset 0 -1px 0.5px 0 rgba(0, 0, 0, 0.05);
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Dark Mode Liquid Glass */
+:global(.dark) .dock {
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.82) 0%, rgba(15, 23, 42, 0.72) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+        0 20px 48px -10px rgba(0, 0, 0, 0.55),
+        0 8px 20px -4px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0.5px 0 rgba(255, 255, 255, 0.28),
+        inset 0 -1px 0.5px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Specular Lens Sheen across curved upper glass edge */
+.dock::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 8%;
+    right: 8%;
+    height: 48%;
+    border-radius: 9999px 9999px 0 0;
+    background: radial-gradient(ellipse 70% 100% at 50% 0%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.08) 60%, transparent 100%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+:global(.dark) .dock::before {
+    opacity: 0.28;
+}
+
+/* --------------------------------------------------------------------------
+   Icon Button (Pure Icon, No Text Labels)
+   -------------------------------------------------------------------------- */
+.iconButton {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    color: rgba(71, 85, 105, 0.85);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+                background 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+}
+
+:global(.dark) .iconButton {
+    color: rgba(148, 163, 184, 0.85);
+}
+
+.iconButton:hover:not(.activeButton) {
+    background: rgba(255, 255, 255, 0.35);
+    color: #1e293b;
+    transform: scale(1.05);
+}
+
+:global(.dark) .iconButton:hover:not(.activeButton) {
+    background: rgba(255, 255, 255, 0.08);
+    color: #f1f5f9;
+}
+
+.iconButton:active {
+    transform: scale(0.90) !important;
+}
+
+/* Active State: Apple Liquid Droplet / Glowing Glass Jewel */
+.activeButton {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    box-shadow: 
+        0 6px 18px -2px rgba(220, 38, 38, 0.52),
+        0 2px 6px rgba(220, 38, 38, 0.35),
+        inset 0 1.5px 0.5px 0 rgba(255, 255, 255, 0.65),
+        inset 0 -1px 0.5px 0 rgba(0, 0, 0, 0.22);
+    transform: scale(1.08);
+}
+
+/* Active Pill Inner Lens Highlight */
+.activeButton::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 8px;
+    right: 8px;
+    height: 38%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%);
+    border-radius: 9999px 9999px 50% 50%;
+    pointer-events: none;
+}
+
+.activeButton svg {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
+}
+
+/* --------------------------------------------------------------------------
+   Micro Jewel Badge (Subtle Indicator for Items like Calculator "Popular")
+   -------------------------------------------------------------------------- */
+.jewelBadge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 7px;
+    height: 7px;
+    border-radius: 9999px;
+    background: #ef4444;
+    box-shadow: 0 0 6px 1px rgba(239, 68, 68, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+    border: 1.5px solid rgba(255, 255, 255, 0.95);
+    pointer-events: none;
+    animation: jewelPulse 2.4s infinite ease-in-out;
+}
+
+:global(.dark) .jewelBadge {
+    border-color: #0f172a;
+}
+
+.activeButton .jewelBadge {
+    background: #ffffff;
+    box-shadow: 0 0 6px 1px rgba(255, 255, 255, 0.9);
+    border-color: #dc2626;
+    animation: none;
+}
+
+@keyframes jewelPulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.95;
+    }
+    50% {
+        transform: scale(1.18);
+        opacity: 1;
+        box-shadow: 0 0 8px 2px rgba(239, 68, 68, 0.95), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+    }
+}
+
+/* --------------------------------------------------------------------------
+   Backdrop for More Menu
+   -------------------------------------------------------------------------- */
+.backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    z-index: 9998;
+    pointer-events: auto;
+    animation: fadeIn 0.25s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --------------------------------------------------------------------------
+   Expanding "More" Liquid Glass Sheet
+   -------------------------------------------------------------------------- */
+.moreDrawer {
+    pointer-events: auto;
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 0;
+    right: 0;
+    border-radius: 28px;
+    overflow: hidden;
+    z-index: 9999;
+
+    -webkit-backdrop-filter: blur(32px) saturate(210%) brightness(1.04);
+    backdrop-filter: blur(32px) saturate(210%) brightness(1.04);
+
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.88) 0%, rgba(255, 255, 255, 0.78) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 
+        0 24px 56px -12px rgba(0, 0, 0, 0.22),
+        0 8px 24px -4px rgba(0, 0, 0, 0.1),
+        inset 0 1.5px 0.5px 0 rgba(255, 255, 255, 0.95);
+
+    transform-origin: bottom center;
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.28s ease;
+}
+
+:global(.dark) .moreDrawer {
+    background: linear-gradient(180deg, rgba(30, 41, 59, 0.88) 0%, rgba(15, 23, 42, 0.82) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    box-shadow: 
+        0 28px 64px -12px rgba(0, 0, 0, 0.65),
+        0 10px 24px -4px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0.5px 0 rgba(255, 255, 255, 0.25);
+}
+
+.moreDrawerClosed {
+    transform: translateY(16px) scale(0.96);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.moreDrawerOpen {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Lens glare on drawer */
+.moreDrawer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 40px;
+    background: radial-gradient(ellipse 60% 100% at 50% 0%, rgba(255, 255, 255, 0.5) 0%, transparent 100%);
+    pointer-events: none;
+}
+
+:global(.dark) .moreDrawer::before {
+    opacity: 0.25;
+}
+
+/* Drawer Header */
+.drawerHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px 8px 18px;
+}
+
+.drawerTitle {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: #334155;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+}
+
+:global(.dark) .drawerTitle {
+    color: #94a3b8;
+}
+
+/* Drawer Grid of Items */
+.drawerGrid {
+    padding: 6px 12px 12px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.drawerTile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.45);
+    color: #334155;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    -webkit-tap-highlight-color: transparent;
+}
+
+:global(.dark) .drawerTile {
+    background: rgba(30, 41, 59, 0.55);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+}
+
+.drawerTile:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: translateY(-1px);
+}
+
+:global(.dark) .drawerTile:hover {
+    background: rgba(51, 65, 85, 0.65);
+}
+
+.drawerTileActive {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.drawerTileActive .drawerTileIcon {
+    color: #ffffff !important;
+}
+
+.drawerTileIcon {
+    color: #ef4444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+:global(.dark) .drawerTileIcon {
+    color: #f87171;
+}
+
+.drawerTileLabel {
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+/* Theme Switcher Tile in Drawer */
+.themeButton {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.4);
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+:global(.dark) .themeButton {
+    background: rgba(30, 41, 59, 0.5);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #fde68a;
+}
+
+.drawerFooter {
+    padding: 4px 12px 10px 12px;
+}
+
+.drawerHandle {
+    width: 36px;
+    height: 4px;
+    border-radius: 9999px;
+    background: rgba(0, 0, 0, 0.15);
+    margin: 8px auto 4px auto;
+}
+
+:global(.dark) .drawerHandle {
+    background: rgba(255, 255, 255, 0.2);
+}

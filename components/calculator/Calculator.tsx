@@ -52,6 +52,7 @@ export default function Calculator() {
         spouse_writing: "",
         spouse_speaking: "",
         spouse_education: "",
+        spouse_canadianWork: "",
         canadianWork: "",
         foreignWork: "",
         certificate: false,
@@ -63,9 +64,8 @@ export default function Calculator() {
         second_speaking: "",
         sibling: false,
         educationInCanada: "",
-        arrangedEmployment: "",
         nomination: false,
-        hasLMIA: false,
+        frenchIsFirst: false,
     });
 
     // -------------------------------------------------
@@ -312,13 +312,14 @@ export default function Calculator() {
             education: form.education,
             spouseEducation: form.spouse_education,
             canadianWorkYears: Number(form.canadianWork),
+            spouseCanadianWorkYears: form.spouse ? Number(form.spouse_canadianWork) : 0,
             foreignWorkYears: Number(form.foreignWork),
             certificate: form.certificate,
             secondClb: secondClbResult,
             sibling: form.sibling,
             educationInCanada: form.educationInCanada,
-            arrangedEmployment: form.arrangedEmployment,
             nomination: form.nomination,
+            frenchIsFirst: form.frenchIsFirst,
             breakdown: crsBreakdown,
         });
 
@@ -352,6 +353,7 @@ export default function Calculator() {
             spouse_writing: "",
             spouse_speaking: "",
             spouse_education: "",
+            spouse_canadianWork: "",
             canadianWork: "",
             foreignWork: "",
             certificate: false,
@@ -363,9 +365,8 @@ export default function Calculator() {
             second_speaking: "",
             sibling: false,
             educationInCanada: "",
-            arrangedEmployment: "",
             nomination: false,
-            hasLMIA: false,
+            frenchIsFirst: false,
         });
         setResult(null);
         setClb(null);
@@ -423,18 +424,13 @@ export default function Calculator() {
                         >
                             <option value="">Select Education</option>
                             <option value="phd">Doctoral (PhD)</option>
-                            <option value="masters">Master’s or Professional Degree</option>
-                            <option value="two_or_more">
-                                Two or more certificates (one 3+ years)
-                            </option>
-                            <option value="bachelors">Bachelor’s or 3+ year program</option>
-                            <option value="college_3_year">Three-year post-secondary</option>
+                            <option value="masters">Master&apos;s or Professional Degree</option>
+                            <option value="two_or_more">Two or more credentials (one 3+ years)</option>
+                            <option value="bachelors">Bachelor&apos;s / 3-year degree or longer</option>
                             <option value="college_2_year">Two-year post-secondary</option>
                             <option value="college_1_year">One-year post-secondary</option>
                             <option value="highschool">Secondary school diploma</option>
-                            <option value="less_than_secondary">
-                                Less than secondary school
-                            </option>
+                            <option value="less_than_secondary">Less than secondary school</option>
                         </select>
                     </div>
                 </div>
@@ -486,20 +482,34 @@ export default function Calculator() {
                             >
                                 <option value="">Select Spouse Education</option>
                                 <option value="phd">Doctoral (PhD)</option>
-                                <option value="masters">Master’s or Professional Degree</option>
-                                <option value="two_or_more">
-                                    Two or more certificates (one 3+ years)
-                                </option>
-                                <option value="bachelors">Bachelor’s or 3+ year program</option>
-                                <option value="college_3_year">
-                                    Three-year post-secondary
-                                </option>
+                                <option value="masters">Master&apos;s or Professional Degree</option>
+                                <option value="two_or_more">Two or more credentials (one 3+ years)</option>
+                                <option value="bachelors">Bachelor&apos;s / 3-year degree or longer</option>
                                 <option value="college_2_year">Two-year post-secondary</option>
                                 <option value="college_1_year">One-year post-secondary</option>
                                 <option value="highschool">Secondary school diploma</option>
-                                <option value="less_than_secondary">
-                                    Less than secondary school
-                                </option>
+                                <option value="less_than_secondary">Less than secondary school</option>
+                            </select>
+                        </div>
+
+                        <div className={styles.fieldGroup}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+                                <label className={styles.label} style={{ marginBottom: 0 }}>Spouse Canadian Work Experience</label>
+                                <InfoTooltip content={INFO_CONTENT.spouseCanadianWork} />
+                            </div>
+                            <select
+                                name="spouse_canadianWork"
+                                value={form.spouse_canadianWork}
+                                onChange={handleChange}
+                                className={styles.select}
+                            >
+                                <option value="">Select Years</option>
+                                <option value="0">None or less than 1 year</option>
+                                <option value="1">1 year</option>
+                                <option value="2">2 years</option>
+                                <option value="3">3 years</option>
+                                <option value="4">4 years</option>
+                                <option value="5">5 years or more</option>
                             </select>
                         </div>
                     </div>
@@ -565,7 +575,11 @@ export default function Calculator() {
 
             {/* ---------- SECOND LANGUAGE ---------- */}
             <div className={styles.section}>
-                <div className={styles.sectionTitle}>Second Official Language</div>
+                <div className={styles.sectionTitle}>Second Official Language
+                    <span style={{ fontSize: "0.8rem", fontWeight: 400, opacity: 0.7, marginLeft: "0.5rem" }}>
+                        (French if first language is English; English if first language is French)
+                    </span>
+                </div>
                 <div className={styles.marginBottom}>
                     <label className={styles.checkboxWrapper}>
                         <input
@@ -575,22 +589,36 @@ export default function Calculator() {
                             onChange={handleChange}
                             className={styles.checkbox}
                         />
-                        <span>I have results for a second official language</span>
+                        <span>I have test results for a second official language</span>
                     </label>
                 </div>
 
                 {form.secondLanguage && (
-                    <LanguageFields
-                        prefix="second_"
-                        values={form}
-                        onChange={handleChange}
-                        tooltip="IELTS/TEF equivalent band"
-                        onViewChart={(testType) => {
-                            setCLBChartTestType(testType);
-                            setCLBChartPrefix("second_");
-                            setShowCLBChart(true);
-                        }}
-                    />
+                    <>
+                        <div className={styles.marginBottom}>
+                            <label className={styles.checkboxWrapper}>
+                                <input
+                                    type="checkbox"
+                                    name="frenchIsFirst"
+                                    checked={form.frenchIsFirst}
+                                    onChange={handleChange}
+                                    className={styles.checkbox}
+                                />
+                                <span>My first (primary) language is French — second language entered above is English</span>
+                            </label>
+                        </div>
+                        <LanguageFields
+                            prefix="second_"
+                            values={form}
+                            onChange={handleChange}
+                            tooltip="IELTS/TEF equivalent band"
+                            onViewChart={(testType) => {
+                                setCLBChartTestType(testType);
+                                setCLBChartPrefix("second_");
+                                setShowCLBChart(true);
+                            }}
+                        />
+                    </>
                 )}
             </div>
 
@@ -611,28 +639,8 @@ export default function Calculator() {
                         >
                             <option value="">Select Option</option>
                             <option value="none">None</option>
-                            <option value="1_or_2">1 or 2 year diploma/certificate</option>
-                            <option value="3_or_more">
-                                Degree, diploma or certificate of 3 years or longer
-                            </option>
-                        </select>
-                    </div>
-
-                    <div className={styles.fieldGroup}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                            <label className={styles.label} style={{ marginBottom: 0 }}>Arranged Employment</label>
-                            <InfoTooltip content={INFO_CONTENT.arrangedEmployment} />
-                        </div>
-                        <select
-                            name="arrangedEmployment"
-                            value={form.arrangedEmployment}
-                            onChange={handleChange}
-                            className={styles.select}
-                        >
-                            <option value="">Select Option</option>
-                            <option value="none">None</option>
-                            <option value="noc_00">NOC 00 (Senior Management)</option>
-                            <option value="noc_0_a_b">NOC 0, A or B (Other)</option>
+                            <option value="1_or_2">1–2 year diploma/certificate (+15 pts)</option>
+                            <option value="3_or_more">3+ year degree, diploma or certificate (+30 pts)</option>
                         </select>
                     </div>
                 </div>
@@ -674,7 +682,7 @@ export default function Calculator() {
                     {/* Provincial Nomination */}
                     <div className={styles.toggleRow}>
                         <div className={styles.toggleLabel} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                            Valid Provincial Nomination
+                            Valid Provincial Nomination (+600 pts)
                             <InfoTooltip content={INFO_CONTENT.nomination} />
                         </div>
                         <label className={styles.switch}>
@@ -687,28 +695,13 @@ export default function Calculator() {
                         </label>
                     </div>
 
-                    {/* LMIA Job Offer */}
-                    <div className={styles.toggleRow}>
-                        <div className={styles.toggleLabel}>
-                            Do you have a valid job offer supported by a Labour Market Impact Assessment (LMIA)?
-                        </div>
-                        <label className={styles.switch}>
-                            <input
-                                type="checkbox"
-                                checked={form.hasLMIA}
-                                onChange={(e) => setForm({ ...form, hasLMIA: e.target.checked })}
-                            />
-                            <span className={styles.slider}></span>
-                        </label>
-                    </div>
-
-                    {/* LMIA Note */}
+                    {/* LMIA Job Offer - Policy Notice */}
                     <div className={styles.lmiaNote}>
                         <svg className={styles.infoIcon} width="16" height="16" viewBox="0 0 16 16" fill="none">
                             <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm1 12H7V7h2v5zm0-6H7V4h2v2z" fill="currentColor" />
                         </svg>
                         <span>
-                            As of March 25, 2025, Canada has removed the points for job offers that are supported by a Labour Market Impact Assessment (LMIA) for its Express Entry system.
+                            <strong>Job Offer Points Removed (March 25, 2025):</strong> IRCC has eliminated CRS points for LMIA-supported job offers. A valid job offer may still be required for certain program eligibility (e.g., Federal Skilled Trades), but it no longer adds points to your CRS score.
                         </span>
                     </div>
                 </div>
@@ -755,7 +748,7 @@ export default function Calculator() {
                             certificate: form.certificate,
                             sibling: form.sibling,
                             nomination: form.nomination,
-                            hasLMIA: form.hasLMIA,
+                            hasLMIA: false,
                             spouseEducation: form.spouse ? form.spouse_education : undefined,
                             spouseLanguage: form.spouse && spouseClb ? {
                                 listening: spouseClb.listening || 0,

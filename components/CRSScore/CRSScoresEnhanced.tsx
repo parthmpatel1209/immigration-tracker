@@ -453,16 +453,20 @@ function CRSScoresEnhanced({ onNavigateToTab, initialViewMode }: CRSScoresEnhanc
         <div className={styles.container}>
             {/* Header */}
             <div className={styles.header}>
-                <h2 className={styles.title}>CRS Score Analysis & Draw History</h2>
+                <div className={styles.headerBadge}>
+                    <span className={styles.badgePulseDot} />
+                    <span>Live IRCC Data • {draws.length} Draws Synchronized</span>
+                </div>
+                <h2 className={styles.title}>CRS Score Intelligence & Draw History</h2>
                 <p className={styles.subtitle}>
-                    Comprehensive insights into Canadian immigration trends
+                    Historical score cutoffs, invitation volumes, and predictive benchmarks across Canadian Express Entry and PNP streams.
                 </p>
             </div>
 
             {/* View Toggle */}
             <ViewToggle viewMode={viewMode} onViewChange={setViewMode} />
 
-            {/* Numbers View - Table Only */}
+            {/* Numbers View - Table & Mobile Cards */}
             {viewMode === "table" && (
                 <>
                     <FilterBar
@@ -489,36 +493,32 @@ function CRSScoresEnhanced({ onNavigateToTab, initialViewMode }: CRSScoresEnhanc
                 </>
             )}
 
-            {/* Analytics View - Charts and Visualizations */}
+            {/* Analytics View - Charts and Intelligence Visualizations */}
             {viewMode === "analytics" && (
                 <>
                     <DisclaimerBanner />
 
-                    {/* KPI Strip */}
+                    {/* Institutional KPI Metric Cards */}
                     <div className={styles.kpiGrid}>
                         <div className={styles.kpiCard}>
-                            <div className={styles.kpiGlowLine} style={{ background: "linear-gradient(90deg, #111827, #6b7280)" }} />
                             <div className={styles.kpiLabel}>Current Cutoff</div>
                             <div className={`${styles.kpiValue} ${styles.kpiValueSlate}`}>{kpis.current || "—"}</div>
-                            <div className={styles.kpiSub}>Draw date: {kpis.currentSub || "—"}</div>
+                            <div className={styles.kpiSub}>Latest draw: {kpis.currentSub || "—"}</div>
                         </div>
                         <div className={styles.kpiCard}>
-                            <div className={styles.kpiGlowLine} style={{ background: "linear-gradient(90deg, #0ea5e9, #3b82f6)" }} />
-                            <div className={styles.kpiLabel}>12-Mo Average</div>
+                            <div className={styles.kpiLabel}>12-Mo Weighted Average</div>
                             <div className={`${styles.kpiValue} ${styles.kpiValueBlue}`}>{kpis.average || "—"}</div>
-                            <div className={styles.kpiSub}>Across {kpis.count || 0} draws</div>
+                            <div className={styles.kpiSub}>Calculated across {kpis.count || 0} draws</div>
                         </div>
                         <div className={styles.kpiCard}>
-                            <div className={styles.kpiGlowLine} style={{ background: "linear-gradient(90deg, #ef4444, #b91c1c)" }} />
-                            <div className={styles.kpiLabel}>12-Mo High</div>
+                            <div className={styles.kpiLabel}>12-Mo Peak (High)</div>
                             <div className={`${styles.kpiValue} ${styles.kpiValueRed}`}>{kpis.high || "—"}</div>
-                            <div className={styles.kpiSub}>Peak cutoff score</div>
+                            <div className={styles.kpiSub}>Peak required cutoff</div>
                         </div>
                         <div className={styles.kpiCard}>
-                            <div className={styles.kpiGlowLine} style={{ background: "linear-gradient(90deg, #10b981, #059669)" }} />
-                            <div className={styles.kpiLabel}>12-Mo Low</div>
+                            <div className={styles.kpiLabel}>12-Mo Floor (Low)</div>
                             <div className={`${styles.kpiValue} ${styles.kpiValueGreen}`}>{kpis.low || "—"}</div>
-                            <div className={styles.kpiSub}>Lowest cutoff score</div>
+                            <div className={styles.kpiSub}>Lowest required cutoff</div>
                         </div>
                     </div>
 
@@ -549,25 +549,26 @@ function CRSScoresEnhanced({ onNavigateToTab, initialViewMode }: CRSScoresEnhanc
 
                     <ScoreDistributionChart data={distributionData} safeScore={safeLinePosition} darkMode={darkMode} />
 
-                    {/* Interactive "Where does my score land?" widget */}
+                    {/* Interactive CRS Score Benchmark Simulator */}
                     <div className={styles.scoreLandCard}>
-                        <h3 className={styles.scoreLandTitle}>Where does your score land?</h3>
+                        <h3 className={styles.scoreLandTitle}>CRS Score Benchmark Simulator</h3>
                         <p className={styles.scoreLandSubtitle}>
-                            Enter your CRS score to see how you compare against the 15 most recent draws.
+                            Benchmark your profile against the 15 most recent Express Entry & PNP invitation rounds.
                         </p>
                         <form onSubmit={handleCheckScore} className={styles.scoreLandForm}>
                             <input
                                 type="number"
-                                placeholder="e.g. 485"
+                                placeholder="Enter your CRS (e.g. 495)"
                                 min="0"
                                 max="1200"
                                 value={userScore}
                                 onChange={(e) => setUserScore(e.target.value)}
                                 className={styles.scoreLandInput}
+                                aria-label="Enter your CRS score"
                                 required
                             />
                             <button type="submit" className={styles.scoreLandBtn}>
-                                Check My Score
+                                Run Benchmark
                             </button>
                         </form>
 
@@ -585,23 +586,20 @@ function CRSScoresEnhanced({ onNavigateToTab, initialViewMode }: CRSScoresEnhanc
                                     {scoreResult.qualifiedCount === scoreResult.totalChecked ? (
                                         <>
                                             A score of <strong>{scoreResult.score}</strong> would have qualified in{" "}
-                                            <strong>all</strong> of the last {scoreResult.totalChecked} draws (Min cutoff:{" "}
-                                            <strong>{scoreResult.minCutoff}</strong>). You are in an excellent position!
+                                            <strong>all</strong> of the last {scoreResult.totalChecked} rounds (Lowest cutoff:{" "}
+                                            <strong>{scoreResult.minCutoff}</strong>). Your candidate profile is in an exceptionally strong position for an Invitation to Apply (ITA).
                                         </>
                                     ) : scoreResult.qualifiedCount > 0 ? (
                                         <>
                                             A score of <strong>{scoreResult.score}</strong> would have qualified in{" "}
                                             <strong>{scoreResult.qualifiedCount}</strong> of the last{" "}
-                                            {scoreResult.totalChecked} draws (Min cutoff:{" "}
-                                            <strong>{scoreResult.minCutoff}</strong>, Max cutoff:{" "}
-                                            <strong>{scoreResult.maxCutoff}</strong>).
+                                            {scoreResult.totalChecked} rounds (Cutoff range:{" "}
+                                            <strong>{scoreResult.minCutoff}</strong> – <strong>{scoreResult.maxCutoff}</strong>). You are competitive for targeted or category-based draws.
                                         </>
                                     ) : (
                                         <>
-                                            A score of <strong>{scoreResult.score}</strong> would not have qualified in any of
-                                            the last {scoreResult.totalChecked} draws. You would need{" "}
-                                            <strong>{scoreResult.neededPoints} more points</strong> to match the latest cutoff
-                                            of <strong>{kpis.current}</strong>.
+                                            A score of <strong>{scoreResult.score}</strong> is currently below recent cutoffs across the last {scoreResult.totalChecked} rounds. You need approximately{" "}
+                                            <strong>{scoreResult.neededPoints} additional points</strong> to reach the latest benchmark of <strong>{kpis.current}</strong>.
                                         </>
                                     )}
                                 </p>
@@ -613,7 +611,7 @@ function CRSScoresEnhanced({ onNavigateToTab, initialViewMode }: CRSScoresEnhanc
                                     }}
                                     className={styles.scoreLandLink}
                                 >
-                                    Find out how to improve your score &rarr;
+                                    Explore strategies to boost your CRS score &rarr;
                                 </a>
                             </div>
                         )}
@@ -631,7 +629,7 @@ function CRSScoresEnhanced({ onNavigateToTab, initialViewMode }: CRSScoresEnhanc
             {/* Footer */}
             <div className={styles.footer}>
                 <p className={styles.footerText}>
-                    Last updated: {dayjs().format("MMM D, YYYY [at] h:mm A")}
+                    Data synchronized with official IRCC releases • Last updated {dayjs().format("MMM D, YYYY [at] h:mm A")}
                 </p>
             </div>
         </div>
@@ -639,3 +637,4 @@ function CRSScoresEnhanced({ onNavigateToTab, initialViewMode }: CRSScoresEnhanc
 }
 
 export default CRSScoresEnhanced;
+

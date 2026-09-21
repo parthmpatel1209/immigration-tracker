@@ -1,4 +1,6 @@
-import { TrendingUp, Target, Users } from "lucide-react";
+"use client";
+
+import { TrendingUp, Target, Users, Award, Layers } from "lucide-react";
 import styles from "./CRSScore.module.css";
 
 interface SummaryCardsProps {
@@ -24,115 +26,140 @@ export default function SummaryCards({
 
     return (
         <div className={styles.summarySection}>
-            <h3 className={styles.sectionTitle}>Total Invitations by Category</h3>
+            <h3 className={styles.sectionTitle}>Invitation Allocation by Program</h3>
             <div className={styles.summaryGrid}>
+                {/* CEC Card */}
                 <div className={`${styles.summaryCard} ${styles.cecCard}`}>
-                    <div className={styles.cardHeaderSummary}>
-                        <div className={styles.cardIconSummary}>
-                            <TrendingUp />
+                    <div>
+                        <div className={styles.cardHeaderSummary}>
+                            <div className={styles.cardIconSummary}>
+                                <TrendingUp />
+                            </div>
+                            <h4 className={styles.cardTitleSummary}>CEC</h4>
                         </div>
-                        <h3 className={styles.cardTitleSummary}>CEC</h3>
+                        <div className={styles.cardValueSummary}>
+                            {cecTotal.toLocaleString()}
+                        </div>
                     </div>
-                    <div className={styles.cardValueSummary}>
-                        {cecTotal.toLocaleString()}
-                    </div>
-                    <div className={styles.cardProgressSummary}>
-                        <div
-                            className={styles.cardProgressBarSummary}
-                            style={{ width: `${cecPercent}%` }}
-                        />
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div className={styles.cardLabelSummary}>Canadian Experience Class</div>
-                        <div className={styles.cardPercentSummary}>{cecPercent}%</div>
+                    <div>
+                        <div className={styles.cardProgressSummary}>
+                            <div
+                                className={styles.cardProgressBarSummary}
+                                style={{ width: `${cecPercent}%` }}
+                            />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span className={styles.cardLabelSummary}>Canadian Experience</span>
+                            <span className={styles.cardPercentSummary}>{cecPercent}%</span>
+                        </div>
                     </div>
                 </div>
 
+                {/* PNP Card */}
                 <div className={`${styles.summaryCard} ${styles.pnpCard}`}>
-                    <div className={styles.cardHeaderSummary}>
-                        <div className={styles.cardIconSummary}>
-                            <Target />
+                    <div>
+                        <div className={styles.cardHeaderSummary}>
+                            <div className={styles.cardIconSummary}>
+                                <Target />
+                            </div>
+                            <h4 className={styles.cardTitleSummary}>PNP</h4>
                         </div>
-                        <h3 className={styles.cardTitleSummary}>PNP</h3>
+                        <div className={styles.cardValueSummary}>
+                            {pnpTotal.toLocaleString()}
+                        </div>
                     </div>
-                    <div className={styles.cardValueSummary}>
-                        {pnpTotal.toLocaleString()}
-                    </div>
-                    <div className={styles.cardProgressSummary}>
-                        <div
-                            className={styles.cardProgressBarSummary}
-                            style={{ width: `${pnpPercent}%` }}
-                        />
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div className={styles.cardLabelSummary}>Provincial Nominee Program</div>
-                        <div className={styles.cardPercentSummary}>{pnpPercent}%</div>
+                    <div>
+                        <div className={styles.cardProgressSummary}>
+                            <div
+                                className={styles.cardProgressBarSummary}
+                                style={{ width: `${pnpPercent}%` }}
+                            />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span className={styles.cardLabelSummary}>Provincial Nominee</span>
+                            <span className={styles.cardPercentSummary}>{pnpPercent}%</span>
+                        </div>
                     </div>
                 </div>
 
+                {/* Category-Based Card */}
                 <div className={`${styles.summaryCard} ${styles.categoryBasedCard}`}>
-                    <div className={styles.cardHeaderSummary}>
-                        <div className={styles.cardIconSummary}>
-                            <Users />
+                    <div>
+                        <div className={styles.cardHeaderSummary}>
+                            <div className={styles.cardIconSummary}>
+                                <Users />
+                            </div>
+                            <h4 className={styles.cardTitleSummary}>Category-Based</h4>
                         </div>
-                        <h3 className={styles.cardTitleSummary}>Category Based</h3>
+                        <div className={styles.cardValueSummary}>
+                            {categoryBasedTotal.toLocaleString()}
+                        </div>
                     </div>
-                    <div className={styles.cardValueSummary}>
-                        {categoryBasedTotal.toLocaleString()}
-                    </div>
-                    <div className={styles.cardProgressSummary}>
-                        <div
-                            className={styles.cardProgressBarSummary}
-                            style={{ width: `${categoryBasedPercent}%` }}
-                        />
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div className={styles.cardLabelSummary}>French, Healthcare, STEM, etc.</div>
-                        <div className={styles.cardPercentSummary}>{categoryBasedPercent}%</div>
+                    <div>
+                        <div className={styles.cardProgressSummary}>
+                            <div
+                                className={styles.cardProgressBarSummary}
+                                style={{ width: `${categoryBasedPercent}%` }}
+                            />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span className={styles.cardLabelSummary}>Targeted Occupations</span>
+                            <span className={styles.cardPercentSummary}>{categoryBasedPercent}%</span>
+                        </div>
                     </div>
                 </div>
 
+                {/* Other Card */}
                 <div className={`${styles.summaryCard} ${styles.nonEECard}`}>
-                    <div className={styles.cardHeaderSummary}>
-                        <div className={styles.cardIconSummary}>
-                            <Target />
+                    <div>
+                        <div className={styles.cardHeaderSummary}>
+                            <div className={styles.cardIconSummary}>
+                                <Award />
+                            </div>
+                            <h4 className={styles.cardTitleSummary}>Other</h4>
                         </div>
-                        <h3 className={styles.cardTitleSummary}>Other</h3>
+                        <div className={styles.cardValueSummary}>
+                            {nonEETotal.toLocaleString()}
+                        </div>
                     </div>
-                    <div className={styles.cardValueSummary}>
-                        {nonEETotal.toLocaleString()}
-                    </div>
-                    <div className={styles.cardProgressSummary}>
-                        <div
-                            className={styles.cardProgressBarSummary}
-                            style={{ width: `${nonEEPercent}%` }}
-                        />
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div className={styles.cardLabelSummary}>Non-Express Entry Draws</div>
-                        <div className={styles.cardPercentSummary}>{nonEEPercent}%</div>
+                    <div>
+                        <div className={styles.cardProgressSummary}>
+                            <div
+                                className={styles.cardProgressBarSummary}
+                                style={{ width: `${nonEEPercent}%` }}
+                            />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span className={styles.cardLabelSummary}>Non-EE & Specialized</span>
+                            <span className={styles.cardPercentSummary}>{nonEEPercent}%</span>
+                        </div>
                     </div>
                 </div>
 
+                {/* Total Combined Card */}
                 <div className={`${styles.summaryCard} ${styles.totalCard}`}>
-                    <div className={styles.cardHeaderSummary}>
-                        <div className={styles.cardIconSummary}>
-                            <TrendingUp />
+                    <div>
+                        <div className={styles.cardHeaderSummary}>
+                            <div className={styles.cardIconSummary}>
+                                <Layers />
+                            </div>
+                            <h4 className={styles.cardTitleSummary}>Total Invitations</h4>
                         </div>
-                        <h3 className={styles.cardTitleSummary}>Total</h3>
+                        <div className={styles.cardValueSummary}>
+                            {grandTotal.toLocaleString()}
+                        </div>
                     </div>
-                    <div className={styles.cardValueSummary}>
-                        {grandTotal.toLocaleString()}
-                    </div>
-                    <div className={styles.cardProgressSummary}>
-                        <div
-                            className={styles.cardProgressBarSummary}
-                            style={{ width: "100%" }}
-                        />
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div className={styles.cardLabelSummary}>All Programs Combined</div>
-                        <div className={styles.cardPercentSummary}>100%</div>
+                    <div>
+                        <div className={styles.cardProgressSummary}>
+                            <div
+                                className={styles.cardProgressBarSummary}
+                                style={{ width: "100%" }}
+                            />
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span className={styles.cardLabelSummary}>All Streams Combined</span>
+                            <span className={styles.cardPercentSummary}>100%</span>
+                        </div>
                     </div>
                 </div>
             </div>
