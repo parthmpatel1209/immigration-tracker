@@ -75,7 +75,7 @@ export async function GET(request: Request) {
       console.error("Thumbnail trim failed, serving original:", err);
     }
 
-    return new NextResponse(body, {
+    return new NextResponse(new Uint8Array(body), {
       status: 200,
       headers: {
         "Content-Type": contentType,
