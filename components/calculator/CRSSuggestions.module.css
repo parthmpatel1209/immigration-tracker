@@ -3,8 +3,8 @@
 .container {
     margin-top: 2rem;
     padding: 2rem;
-    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-    border-radius: 1.5rem;
+    background: var(--paper-2);
+    border-radius: var(--r-lg);
     border: 1px solid rgba(37, 99, 235, 0.1);
     box-shadow: 0 4px 20px rgba(37, 99, 235, 0.08);
 }
@@ -26,7 +26,7 @@
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: var(--lake);
     color: white;
     display: flex;
     align-items: center;
@@ -35,28 +35,28 @@
 }
 
 :global(.dark) .headerIcon {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: var(--lake);
 }
 
 .title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #1e293b;
+    color: var(--ink);
     margin: 0 0 0.5rem 0;
 }
 
 :global(.dark) .title {
-    color: #f1f5f9;
+    color: var(--ink);
 }
 
 .subtitle {
     font-size: 0.9375rem;
-    color: #64748b;
+    color: var(--muted);
     margin: 0;
 }
 
 :global(.dark) .subtitle {
-    color: #94a3b8;
+    color: var(--muted);
 }
 
 /* Sections */
@@ -71,7 +71,7 @@
 .sectionTitle {
     font-size: 1.125rem;
     font-weight: 600;
-    color: #334155;
+    color: var(--ink-2);
     margin: 0 0 1rem 0;
     display: flex;
     align-items: center;
@@ -79,14 +79,14 @@
 }
 
 :global(.dark) .sectionTitle {
-    color: #e2e8f0;
+    color: var(--ink);
 }
 
 .highPriorityBadge {
     display: inline-flex;
     align-items: center;
     padding: 0.25rem 0.75rem;
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: var(--maple);
     color: white;
     font-size: 0.75rem;
     font-weight: 600;
@@ -105,7 +105,7 @@
 /* Card Styles */
 .card {
     background: white;
-    border-radius: 1rem;
+    border-radius: var(--r-lg);
     border: 2px solid transparent;
     padding: 1.5rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -151,8 +151,8 @@
     width: 40px;
     height: 40px;
     border-radius: 10px;
-    background: linear-gradient(135deg, #eff6ff, #dbeafe);
-    color: #2563eb;
+    background: var(--paper-2);
+    color: var(--lake);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,7 +161,7 @@
 
 :global(.dark) .cardIcon {
     background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
-    color: #60a5fa;
+    color: var(--lake);
 }
 
 .cardHeaderContent {
@@ -171,29 +171,29 @@
 .cardTitle {
     font-size: 1rem;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--ink);
     margin: 0 0 0.5rem 0;
 }
 
 :global(.dark) .cardTitle {
-    color: #f1f5f9;
+    color: var(--ink);
 }
 
 .cardDescription {
     font-size: 0.875rem;
-    color: #64748b;
+    color: var(--muted);
     margin: 0;
     line-height: 1.5;
 }
 
 :global(.dark) .cardDescription {
-    color: #94a3b8;
+    color: var(--muted);
 }
 
 .expandButton {
     background: none;
     border: none;
-    color: #64748b;
+    color: var(--muted);
     cursor: pointer;
     padding: 0.25rem;
     border-radius: 0.375rem;
@@ -203,12 +203,12 @@
 
 .expandButton:hover {
     background: rgba(148, 163, 184, 0.1);
-    color: #2563eb;
+    color: var(--lake);
 }
 
 :global(.dark) .expandButton:hover {
     background: rgba(148, 163, 184, 0.2);
-    color: #60a5fa;
+    color: var(--lake);
 }
 
 /* Card Meta */
@@ -230,20 +230,20 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.8125rem;
-    color: #64748b;
+    color: var(--muted);
     font-weight: 500;
 }
 
 :global(.dark) .metaItem {
-    color: #94a3b8;
+    color: var(--muted);
 }
 
 .metaItem svg {
-    color: #2563eb;
+    color: var(--lake);
 }
 
 :global(.dark) .metaItem svg {
-    color: #60a5fa;
+    color: var(--lake);
 }
 
 .difficultyBadge {
@@ -256,32 +256,32 @@
 
 .difficultyeasy {
     background: rgba(16, 185, 129, 0.1);
-    color: #059669;
+    color: var(--pine);
 }
 
 :global(.dark) .difficultyeasy {
     background: rgba(16, 185, 129, 0.2);
-    color: #10b981;
+    color: var(--pine);
 }
 
 .difficultymoderate {
     background: rgba(59, 130, 246, 0.1);
-    color: #1d4ed8;
+    color: var(--lake);
 }
 
 :global(.dark) .difficultymoderate {
     background: rgba(59, 130, 246, 0.2);
-    color: #3b82f6;
+    color: var(--lake);
 }
 
 .difficultychallenging {
     background: rgba(245, 158, 11, 0.1);
-    color: #d97706;
+    color: var(--ochre);
 }
 
 :global(.dark) .difficultychallenging {
     background: rgba(245, 158, 11, 0.2);
-    color: #f59e0b;
+    color: var(--ochre);
 }
 
 /* Expanded Content */
@@ -311,12 +311,12 @@
 .actionTitle {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #334155;
+    color: var(--ink-2);
     margin: 0 0 0.75rem 0;
 }
 
 :global(.dark) .actionTitle {
-    color: #e2e8f0;
+    color: var(--ink);
 }
 
 .actionSteps {
@@ -327,13 +327,13 @@
 
 .actionSteps li {
     font-size: 0.875rem;
-    color: #475569;
+    color: var(--ink-2);
     line-height: 1.6;
     margin-bottom: 0.5rem;
 }
 
 :global(.dark) .actionSteps li {
-    color: #cbd5e1;
+    color: var(--ink-2);
 }
 
 .actionSteps li:last-child {
@@ -350,28 +350,28 @@
     width: 64px;
     height: 64px;
     margin: 0 auto 1rem;
-    color: #10b981;
+    color: var(--pine);
 }
 
 .emptyState h3 {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--ink);
     margin: 0 0 0.5rem 0;
 }
 
 :global(.dark) .emptyState h3 {
-    color: #f1f5f9;
+    color: var(--ink);
 }
 
 .emptyState p {
     font-size: 0.9375rem;
-    color: #64748b;
+    color: var(--muted);
     margin: 0;
 }
 
 :global(.dark) .emptyState p {
-    color: #94a3b8;
+    color: var(--muted);
 }
 
 /* Responsive */

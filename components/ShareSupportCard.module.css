@@ -3,7 +3,7 @@
 
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  border-radius: 1.25rem;
+  border-radius: var(--r-lg);
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   padding: 1.75rem;
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -24,32 +24,32 @@
 .title {
   font-size: 1.375rem;
   font-weight: 700;
-  background: linear-gradient(to right, #2563eb, #4f46e5);
+  background: none;
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
+  color: var(--ink);
   margin-bottom: 0.75rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.5rem; color: var(--ink);
 }
 
 :global(.dark) .title {
-  background: linear-gradient(to right, #60a5fa, #a78bfa);
+  background: none;
   -webkit-background-clip: text;
-  background-clip: text;
+  background-clip: text; color: var(--ink);
 }
 
 .text {
-  color: #374151;
+  color: var(--ink-2);
   font-size: 0.9375rem;
   line-height: 1.6;
   margin-bottom: 1.5rem;
 }
 
 :global(.dark) .text {
-  color: #cbd5e1;
+  color: var(--ink-2);
 }
 
 .buttonGroup {
@@ -85,29 +85,29 @@
 }
 
 .shareButton {
-  background: linear-gradient(to right, #2563eb, #4f46e5);
+  background: var(--lake);
   color: white;
 }
 
 .shareButton:hover {
-  background: linear-gradient(to right, #1d4ed8, #4338ca);
+  background: var(--lake);
   transform: translateY(-2px);
 }
 
 .copyButton {
-  background: #f3f4f6;
-  color: #1f2937;
-  border: 2px solid #d1d5db;
+  background: var(--paper-2);
+  color: var(--ink);
+  border: 2px solid var(--line-strong);
 }
 
 :global(.dark) .copyButton {
-  background: #374151;
-  color: #e5e7eb;
+  background: var(--paper-2);
+  color: var(--ink);
   border-color: #475569;
 }
 
 .copyButton:hover {
-  background: #e5e7eb;
+  background: var(--paper-2);
 }
 
 :global(.dark) .copyButton:hover {
@@ -115,13 +115,13 @@
 }
 
 .copied {
-  background: #16a34a !important;
+  background: var(--pine) !important;
   color: white !important;
-  border-color: #16a34a !important;
+  border-color: var(--pine) !important;
 }
 
 .copied:hover {
-  background: #15803d !important;
+  background: var(--pine) !important;
 }
 
 @media (max-width: 480px) {

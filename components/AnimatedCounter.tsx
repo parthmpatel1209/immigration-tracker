@@ -1,64 +1,43 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useInView, useSpring } from "framer-motion";
+import { animate, useInView, useReducedMotion } from "framer-motion";
 
 interface Props {
     value: string | number;
+    /** seconds */
     duration?: number;
     className?: string;
 }
 
-export default function AnimatedCounter({ value, className }: Props) {
+/** Counts up to `value` when scrolled into view, always ending on the exact number. */
+export default function AnimatedCounter({ value, duration = 1.2, className }: Props) {
     const ref = useRef<HTMLSpanElement>(null);
-    const [displayValue, setDisplayValue] = useState<string>("0");
+    const inView = useInView(ref, { once: true });
+    const reduce = useReducedMotion();
 
-    // Initialize spring at 0
-    const springValue = useSpring(0, {
-        damping: 30,
-        stiffness: 60,
-        mass: 1,
-    });
-
-    const isInView = useInView(ref, { once: true, margin: "0px" });
+    const target = parseFloat(String(value).replace(/,/g, "").trim());
+    const isNumber = Number.isFinite(target);
+    const [display, setDisplay] = useState(() => (isNumber ? "0" : String(value)));
 
     useEffect(() => {
-        // Parse value - remove commas and parse
-        const cleanValue = typeof value === "string"
-            ? value.replace(/,/g, "").trim()
-            : String(value);
-
-        const numericValue = parseFloat(cleanValue);
-
-        // If it's a valid number and in view, animate
-        if (!isNaN(numericValue) && isInView) {
-            springValue.set(numericValue);
-        } else if (isNaN(numericValue)) {
-            // If not a number (like "..." or "N/A"), just display it
-            setDisplayValue(String(value));
+        if (!isNumber) {
+            setDisplay(String(value));
+            return;
         }
-    }, [value, isInView, springValue]);
-
-    useEffect(() => {
-        return springValue.on("change", (latest) => {
-            if (ref.current) {
-                // Format with commas
-                const formatted = Math.floor(latest).toLocaleString();
-                setDisplayValue(formatted);
-                ref.current.textContent = formatted;
-            }
+        if (reduce) {
+            setDisplay(Math.round(target).toLocaleString());
+            return;
+        }
+        if (!inView) return;
+        const controls = animate(0, target, {
+            duration,
+            ease: [0.22, 1, 0.36, 1],
+            onUpdate: (v) => setDisplay(Math.round(v).toLocaleString()),
+            onComplete: () => setDisplay(Math.round(target).toLocaleString()),
         });
-    }, [springValue]);
+        return () => controls.stop();
+    }, [target, isNumber, inView, reduce, duration, value]);
 
-    // Check if value is numeric
-    const cleanValue = typeof value === "string"
-        ? value.replace(/,/g, "").trim()
-        : String(value);
-    const isNumber = !isNaN(parseFloat(cleanValue));
-
-    if (!isNumber) {
-        return <span className={className}>{value}</span>;
-    }
-
-    return <span ref={ref} className={className}>{displayValue}</span>;
+    return <span ref={ref} className={className}>{display}</span>;
 }

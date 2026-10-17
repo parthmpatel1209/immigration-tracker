@@ -1,13 +1,13 @@
 // app/page.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Tabs from "@/components/Tabs";
 import CRSScoresEnhanced from "@/components/CRSScoresEnhanced";
 import CRSFilter from "@/components/CRSFilter";
 import ImmigrationNews from "@/components/ImmigrationNews/ImmigrationNews";
 import PRPathways from "@/components/pr-pathways/PRPathways";
-import Header from "@/components/Header";
+import SiteHeader from "@/components/shell/SiteHeader";
 import Footer from "@/components/Footer";
 import DrawCardsGrid from "@/components/DrawCardsGrid";
 import Donate from "@/components/Donate";
@@ -55,35 +55,60 @@ export default function HomePage() {
     { label: "Contact", content: <ContactForm />, hidden: true },
   ];
 
+  // Deep links: /#calculator, /#latest-draw … (also keeps the URL shareable)
+  const slug = (label: string) =>
+    label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  useEffect(() => {
+    const fromHash = () => {
+      const h = window.location.hash.replace("#", "");
+      const i = tabs.findIndex((t) => slug(t.label) === h);
+      if (i > -1) setActiveIndex(i);
+    };
+    fromHash();
+    window.addEventListener("hashchange", fromHash);
+    return () => window.removeEventListener("hashchange", fromHash);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const h = activeIndex === 0 ? "" : `#${slug(tabs[activeIndex].label)}`;
+    if (window.location.hash !== h) {
+      window.history.replaceState(null, "", window.location.pathname + h);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeIndex]);
+
   const handleContactClick = () => {
     // Re-use logic for contact button in footer
     handleTabNavigation("Contact");
   };
 
-  return (
-    <main
-      className="min-h-screen bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 transition-colors duration-300 pb-[95px] md:pb-0 pt-0"
-    >
-      <Header />
+  const goTo = (index: number) => {
+    setActiveIndex(index);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-      <section id="tabs-section" className="max-w-[1540px] mx-auto px-2 md:px-6 pb-12 mt-2 md:mt-4">
-        <div className="bg-white/95 dark:bg-[#0f172a]/95 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800/80 overflow-hidden backdrop-blur-md">
-          <Tabs
-            tabs={tabs}
-            activeIndex={activeIndex}
-            onTabChange={setActiveIndex}
-            hideHeaderOnMobile={true}
-          />
-        </div>
+  return (
+    <div className="site-shell">
+      <SiteHeader
+        tabs={tabs}
+        activeIndex={activeIndex}
+        onTabChange={goTo}
+        onAlerts={() => handleTabNavigation("Early Access")}
+      />
+
+      <section id="tabs-section" className="site-wrap">
+        <Tabs tabs={tabs} activeIndex={activeIndex} />
       </section>
 
-      <Footer onNavigateToContact={handleContactClick} />
+      <Footer onNavigateToContact={handleContactClick} onNavigate={(t) => { handleTabNavigation(t); }} />
 
       <MobileBottomNav
         tabs={tabs}
         activeIndex={activeIndex}
         onTabChange={setActiveIndex}
       />
-    </main>
+    </div>
   );
 }

@@ -24,8 +24,8 @@ export interface LanguagePointsRow {
 function parseScore(score: string): { min: number; max: number } | null {
   if (!score) return null;
   const trimmed = score.trim();
-  if (trimmed.includes("–")) {
-    const [minStr, maxStr] = trimmed.split("–").map((s) => s.trim());
+  if (/[–-]/.test(trimmed)) {
+    const [minStr, maxStr] = trimmed.split(/[–-]/).map((s) => s.trim());
     const min = parseFloat(minStr);
     const max = parseFloat(maxStr);
     if (isNaN(min) || isNaN(max)) return null;
@@ -36,6 +36,13 @@ function parseScore(score: string): { min: number; max: number } | null {
   }
 }
 
+/**
+ * Converts raw test scores to CLB using the lowest score of each CLB band.
+ * Threshold matching (rather than exact range matching) correctly handles
+ * in-between results — e.g. IELTS Reading 4.5, 5.5 or 7.5 — and scores that
+ * sit above the published top of the CLB 10 band.
+ * Returns null for a skill scoring below CLB 4 (worth 0 points).
+ */
 export function convertIeltsToCLB(
   benchmarks: any[],
   scores: any,
@@ -50,22 +57,20 @@ export function convertIeltsToCLB(
 
   const skills = ["listening", "reading", "writing", "speaking"] as const;
 
-  for (const row of benchmarks) {
-    if (row.test_name !== testType) continue;
+  for (const skill of skills) {
+    const inputScore = parseFloat(scores[skill]);
+    if (isNaN(inputScore)) continue;
 
-    for (const skill of skills) {
-      if (result[skill] !== null) continue;
-
-      const inputScore = parseFloat(scores[skill]);
-      if (isNaN(inputScore)) continue;
-
+    let best: number | null = null;
+    for (const row of benchmarks) {
+      if (row.test_name !== testType) continue;
       const range = parseScore(row[skill]);
       if (!range) continue;
-
-      if (inputScore >= range.min && inputScore <= range.max) {
-        result[skill] = row.clb_level;
+      if (inputScore >= range.min && (best === null || row.clb_level > best)) {
+        best = row.clb_level;
       }
     }
+    result[skill] = best;
   }
 
   return result;
@@ -579,13 +584,18 @@ export function calculateCRS({
     }
   }
 
-  // ── Core total (capped) ───────────────────────────────
+  // ── Section A (core) and Section B (spouse) are capped separately ──
+  // A: 500 without a spouse / 460 with one. B: 40.
   const coreCap = spouse ? 460 : 500;
-  const coreTotal = Math.min(
+  const coreSection = Math.min(
     coreCap,
-    agePoints + educationPoints + languagePoints + secondLanguagePoints + canadianWorkPoints +
+    agePoints + educationPoints + languagePoints + secondLanguagePoints + canadianWorkPoints
+  );
+  const spouseSection = Math.min(
+    40,
     spouseEducationPoints + spouseLanguagePoints + spouseCanadianWorkPoints
   );
+  const coreTotal = coreSection + spouseSection;
 
   // ── Skill Transferability (Max 100) ───────────────────
   const skillTransferabilityPoints = calculateSkillTransferability(

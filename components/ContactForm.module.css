@@ -7,17 +7,17 @@
 /* ───── CONTAINER (page wrapper) ───── */
 .contact_container {
   min-height: 100vh;
-  background: linear-gradient(to bottom right, #eff6ff, #ffffff, #eef2ff);
+  background: var(--paper-2);
   padding: 2rem 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: system-ui, -apple-system, sans-serif;
-  border-radius: 1rem;
+  border-radius: var(--r-lg);
 }
 
 :global(html.dark) .contact_container {
-  background: linear-gradient(to bottom right, #111827, #1e1b4b, #111827);
+  background: var(--paper-2);
 }
 
 /* ───── FORM WRAPPER ───── */
@@ -36,20 +36,20 @@
 .contact_title {
   font-size: 2.25rem;
   font-weight: 700;
-  background: linear-gradient(to right, #2563eb, #3b82f6);
+  background: none;
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-bottom: 0.5rem;
+  -webkit-text-fill-color: currentColor;
+  margin-bottom: 0.5rem; color: var(--ink);
 }
 
 .contact_subtitle {
-  color: #64748b;
+  color: var(--muted);
   font-size: 1rem;
 }
 
 :global(html.dark) .contact_subtitle {
-  color: #cbd5e1;
+  color: var(--ink-2);
 }
 
 /* ───── FORM CARD (glass) ───── */
@@ -58,7 +58,7 @@
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 1.5rem;
+  border-radius: var(--r-lg);
   padding: 2rem;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -78,20 +78,20 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #1e293b;
+  color: var(--ink);
   margin-bottom: 0.35rem;
 }
 
 :global(html.dark) .contact_label {
-  color: #f1f5f9;
+  color: var(--ink);
 }
 
 .contact_required {
-  color: #ef4444;
+  color: var(--maple);
 }
 
 .contact_optional {
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 /* ───── INPUTS ───── */
@@ -102,23 +102,23 @@
   box-sizing: border-box;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--line-strong);
   border-radius: 0.75rem;
-  background: #fff;
-  color: #1e293b;
+  background: var(--surface);
+  color: var(--ink);
   transition: all 0.2s ease;
 }
 
 .contact_input::placeholder,
 .contact_textarea::placeholder {
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .contact_input:focus,
 .contact_textarea:focus,
 .contact_select:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: var(--lake);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
@@ -126,20 +126,20 @@
 :global(html.dark) .contact_input,
 :global(html.dark) .contact_textarea,
 :global(html.dark) .contact_select {
-  background: #1e293b;
+  background: var(--paper-2);
   border-color: #475569;
-  color: #f1f5f9;
+  color: var(--ink);
 }
 
 :global(html.dark) .contact_input::placeholder,
 :global(html.dark) .contact_textarea::placeholder {
-  color: #64748b;
+  color: var(--muted);
 }
 
 :global(html.dark) .contact_input:focus,
 :global(html.dark) .contact_textarea:focus,
 :global(html.dark) .contact_select:focus {
-  border-color: #60a5fa;
+  border-color: var(--lake);
   box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.3);
 }
 
@@ -158,7 +158,7 @@
 /* ───── ERROR ───── */
 .contact_error {
   background: #fee2e2;
-  color: #b91c1c;
+  color: var(--maple);
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   font-size: 0.875rem;
@@ -169,7 +169,7 @@
 :global(html.dark) .contact_error {
   background: #450a0a;
   color: #fca5a5;
-  border-color: #f87171;
+  border-color: var(--maple);
 }
 
 /* ───── SUBMIT BUTTON ───── */
@@ -180,7 +180,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: #2563eb;
+  background: var(--lake);
   color: #fff;
   font-weight: 600;
   font-size: 1rem;
@@ -193,7 +193,7 @@
 }
 
 .contact_submitBtn:hover:not(:disabled) {
-  background: #1d4ed8;
+  background: var(--lake);
 }
 
 .contact_submitBtn:disabled {
@@ -202,11 +202,11 @@
 }
 
 :global(html.dark) .contact_submitBtn {
-  background: #3b82f6;
+  background: var(--lake);
 }
 
 :global(html.dark) .contact_submitBtn:hover:not(:disabled) {
-  background: #2563eb;
+  background: var(--lake);
 }
 
 .contact_spinner {
@@ -234,15 +234,15 @@
   text-align: center;
   margin-top: 2rem;
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--muted);
 }
 
 :global(html.dark) .contact_footer {
-  color: #cbd5e1;
+  color: var(--ink-2);
 }
 
 .contact_footerLink {
-  color: #3b82f6;
+  color: var(--lake);
   text-decoration: underline;
 }
 
@@ -251,11 +251,11 @@
 }
 
 .contact_footerLink:hover {
-  color: #1d4ed8;
+  color: var(--lake);
 }
 
 :global(html.dark) .contact_footerLink:hover {
-  color: #60a5fa;
+  color: var(--lake);
 }
 
 /* ───── SUCCESS SCREEN ───── */
@@ -282,17 +282,17 @@
 .contact_checkIcon svg {
   width: 2.5rem;
   height: 2.5rem;
-  color: #10b981;
+  color: var(--pine);
 }
 
 :global(html.dark) .contact_checkIcon svg {
-  color: #34d399;
+  color: var(--pine);
 }
 
 .contact_successTitle {
   font-size: 1.875rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--ink);
   margin-bottom: 0.5rem;
 }
 
@@ -301,16 +301,16 @@
 }
 
 .contact_successText {
-  color: #64748b;
+  color: var(--muted);
   margin-bottom: 1.5rem;
 }
 
 :global(html.dark) .contact_successText {
-  color: #cbd5e1;
+  color: var(--ink-2);
 }
 
 .contact_successBtn {
-  color: #3b82f6;
+  color: var(--lake);
   font-size: 0.875rem;
   text-decoration: underline;
   background: none;
@@ -323,11 +323,11 @@
 }
 
 .contact_successBtn:hover {
-  color: #1d4ed8;
+  color: var(--lake);
 }
 
 :global(html.dark) .contact_successBtn:hover {
-  color: #60a5fa;
+  color: var(--lake);
 }
 
 /* ───── ANIMATIONS ───── */

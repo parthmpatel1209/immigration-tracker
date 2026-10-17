@@ -15,6 +15,7 @@ import DisclaimerModal from "./DisclaimerModal";
 import CLBChartModal from "./CLBChartModal";
 import InfoTooltip from "./InfoTooltip";
 import { INFO_CONTENT } from "./info-content";
+import { OFFICIAL_BENCHMARKS } from "@/lib/clb-tables";
 
 export default function Calculator() {
     // -------------------------------------------------
@@ -100,25 +101,26 @@ export default function Calculator() {
     useEffect(() => {
         async function load() {
             try {
-                const [benchRes, crsRes, drawsRes] = await Promise.all([
-                    fetch("/api/language-benchmarks"),
+                const [crsRes, drawsRes] = await Promise.all([
                     fetch("/api/crs-breakdown"),
                     fetch("/api/draws"),
                 ]);
 
-                if (!benchRes.ok) throw new Error(`Language benchmarks failed`);
                 if (!crsRes.ok) throw new Error(`CRS breakdown failed`);
 
-                const benchData = await benchRes.json();
                 const crsData = await crsRes.json();
-                const drawsData = await drawsRes.json();
+                const drawsData = drawsRes.ok ? await drawsRes.json() : [];
 
-                setIeltsBenchmarks(benchData);
+                // Language tables are the official IRCC equivalency tables (lib/clb-tables.ts)
+                setIeltsBenchmarks(OFFICIAL_BENCHMARKS);
                 setCrsBreakdown(crsData);
 
-                // Get latest draw cutoff score
-                if (drawsData && drawsData.length > 0) {
-                    setLatestCutoff(drawsData[0].crs_score);
+                // Latest federal Express Entry cut-off (not provincial rounds)
+                const federal = (Array.isArray(drawsData) ? drawsData : [])
+                    .filter((d: any) => /^express entry/i.test(d.program || "") && Number(d.crs_cutoff) > 0 && d.draw_date)
+                    .sort((a: any, b: any) => String(b.draw_date).localeCompare(String(a.draw_date)));
+                if (federal.length > 0) {
+                    setLatestCutoff(Number(federal[0].crs_cutoff));
                 }
 
             } catch (e: any) {
@@ -389,6 +391,25 @@ export default function Calculator() {
                 <p className={styles.subtitle}>
                     Calculate your Comprehensive Ranking System score for Express Entry
                 </p>
+            </div>
+
+            <div
+                role="note"
+                style={{
+                    margin: "0 0 1.25rem",
+                    padding: "0.85rem 1rem",
+                    border: "1px solid var(--ochre)",
+                    background: "var(--ochre-tint)",
+                    borderRadius: "var(--r-md)",
+                    fontSize: "0.85rem",
+                    lineHeight: 1.55,
+                    color: "var(--ink)",
+                }}
+            >
+                <strong>Upcoming change — November 3, 2026:</strong> IRCC will change how points are awarded for
+                Canadian work experience and valid job offers (and remove LMIA requirements for job offers).
+                Profiles will be recalculated and draws paused briefly. This calculator uses the current
+                official tables until IRCC publishes the new values.
             </div>
 
             {/* ---------- APPLICANT FORM ---------- */}

@@ -74,7 +74,7 @@
 .pageTitle {
     font-size: 2rem;
     font-weight: 900;
-    color: #111827;
+    color: var(--ink);
     margin: 0 0 0.4rem 0;
     letter-spacing: -0.03em;
 }
@@ -85,7 +85,7 @@
 
 .pageSubtitle {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: var(--muted);
     margin: 0;
     display: flex;
     align-items: center;
@@ -94,12 +94,12 @@
 }
 
 :global(.dark) .pageSubtitle {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .syncIcon {
     animation: spin 8s linear infinite;
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 @keyframes spin {
@@ -113,7 +113,7 @@
 }
 
 .sourceLink:hover {
-    color: #0284c7;
+    color: var(--lake);
 }
 
 /* --- Latest Draw Large Hero Card --- */
@@ -126,7 +126,7 @@
     border: 1px solid var(--glass-border);
     backdrop-filter: blur(20px);
     box-shadow: var(--card-shadow);
-    border-radius: 1.5rem;
+    border-radius: var(--r-lg);
     padding: 2rem;
     position: relative;
     overflow: hidden;
@@ -135,7 +135,7 @@
 .cardGlowBorder {
     position: absolute;
     inset: 0;
-    border-radius: 1.5rem;
+    border-radius: var(--r-lg);
     border: 1px solid transparent;
     background: linear-gradient(135deg, rgba(211, 47, 47, 0.25), rgba(14, 165, 233, 0.25)) border-box;
     mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
@@ -183,21 +183,21 @@
 .heroDrawNumber {
     font-size: 0.85rem;
     font-weight: 700;
-    color: #4b5563;
+    color: var(--ink-2);
 }
 
 :global(.dark) .heroDrawNumber {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .heroDrawDate {
     font-size: 0.825rem;
     font-weight: 600;
-    color: #6b7280;
+    color: var(--muted);
 }
 
 :global(.dark) .heroDrawDate {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .heroMetricsGrid {
@@ -223,13 +223,13 @@
     font-size: 0.725rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: #6b7280;
+    color: var(--muted);
     letter-spacing: 0.05em;
     margin-bottom: 0.25rem;
 }
 
 :global(.dark) .heroMetricLabel {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .heroMetricValueRow {
@@ -246,7 +246,7 @@
 .heroMetricValue {
     font-size: 2.25rem;
     font-weight: 900;
-    color: #111827;
+    color: var(--ink);
     line-height: 1.1;
     font-variant-numeric: tabular-nums;
 }
@@ -259,21 +259,21 @@
     font-size: 0.7rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: #9ca3af;
+    color: var(--muted);
     margin-top: 0.2rem;
     letter-spacing: 0.02em;
 }
 
 .deltaUp {
-    color: #ef4444;
+    color: var(--maple);
 }
 
 .deltaDown {
-    color: #10b981;
+    color: var(--pine);
 }
 
 .deltaFlat {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .heroCardFooter {
@@ -288,11 +288,11 @@
 
 .heroCardProgram {
     font-size: 0.9rem;
-    color: #4b5563;
+    color: var(--ink-2);
 }
 
 :global(.dark) .heroCardProgram {
-    color: #d1d5db;
+    color: var(--ink-2);
 }
 
 .heroProvinceTag {
@@ -318,7 +318,7 @@
 .compareBtn {
     background: transparent;
     border: 1px solid var(--glass-border);
-    color: #4b5563;
+    color: var(--ink-2);
     padding: 0.45rem 1rem;
     border-radius: 9999px;
     font-size: 0.8rem;
@@ -329,11 +329,11 @@
 
 .compareBtn:hover {
     background: rgba(0, 0, 0, 0.02);
-    border-color: #9ca3af;
+    border-color: var(--line-strong);
 }
 
 :global(.dark) .compareBtn {
-    color: #d1d5db;
+    color: var(--ink-2);
 }
 
 :global(.dark) .compareBtn:hover {
@@ -355,7 +355,7 @@
 }
 
 .sourceExternalBtn:hover {
-    background: #b91c1c;
+    background: var(--maple);
     box-shadow: 0 4px 12px rgba(211, 47, 47, 0.2);
 }
 
@@ -403,23 +403,23 @@
     font-size: 0.825rem;
     padding: 0.45rem 1rem;
     border-radius: 0.6rem;
-    color: #4b5563;
+    color: var(--ink-2);
     transition: all 0.2s ease;
     white-space: nowrap;
 }
 
 :global(.dark) .tabBtn {
-    color: #d1d5db;
+    color: var(--ink-2);
 }
 
 .tabBtnActive {
-    background: #ffffff;
+    background: var(--surface);
     color: var(--primary);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 :global(.dark) .tabBtnActive {
-    background: #1f2937;
+    background: var(--paper-2);
     color: #ffffff;
 }
 
@@ -440,8 +440,8 @@
     appearance: none;
     border: 1px solid var(--glass-border);
     border-radius: 0.75rem;
-    background: #ffffff;
-    color: #4b5563;
+    background: var(--surface);
+    color: var(--ink-2);
     font-size: 0.825rem;
     font-weight: 700;
     padding: 0.45rem 2rem 0.45rem 1rem;
@@ -451,8 +451,8 @@
 }
 
 :global(.dark) .yearSelect {
-    background: #111827;
-    color: #d1d5db;
+    background: var(--surface);
+    color: var(--ink-2);
 }
 
 .yearSelect:focus {
@@ -463,7 +463,7 @@
     position: absolute;
     right: 0.75rem;
     pointer-events: none;
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .searchWrapper {
@@ -475,7 +475,7 @@
 .searchIcon {
     position: absolute;
     left: 0.75rem;
-    color: #9ca3af;
+    color: var(--muted);
     pointer-events: none;
 }
 
@@ -483,8 +483,8 @@
     height: 34px;
     border-radius: 0.75rem;
     border: 1px solid var(--glass-border);
-    background: #ffffff;
-    color: #111827;
+    background: var(--surface);
+    color: var(--ink);
     font-size: 0.825rem;
     font-weight: 700;
     padding: 0 1rem 0 2rem;
@@ -494,7 +494,7 @@
 }
 
 :global(.dark) .searchInput {
-    background: #111827;
+    background: var(--surface);
     color: #ffffff;
 }
 
@@ -504,9 +504,9 @@
 }
 
 .exportBtn {
-    background: #ffffff;
+    background: var(--surface);
     border: 1px solid var(--glass-border);
-    color: #4b5563;
+    color: var(--ink-2);
     padding: 0.45rem 1rem;
     border-radius: 0.75rem;
     font-size: 0.825rem;
@@ -519,12 +519,12 @@
 }
 
 :global(.dark) .exportBtn {
-    background: #111827;
-    color: #d1d5db;
+    background: var(--surface);
+    color: var(--ink-2);
 }
 
 .exportBtn:hover {
-    border-color: #9ca3af;
+    border-color: var(--line-strong);
     background: rgba(0,0,0,0.01);
 }
 
@@ -550,7 +550,7 @@
     text-align: left;
     background: var(--glass-bg);
     backdrop-filter: blur(16px);
-    border-radius: 1rem;
+    border-radius: var(--r-lg);
     overflow: hidden;
     border: 1px solid var(--glass-border);
     box-shadow: var(--card-shadow);
@@ -562,7 +562,7 @@
     font-size: 0.725rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: #6b7280;
+    color: var(--muted);
     border-bottom: 1px solid var(--glass-border);
     background: rgba(0,0,0,0.02);
     cursor: pointer;
@@ -571,7 +571,7 @@
 }
 
 :global(.dark) .th {
-    color: #9ca3af;
+    color: var(--muted);
     background: rgba(255, 255, 255, 0.02);
 }
 
@@ -613,23 +613,23 @@
 
 .td {
     padding: 1rem;
-    color: #4b5563;
+    color: var(--ink-2);
     font-weight: 600;
 }
 
 :global(.dark) .td {
-    color: #d1d5db;
+    color: var(--ink-2);
 }
 
 .tdMono {
     font-family: var(--font-mono), monospace;
     font-size: 0.8rem;
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .tdBold {
     font-weight: 800;
-    color: #111827;
+    color: var(--ink);
 }
 
 :global(.dark) .tdBold {
@@ -667,12 +667,12 @@
 /* Category Badge Variants */
 .badgeEE {
     background: rgba(37, 99, 235, 0.08);
-    color: #2563eb;
+    color: var(--lake);
     border: 1px solid rgba(37, 99, 235, 0.15);
 }
 .badgePNP {
     background: rgba(79, 70, 229, 0.08);
-    color: #6366f1;
+    color: var(--lake);
     border: 1px solid rgba(79, 70, 229, 0.15);
 }
 .badgeCEC {
@@ -682,12 +682,12 @@
 }
 .badgeFSW {
     background: rgba(217, 119, 6, 0.08);
-    color: #d97706;
+    color: var(--ochre);
     border: 1px solid rgba(217, 119, 6, 0.15);
 }
 .badgeSTEM {
     background: rgba(147, 51, 234, 0.08);
-    color: #a855f7;
+    color: var(--lake);
     border: 1px solid rgba(147, 51, 234, 0.15);
 }
 .badgeFrench {
@@ -697,7 +697,7 @@
 }
 .badgeHealthcare {
     background: rgba(16, 185, 129, 0.08);
-    color: #10b981;
+    color: var(--pine);
     border: 1px solid rgba(16, 185, 129, 0.15);
 }
 .badgeTrade {
@@ -707,20 +707,20 @@
 }
 .badgeGeneral {
     background: rgba(107, 114, 128, 0.08);
-    color: #6b7280;
+    color: var(--muted);
     border: 1px solid rgba(107, 114, 128, 0.15);
 }
 
 .txtUp {
-    color: #ef4444;
+    color: var(--maple);
 }
 
 .txtDown {
-    color: #10b981;
+    color: var(--pine);
 }
 
 .txtFlat {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 /* --- Expandable Row Styles --- */
@@ -758,19 +758,19 @@
     font-size: 0.8rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #9ca3af;
+    color: var(--muted);
     margin: 0 0 0.5rem 0;
     letter-spacing: 0.05em;
 }
 
 .detailsInfoBlock p {
     font-size: 0.85rem;
-    color: #4b5563;
+    color: var(--ink-2);
     margin: 0.35rem 0;
 }
 
 :global(.dark) .detailsInfoBlock p {
-    color: #d1d5db;
+    color: var(--ink-2);
 }
 
 .detailsActionsBlock {
@@ -796,13 +796,13 @@
 }
 
 .irccButton:hover {
-    background: #b91c1c;
+    background: var(--maple);
 }
 
 .analyticsButton {
-    background: #ffffff;
+    background: var(--surface);
     border: 1px solid var(--glass-border);
-    color: #4b5563;
+    color: var(--ink-2);
     padding: 0.6rem;
     border-radius: 0.5rem;
     font-size: 0.8rem;
@@ -812,12 +812,12 @@
 }
 
 :global(.dark) .analyticsButton {
-    background: #1f2937;
+    background: var(--paper-2);
     color: #ffffff;
 }
 
 .analyticsButton:hover {
-    border-color: #9ca3af;
+    border-color: var(--line-strong);
 }
 
 /* --- Mobile Cards View (<768px) --- */
@@ -840,7 +840,7 @@
 .mobileCard {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
-    border-radius: 1.25rem;
+    border-radius: var(--r-lg);
     padding: 1.25rem;
     position: relative;
     box-shadow: var(--card-shadow);
@@ -870,23 +870,23 @@
 .mCardDate {
     font-size: 0.8rem;
     font-weight: 700;
-    color: #4b5563;
+    color: var(--ink-2);
 }
 
 :global(.dark) .mCardDate {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .mCardRound {
     font-family: var(--font-mono), monospace;
     font-size: 0.75rem;
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .mCardProgramTitle {
     font-size: 0.95rem;
     font-weight: 800;
-    color: #111827;
+    color: var(--ink);
 }
 
 :global(.dark) .mCardProgramTitle {
@@ -911,7 +911,7 @@
     font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
-    color: #9ca3af;
+    color: var(--muted);
     letter-spacing: 0.02em;
     margin-bottom: 0.15rem;
 }
@@ -919,7 +919,7 @@
 .mMetricValue {
     font-size: 1rem;
     font-weight: 800;
-    color: #111827;
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
 }
 
@@ -931,14 +931,14 @@
     border-top: 1px solid var(--glass-border);
     padding-top: 0.75rem;
     font-size: 0.825rem;
-    color: #4b5563;
+    color: var(--ink-2);
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
 }
 
 :global(.dark) .mCardExpandDetails {
-    color: #d1d5db;
+    color: var(--ink-2);
 }
 
 .mCardActions {
@@ -959,7 +959,7 @@
 
 .mCardExpandChevron {
     align-self: center;
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 /* --- Pagination Styles --- */
@@ -972,9 +972,9 @@
 }
 
 .pagBtn {
-    background: #ffffff;
+    background: var(--surface);
     border: 1px solid var(--glass-border);
-    color: #4b5563;
+    color: var(--ink-2);
     padding: 0.5rem 1.25rem;
     border-radius: 0.75rem;
     font-size: 0.825rem;
@@ -984,12 +984,12 @@
 }
 
 :global(.dark) .pagBtn {
-    background: #111827;
-    color: #d1d5db;
+    background: var(--surface);
+    color: var(--ink-2);
 }
 
 .pagBtn:hover:not(:disabled) {
-    border-color: #9ca3af;
+    border-color: var(--line-strong);
 }
 
 .pagBtnDisabled {
@@ -1000,17 +1000,17 @@
 .pagInfo {
     font-size: 0.825rem;
     font-weight: 600;
-    color: #6b7280;
+    color: var(--muted);
 }
 
 :global(.dark) .pagInfo {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .tableFooterInfo {
     margin-top: 1.25rem;
     font-size: 0.8rem;
-    color: #9ca3af;
+    color: var(--muted);
     text-align: center;
 }
 
@@ -1018,10 +1018,10 @@
 .emptyHero, .emptyTable {
     padding: 3rem;
     text-align: center;
-    color: #9ca3af;
+    color: var(--muted);
     font-weight: 600;
     background: var(--glass-bg);
-    border-radius: 1rem;
+    border-radius: var(--r-lg);
     border: 1px solid var(--glass-border);
 }
 
@@ -1054,7 +1054,7 @@
     background: linear-gradient(90deg, rgba(0,0,0,0.02) 25%, rgba(0,0,0,0.04) 50%, rgba(0,0,0,0.02) 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
-    border-radius: 1.5rem;
+    border-radius: var(--r-lg);
 }
 
 :global(.dark) .skeletonHeroCard {
@@ -1063,4 +1063,126 @@
 
 .mapSection {
     margin-top: 3rem;
+}
+
+/* ===== Editorial refresh ===== */
+.glowCanvas {
+    display: none;
+}
+
+.programSection {
+    max-width: 1280px;
+    margin: 3rem auto 0;
+    padding: 0 1.5rem;
+}
+.programHead {
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--line);
+}
+.programTitle {
+    margin: 0.35rem 0 0;
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    line-height: 1.1;
+}
+.programGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+}
+.programCard {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 0;
+    padding: 1.15rem 1.15rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    transition: transform 0.3s var(--ease-out), border-color 0.2s ease, box-shadow 0.3s var(--ease-out);
+}
+.programCard:hover {
+    transform: translateY(-3px);
+    border-color: var(--ink);
+    box-shadow: var(--card-shadow-hover);
+}
+.programCard header {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.programCard h3 {
+    margin: 0;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    min-height: 2.6em;
+}
+.programCard time {
+    font-family: var(--font-data);
+    font-size: 0.68rem;
+    color: var(--muted);
+}
+.programScoreRow {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+}
+.programScore {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+}
+.programDelta {
+    font-family: var(--font-data);
+    font-size: 0.72rem;
+    font-weight: 500;
+}
+.programSpark {
+    color: var(--maple);
+    margin: 0.2rem 0;
+}
+.programCard footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-top: 0.7rem;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-data);
+    font-size: 0.68rem;
+    color: var(--muted);
+}
+.programCard footer b {
+    color: var(--ink);
+    font-weight: 500;
+}
+
+@media (max-width: 1020px) {
+    .programGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+    .programSection { padding: 0 0.25rem; margin-top: 2.25rem; }
+    .programGrid { gap: 0.75rem; }
+    .programCard { padding: 0.95rem 0.9rem 0.85rem; }
+    .programScore { font-size: 2.4rem; }
+}
+
+.programSpark {
+    min-height: 44px;
+    margin-top: auto;
+}
+.heroMetricValue {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 3.4rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
 }

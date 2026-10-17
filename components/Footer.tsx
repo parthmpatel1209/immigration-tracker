@@ -6,14 +6,25 @@ import Policy from "./Policy";
 import Terms from "./Terms";
 import Accessibility from "./Accessibility";
 import { Instagram, Facebook, Mail } from "lucide-react";
+import MapleMark from "./shell/MapleMark";
 
 type ModalType = "policy" | "terms" | "accessibility" | null;
 
 interface FooterProps {
   onNavigateToContact?: () => void;
+  onNavigate?: (tab: string) => void;
 }
 
-export default function Footer({ onNavigateToContact }: FooterProps) {
+const EXPLORE: [string, string][] = [
+  ["Latest draws", "Latest Draw"],
+  ["CRS scores", "CRS Scores"],
+  ["CRS calculator", "Calculator"],
+  ["PR pathways", "PR Pathways"],
+  ["News", "News"],
+  ["Plain-English guides", "What Is...?"],
+];
+
+export default function Footer({ onNavigateToContact, onNavigate }: FooterProps) {
   const [isDark, setIsDark] = useState(false);
   const [modal, setModal] = useState<ModalType>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -61,81 +72,66 @@ export default function Footer({ onNavigateToContact }: FooterProps) {
   return (
     <>
       {/* ------------------- FOOTER ------------------- */}
-      <footer className={`${styles.footer} ${isDark ? styles.dark : ""}`}>
+      <footer className={styles.footer}>
         <div className={styles.container}>
+          <div className={styles.top}>
+            <div className={styles.brandCol}>
+              <div className={styles.brand}>
+                <span className={styles.brandMark}><MapleMark size={16} /></span>
+                <span className={styles.brandName}>Immigration Data Tracker</span>
+              </div>
+              <p className={styles.blurb}>
+                An independent, free tool that turns public IRCC data into clear draws, cut-offs and
+                pathways &mdash; built in Canada, for people coming to Canada.
+              </p>
+            </div>
 
-          {/* Navigation Links - Centered & One Line */}
-          <nav className={styles.navBar}>
-            <button onClick={() => setModal("policy")} className={styles.linkButton}>
-              Privacy Policy
-            </button>
-            <span className={styles.separator}>•</span>
-            <button onClick={() => setModal("terms")} className={styles.linkButton}>
-              Terms of Use
-            </button>
-            <span className={styles.separator}>•</span>
-            <button onClick={() => setModal("accessibility")} className={styles.linkButton}>
-              Accessibility Statement
-            </button>
-            <span className={styles.separator}>•</span>
-            <button onClick={onNavigateToContact} className={styles.linkButton}>
-              Contact
-            </button>
-          </nav>
+            <nav className={styles.col} aria-label="Explore">
+              <h3>Explore</h3>
+              {EXPLORE.map(([label, tab]) => (
+                <button key={tab} onClick={() => onNavigate?.(tab)} className={styles.linkButton}>
+                  {label}
+                </button>
+              ))}
+            </nav>
 
-          {/* Social Links & Email */}
-          <div className={styles.socialLinks}>
-            <a
-              href="https://www.instagram.com/immigtrackerca/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.socialIcon}
-              title="Instagram"
-            >
-              <Instagram size={18} />
-            </a>
-            <a
-              href="https://www.facebook.com/profile.php?id=61584209194080"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.socialIcon}
-              title="Facebook"
-            >
-              <Facebook size={18} />
-            </a>
-            <span className={styles.verticalSeparator}></span>
-            <a
-              href="mailto:immigrationdatacanada@gmail.com"
-              className={styles.emailLink}
-              title="Email Us"
-            >
-              <Mail size={16} />
-              <span>immigrationdatacanada@gmail.com</span>
-            </a>
+            <nav className={styles.col} aria-label="Legal">
+              <h3>Legal</h3>
+              <button onClick={() => setModal("policy")} className={styles.linkButton}>Privacy policy</button>
+              <button onClick={() => setModal("terms")} className={styles.linkButton}>Terms of use</button>
+              <button onClick={() => setModal("accessibility")} className={styles.linkButton}>Accessibility</button>
+              <button onClick={onNavigateToContact} className={styles.linkButton}>Contact</button>
+            </nav>
+
+            <div className={styles.col}>
+              <h3>Follow</h3>
+              <a href="https://www.instagram.com/immigtrackerca/" target="_blank" rel="noopener noreferrer" className={styles.linkButton}>
+                <Instagram size={14} /> Instagram
+              </a>
+              <a href="https://www.facebook.com/profile.php?id=61584209194080" target="_blank" rel="noopener noreferrer" className={styles.linkButton}>
+                <Facebook size={14} /> Facebook
+              </a>
+              <a href="mailto:immigrationdatacanada@gmail.com" className={styles.linkButton}>
+                <Mail size={14} /> Email us
+              </a>
+            </div>
           </div>
 
-          {/* Meta Info: Copyright & Love */}
-          <div className={styles.metaInfo}>
-            <p className={styles.copyright}>
-              © {currentYear} Canada Immigration Data Tracker.
-            </p>
-            <span className="hidden sm:inline mx-2 opacity-50">|</span>
-            <p className={styles.love}>
-              Made with ❤️ in Canada
+          <div className={styles.notice}>
+            <span className={styles.noticeLabel}>Notice</span>
+            <p>
+              This site is not affiliated with Immigration, Refugees and Citizenship Canada (IRCC). Data is compiled
+              from public IRCC releases for information only. Verify requirements at{" "}
+              <a href="https://www.canada.ca/en/immigration-refugees-citizenship.html" target="_blank" rel="noopener noreferrer">
+                canada.ca
+              </a>{" "}
+              and consult a licensed RCIC or immigration lawyer before making legal decisions.
             </p>
           </div>
 
-          {/* Disclaimer */}
-          <div className={styles.disclaimerSection}>
-            <div className={styles.disclaimerLabel}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
-                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#d97706" }}></span>
-                Notice & Disclaimer
-              </span>
-            </div>
-            <div className={styles.disclaimerText}>
-              This platform is an independent intelligence tool and is not affiliated with Immigration, Refugees and Citizenship Canada (IRCC). All data is compiled from public IRCC gazettes for informational purposes. Verify official requirements at <a href="https://www.canada.ca/en/immigration-refugees-citizenship.html" target="_blank" rel="noopener noreferrer" className="underline hover:text-blue-500">IRCC (canada.ca)</a> and consult an authorized Regulated Canadian Immigration Consultant (RCIC) or immigration lawyer before making legal decisions.
-            </div>
+          <div className={styles.bottom}>
+            <span>&copy; {currentYear} Canada Immigration Data Tracker</span>
+            <span>Made in Canada</span>
           </div>
         </div>
       </footer>

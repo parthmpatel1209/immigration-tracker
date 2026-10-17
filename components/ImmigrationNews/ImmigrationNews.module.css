@@ -4,14 +4,14 @@
 
 .container {
   max-width: auto;
-  background: linear-gradient(to bottom right, #fff5f5, #ffffff, #fff0f0);
+  background: var(--paper-2);
   margin: 0 auto;
   padding: 1rem 1rem;
   border-radius: 10px;
 }
 
 :global(html.dark) .container {
-  background: linear-gradient(to bottom right, #111827, #1a0606, #111827);
+  background: var(--paper-2);
 }
 
 @media (min-width: 640px) {
@@ -76,16 +76,16 @@
 .title {
   font-size: 1.875rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #ef4444, #991b1b);
+  background: none;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: currentColor;
   background-clip: text;
   margin: 0;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.01em; color: var(--ink);
 }
 
 .filterIcon {
-  color: #ef4444;
+  color: var(--maple);
   width: 1.25rem;
   height: 1.25rem;
 }
@@ -123,8 +123,7 @@
   cursor: pointer;
   transition: all 0.2s;
   appearance: none;
-  background-image: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-image: var(--maple);
   background-repeat: no-repeat, no-repeat;
   background-position: center, right 0.5rem center;
   background-size: cover, 1.25rem;
@@ -143,7 +142,7 @@
 
 .languageDropdown option {
   background: white;
-  color: #374151;
+  color: var(--ink-2);
   padding: 0.5rem;
 }
 
@@ -173,7 +172,7 @@
   position: absolute;
   top: -0.5rem;
   right: -0.5rem;
-  background: #10b981;
+  background: var(--pine);
   color: white;
   font-size: 0.625rem;
   font-weight: 600;
@@ -224,7 +223,7 @@
 
 .newsTranslatingBadge {
   font-size: 0.7rem;
-  color: #ef4444;
+  color: var(--maple);
   font-weight: 500;
   animation: pulse 2s infinite;
 }
@@ -241,8 +240,8 @@
   min-width: 180px;
 
   /* Light mode styling */
-  background-color: #f8f9fa;
-  color: #1f2937;
+  background-color: var(--paper);
+  color: var(--ink);
 
   /* Custom dropdown arrow */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231f2937'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -255,8 +254,8 @@
 
 /* Dark mode for news language dropdown */
 :global(html.dark) .newsLanguageDropdown {
-  background-color: #1f2937;
-  color: #f3f4f6;
+  background-color: var(--paper-2);
+  color: var(--ink);
   border-color: rgba(255, 255, 255, 0.15);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 
@@ -267,7 +266,7 @@
 .newsLanguageDropdown:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  border-color: #ef4444;
+  border-color: var(--maple);
 }
 
 :global(html.dark) .newsLanguageDropdown:hover:not(:disabled) {
@@ -276,7 +275,7 @@
 
 .newsLanguageDropdown:focus {
   outline: none;
-  border-color: #ef4444;
+  border-color: var(--maple);
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
 }
 
@@ -287,13 +286,13 @@
 
 .newsLanguageDropdown option {
   background: white;
-  color: #374151;
+  color: var(--ink-2);
   padding: 0.5rem;
 }
 
 :global(html.dark) .newsLanguageDropdown option {
-  background: #1f2937;
-  color: #f3f4f6;
+  background: var(--paper-2);
+  color: var(--ink);
 }
 
 
@@ -318,7 +317,7 @@
 
 .filterToggleBtn:hover {
   background: rgba(239, 68, 68, 0.08);
-  border-color: #ef4444;
+  border-color: var(--maple);
 }
 
 /* Dark mode override for filter toggle button */
@@ -335,13 +334,13 @@
 :global(html.dark) .filterToggleActive {
   color: #ffffff !important;
   background: rgba(239, 68, 68, 0.25) !important;
-  border-color: #ef4444 !important;
+  border-color: var(--maple) !important;
 }
 
 .filterToggleActive {
   background: rgba(239, 68, 68, 0.12) !important;
-  border-color: #ef4444 !important;
-  color: #ef4444 !important;
+  border-color: var(--maple) !important;
+  color: var(--maple) !important;
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
 }
 
@@ -380,7 +379,7 @@
 ---------------------------------------------------- */
 .filtersWrapper {
   border: 1px solid var(--border);
-  border-radius: 1rem;
+  border-radius: var(--r-lg);
   padding: 1rem;
   margin-bottom: 1.25rem;
   backdrop-filter: blur(12px);
@@ -424,7 +423,7 @@
   font-weight: 500;
   margin-bottom: 0.1rem;
   opacity: 0.85;
-  color: #111827;
+  color: var(--ink);
 }
 
 :global(html.dark) .label {
@@ -461,11 +460,11 @@
 }
 
 .modernSelect:hover {
-  border-color: #ef4444;
+  border-color: var(--maple);
 }
 
 .modernSelect:focus {
-  border-color: #ef4444;
+  border-color: var(--maple);
   box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
   outline: none;
 }
@@ -492,8 +491,8 @@
 
 .clearFiltersButton:hover {
   background: rgba(220, 38, 38, 0.1);
-  color: #dc2626;
-  border-color: #dc2626;
+  color: var(--maple);
+  border-color: var(--maple);
 }
 
 
@@ -538,7 +537,7 @@
 .card {
   perspective: 1200px;
   height: 480px;
-  border-radius: 1.5rem;
+  border-radius: var(--r-lg);
   border: none;
   overflow: hidden;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
@@ -557,7 +556,7 @@
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   transform-style: preserve-3d;
   cursor: pointer;
-  border-radius: 1.25rem;
+  border-radius: var(--r-lg);
   overflow: hidden;
 }
 
@@ -600,7 +599,7 @@
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 1.25rem;
+  border-radius: var(--r-lg);
   overflow: hidden;
 }
 
@@ -647,7 +646,7 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: 1.25rem;
+  border-radius: var(--r-lg);
   overflow: hidden;
   -webkit-backface-visibility: 0;
   pointer-events: none;
@@ -659,7 +658,7 @@
   z-index: 2;
   background: transparent;
   position: relative;
-  border-radius: 1.25rem;
+  border-radius: var(--r-lg);
   overflow: hidden;
 }
 
@@ -669,7 +668,7 @@
   object-fit: cover;
   object-position: center;
   display: block;
-  border-radius: 1.5rem;
+  border-radius: var(--r-lg);
   transform: scale(1.05);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -688,8 +687,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-  color: #6b7280;
+  background: var(--paper-2);
+  color: var(--muted);
   font-weight: 500;
   font-size: .875rem;
   z-index: 1;
@@ -703,7 +702,7 @@
 /* BACK: Info – with safe top padding for X button */
 .cardBack {
   z-index: 1;
-  background-color: var(--bg-card, #ffffff);
+  background-color: var(--bg-card, var(--surface));
   color: var(--text-primary);
   transform: rotateY(180deg);
   padding: 0.75rem;
@@ -819,14 +818,14 @@ cardBack .footer {
   align-items: center;
   gap: 0.15rem;
   font-size: 0.6875rem;
-  color: #ef4444;
+  color: var(--maple);
   text-decoration: none;
   font-weight: 500;
   transition: color .2s;
 }
 
 .cardBack .readMore:hover {
-  color: #dc2626;
+  color: var(--maple);
   text-decoration: underline;
 }
 
@@ -877,7 +876,7 @@ cardBack .footer {
   width: 2.5rem;
   height: 2.5rem;
   border: 3px solid transparent;
-  border-top: 3px solid #ef4444;
+  border-top: 3px solid var(--maple);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto;
@@ -923,7 +922,7 @@ cardBack .footer {
 /* ---- LIGHT MODE (default) ---- */
 .dateLabel {
   background: rgba(255, 255, 255, 0.92);
-  color: #1e293b;
+  color: var(--ink);
   /* slate-800 */
   border-color: rgba(0, 0, 0, 0.12);
 }
@@ -932,7 +931,7 @@ cardBack .footer {
 :global(html.dark) .dateLabel {
   background: rgba(15, 23, 42, 0.88);
   /* slate-900 */
-  color: #f1f5f9;
+  color: var(--ink);
   /* slate-100 */
   border-color: rgba(255, 255, 255, 0.15);
 }
@@ -986,7 +985,7 @@ cardBack .footer {
 
 :global(html.dark) .closeBack {
   background: rgba(255, 255, 255, 0.25);
-  color: #e2e8f0;
+  color: var(--ink);
 }
 
 :global(html.dark) .closeBack:hover {
@@ -1020,7 +1019,7 @@ cardBack .footer {
   border: 1px solid rgba(239, 68, 68, 0.3);
 
   /* Text */
-  color: #ef4444;
+  color: var(--maple);
 
   transition: all 0.25s ease;
 }
@@ -1128,8 +1127,8 @@ cardBack .footer {
   padding: 0.35rem 1rem;
   border-radius: 999px;
 
-  background: #ffffff;
-  color: #1e293b;
+  background: var(--surface);
+  color: var(--ink);
 
   display: flex;
   align-items: center;
@@ -1145,7 +1144,7 @@ cardBack .footer {
 /* Dark mode pill */
 :global(html.dark) .tickerModernItem {
   background: rgba(255, 255, 255, 0.05);
-  color: #f1f5f9;
+  color: var(--ink);
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.3);
 }
@@ -1153,7 +1152,7 @@ cardBack .footer {
 /* Hover lift */
 .tickerModernItem:hover {
   transform: translateY(-2px);
-  background: #ffffff;
+  background: var(--surface);
   border-color: rgba(239, 68, 68, 0.25);
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
 }
@@ -1183,7 +1182,7 @@ cardBack .footer {
 
   /* Refined rose-white label instead of solid red */
   background: rgba(239, 68, 68, 0.08);
-  color: #dc2626;
+  color: var(--maple);
   border: 1px solid rgba(239, 68, 68, 0.2);
   box-shadow: 0 1px 4px rgba(239, 68, 68, 0.05);
 
@@ -1238,7 +1237,7 @@ cardBack .footer {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ef4444;
+  background: var(--maple);
   box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
   animation: liveBlink 1.4s infinite ease-in-out;
 }
@@ -1296,7 +1295,7 @@ cardBack .footer {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #ef4444;
+  background: var(--maple);
   box-shadow: 0 0 8px rgba(239, 68, 68, 0.9);
   animation: liveBlink 1.4s infinite ease-in-out;
 }
@@ -1356,25 +1355,25 @@ cardBack .footer {
   border: 1px solid transparent;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  color: #64748b;
+  color: var(--muted);
   background: transparent;
 }
 
 :global(.dark) .versionBtn {
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 .versionBtn:hover {
-  color: #1e293b;
+  color: var(--ink);
 }
 
 :global(.dark) .versionBtn:hover {
-  color: #f1f5f9;
+  color: var(--ink);
 }
 
 .versionBtnActive {
   background: rgba(255, 255, 255, 0.75) !important;
-  color: #dc2626 !important;
+  color: var(--maple) !important;
   border: 1px solid rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(20px) saturate(200%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(200%) !important;
@@ -1392,10 +1391,10 @@ cardBack .footer {
 
 .versionBadgeSparkle {
   display: inline-block;
-  background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 50%, #3b82f6 100%);
+  background: none;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 700;
+  -webkit-text-fill-color: currentColor;
+  font-weight: 700; color: var(--ink);
 }
 
 /* Reel Overlay Badge on Cards */

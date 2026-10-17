@@ -2,29 +2,30 @@
 
 import { useEffect, useState, useMemo } from "react";
 import dayjs from "dayjs";
-import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import {
-    TrendingUp,
-    Calculator,
-    Activity,
+    ArrowRight,
+    ArrowUpRight,
+    ArrowDownRight,
+    Minus,
+    Calculator as CalcIcon,
+    LineChart,
     Newspaper,
     MapPin,
-    GraduationCap,
+    BookOpen,
     Bell,
-    Heart,
-    ArrowRight,
     ChevronUp,
     ChevronDown,
     ChevronsUpDown,
-    Award,
-    Sparkles,
     ShieldCheck,
     CheckCircle2,
-    Users,
-    Calendar,
     Target,
-    BarChart3
+    UserRound,
+    Compass,
+    Gauge,
+    Mail,
+    FileCheck2,
+    Sparkles,
 } from "lucide-react";
 import {
     AreaChart,
@@ -39,15 +40,44 @@ import {
 import styles from "./Home.module.css";
 import CLBConverter from "./CLBConverter";
 import ProvinceTicker from "./ProvinceTicker";
+import AnimatedCounter from "./AnimatedCounter";
+import TopoPattern from "./home/TopoPattern";
+import Sparkline from "./home/Sparkline";
+import { useTheme } from "@/lib/useTheme";
 
 interface HomeProps {
     onNavigateToTab?: (tabName: string) => void;
+}
+
+interface Draw {
+    id: number;
+    round?: string;
+    program: string;
+    crs_cutoff: string | number | null;
+    invitations: string | number | null;
+    draw_date: string;
+    draw_province?: string;
 }
 
 type SortKey = "year" | "pr" | "study" | "work" | "citizenship";
 type SortDir = "asc" | "desc";
 type MetricType = "pr" | "study" | "work" | "citizenship";
 type TestType = "IELTS" | "CELPIP" | "PTE";
+
+const rise: Variants = {
+    hidden: { opacity: 0, y: 18 },
+    show: (i: number = 0) => ({
+        opacity: 1,
+        y: 0,
+        transition: { delay: i * 0.07, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    }),
+};
+
+const inView = {
+    initial: "hidden",
+    whileInView: "show",
+    viewport: { once: true, margin: "-60px" },
+} as const;
 
 const RAW_DATA = [
     { year: 2010, pr: 280681, study: 225295, work: 145000, citizenship: 143600, notes: "" },
@@ -79,12 +109,12 @@ const getCelpipScore = (val: string): number => {
 
 const getIeltsCLB = (type: "R" | "L" | "W" | "S", score: number): number => {
     if (type === "R") {
-        if (score >= 8.0) return 10; if (score >= 7.0) return 9; if (score >= 6.5) return 8; if (score >= 6.0) return 7; if (score >= 5.0) return 6; return 4;
+        if (score >= 8.0) return 10; if (score >= 7.0) return 9; if (score >= 6.5) return 8; if (score >= 6.0) return 7; if (score >= 5.0) return 6; if (score >= 4.0) return 5; return 4;
     }
     if (type === "L") {
-        if (score >= 8.5) return 10; if (score >= 8.0) return 9; if (score >= 7.5) return 8; if (score >= 6.0) return 7; if (score >= 5.5) return 6; return 4;
+        if (score >= 8.5) return 10; if (score >= 8.0) return 9; if (score >= 7.5) return 8; if (score >= 6.0) return 7; if (score >= 5.5) return 6; if (score >= 5.0) return 5; return 4;
     }
-    if (score >= 7.5) return 10; if (score >= 7.0) return 9; if (score >= 6.5) return 8; if (score >= 6.0) return 7; if (score >= 5.5) return 6; return 4;
+    if (score >= 7.5) return 10; if (score >= 7.0) return 9; if (score >= 6.5) return 8; if (score >= 6.0) return 7; if (score >= 5.5) return 6; if (score >= 5.0) return 5; return 4;
 };
 
 const getPteCLB = (type: "R" | "L" | "W" | "S", score: number): number => {
@@ -94,109 +124,122 @@ const getPteCLB = (type: "R" | "L" | "W" | "S", score: number): number => {
     if (score >= 89) return 10; if (score >= 84) return 9; if (score >= 76) return 8; if (score >= 68) return 7; return 5;
 };
 
+const toNum = (v: string | number | null | undefined) => {
+    const n = Number(String(v ?? "").replace(/,/g, ""));
+    return Number.isFinite(n) ? n : 0;
+};
+const shortProgram = (p: string) =>
+    p
+        .replace(/^Express Entry\s*[-–—]\s*/i, "")
+        .replace(/\(.*?\)/g, "")
+        .trim();
+
+const PROCESS = [
+    {
+        icon: UserRound,
+        title: "Create your profile",
+        body: "Enter your age, education, language results and work history into an Express Entry profile. It stays valid for 12 months.",
+    },
+    {
+        icon: Gauge,
+        title: "Get your CRS score",
+        body: "You're ranked out of 1,200 points against everyone else in the pool. A higher score means better odds each draw.",
+    },
+    {
+        icon: Mail,
+        title: "Receive an invitation",
+        body: "IRCC runs draws roughly every two weeks, inviting candidates at or above that round's cut-off score.",
+    },
+    {
+        icon: FileCheck2,
+        title: "Apply for PR in 60 days",
+        body: "An Invitation to Apply (ITA) gives you 60 days to submit a complete permanent residence application.",
+    },
+];
+
 export default function Home({ onNavigateToTab }: HomeProps) {
-    const [isDark, setIsDark] = useState(false);
+    const { isDark } = useTheme();
     const [isConverterOpen, setIsConverterOpen] = useState(false);
     const [sortKey, setSortKey] = useState<SortKey>("year");
     const [sortDir, setSortDir] = useState<SortDir>("desc");
-
-    // Interactive Analytics Chart State
     const [selectedMetric, setSelectedMetric] = useState<MetricType>("pr");
 
-    // Inline Quick CLB Estimator State
     const [clbTest, setClbTest] = useState<TestType>("IELTS");
     const [clbScores, setClbScores] = useState({ r: "7.0", w: "7.0", l: "7.5", s: "7.0" });
 
-    // Live Draw Statistics State
-    const [drawStats, setDrawStats] = useState({
-        score: "510",
-        program: "Canadian Experience Class",
-        invitations: "3,200",
-        date: "Latest IRCC Draw",
-        delta: "-4 pts",
-        isPositiveDelta: false,
-    });
+    const [draws, setDraws] = useState<Draw[] | null>(null);
 
-    // Sync dark mode
     useEffect(() => {
-        const root = document.documentElement;
-        const check = () => setIsDark(root.classList.contains("dark"));
-        check();
-
-        const observer = new MutationObserver(check);
-        observer.observe(root, {
-            attributes: true,
-            attributeFilter: ["class"],
-        });
-
-        return () => observer.disconnect();
-    }, []);
-
-    // Fetch and compute real live draw analytics
-    useEffect(() => {
-        const fetchLatestDraw = async () => {
+        let cancelled = false;
+        (async () => {
             try {
                 const res = await fetch("/api/draws");
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.length > 0) {
-                        const sorted = data
-                            .filter((d: any) => d.draw_date && dayjs(d.draw_date).isValid())
-                            .sort((a: any, b: any) =>
-                                dayjs(b.draw_date).valueOf() - dayjs(a.draw_date).valueOf()
-                            );
-
-                        if (sorted.length > 0) {
-                            const latest = sorted[0];
-                            const prev = sorted[1];
-                            let deltaStr = "Benchmark";
-                            let isPositive = false;
-
-                            if (prev && latest.crs_cutoff && prev.crs_cutoff) {
-                                const diff = Number(latest.crs_cutoff) - Number(prev.crs_cutoff);
-                                if (!isNaN(diff)) {
-                                    deltaStr = diff > 0 ? `+${diff} pts` : diff < 0 ? `${diff} pts` : "0 pts";
-                                    isPositive = diff <= 0; // Negative or zero is positive for candidates
-                                }
-                            }
-
-                            setDrawStats({
-                                score: latest.crs_cutoff ? String(latest.crs_cutoff) : "N/A",
-                                program: latest.program || latest.draw_name || "Express Entry",
-                                invitations: latest.invitations ? Number(latest.invitations).toLocaleString() : "N/A",
-                                date: dayjs(latest.draw_date).format("MMM DD, YYYY"),
-                                delta: deltaStr,
-                                isPositiveDelta: isPositive,
-                            });
-                        }
-                    }
-                }
+                if (!res.ok) throw new Error(String(res.status));
+                const data = await res.json();
+                if (!cancelled && Array.isArray(data)) setDraws(data);
             } catch (err) {
-                console.error("Error fetching live draw stats:", err);
+                console.error("Error fetching draws:", err);
+                if (!cancelled) setDraws([]);
             }
+        })();
+        return () => {
+            cancelled = true;
         };
-        fetchLatestDraw();
     }, []);
 
-    const handleNavigate = (tabName: string) => {
-        if (onNavigateToTab) {
-            onNavigateToTab(tabName);
-        }
-    };
+    /* ---- Live federal Express Entry analytics ---- */
+    const live = useMemo(() => {
+        if (!draws) return null;
+        const federal = draws
+            .filter(
+                (d) =>
+                    /^express entry/i.test(d.program || "") &&
+                    d.draw_date &&
+                    dayjs(d.draw_date).isValid() &&
+                    toNum(d.crs_cutoff) > 0
+            )
+            .sort((a, b) => dayjs(b.draw_date).valueOf() - dayjs(a.draw_date).valueOf());
+        if (!federal.length) return null;
 
-    // Calculate Inline CLB
+        const latest = federal[0];
+        const sameProgram = federal.filter((d) => d.program === latest.program);
+        const prev = sameProgram[1];
+        const delta = prev ? toNum(latest.crs_cutoff) - toNum(prev.crs_cutoff) : null;
+        const trend = sameProgram
+            .slice(0, 12)
+            .reverse()
+            .map((d) => toNum(d.crs_cutoff));
+
+        const year = dayjs(latest.draw_date).year();
+        const ytd = federal.filter((d) => dayjs(d.draw_date).year() === year);
+        const invitations = ytd.reduce((n, d) => n + toNum(d.invitations), 0);
+        const nonPnp = ytd.filter((d) => !/pnp/i.test(d.program));
+        const lowest = nonPnp.length
+            ? nonPnp.reduce((m, d) => (toNum(d.crs_cutoff) < toNum(m.crs_cutoff) ? d : m))
+            : null;
+
+        return {
+            latest,
+            delta,
+            trend,
+            year,
+            ytdDraws: ytd.length,
+            invitations,
+            lowest,
+            daysSince: Math.max(0, dayjs().diff(dayjs(latest.draw_date), "day")),
+            recent: federal.slice(0, 8),
+        };
+    }, [draws]);
+
+    const handleNavigate = (tabName: string) => onNavigateToTab?.(tabName);
+
+    /* ---- CLB estimator ---- */
     const getClb = (f: "r" | "w" | "l" | "s") => {
         const val = clbScores[f];
         if (clbTest === "CELPIP") return getCelpipScore(val);
-        if (clbTest === "IELTS") {
-            const types = { r: "R", w: "W", l: "L", s: "S" } as const;
-            return getIeltsCLB(types[f], parseFloat(val));
-        }
-        if (clbTest === "PTE") {
-            const types = { r: "R", w: "W", l: "L", s: "S" } as const;
-            return getPteCLB(types[f], parseInt(val) || 0);
-        }
-        return 4;
+        const types = { r: "R", w: "W", l: "L", s: "S" } as const;
+        if (clbTest === "IELTS") return getIeltsCLB(types[f], parseFloat(val));
+        return getPteCLB(types[f], parseInt(val) || 0);
     };
 
     const inlineCLBLevels = useMemo(() => {
@@ -204,11 +247,10 @@ export default function Home({ onNavigateToTab }: HomeProps) {
         const w = getClb("w");
         const l = getClb("l");
         const s = getClb("s");
-        const minVal = Math.min(r, w, l, s);
-        return { r, w, l, s, min: minVal };
+        return { r, w, l, s, min: Math.min(r, w, l, s) };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [clbScores, clbTest]);
 
-    // Handle Quick CLB Reset/Defaults
     const handleQuickCLBDefault = (testType: TestType) => {
         setClbTest(testType);
         if (testType === "IELTS") setClbScores({ r: "7.0", w: "7.0", l: "7.5", s: "7.0" });
@@ -216,49 +258,7 @@ export default function Home({ onNavigateToTab }: HomeProps) {
         if (testType === "PTE") setClbScores({ r: "78", w: "88", l: "82", s: "84" });
     };
 
-    // Core Operations Deck Cards
-    const operationsCards = [
-        {
-            icon: TrendingUp,
-            title: "Latest Express Entry Draws",
-            description: "Real-time draw history, cutoff trajectories, and invitation quota distributions across all streams.",
-            action: "Latest Draw",
-            meta: "Live IRCC sync",
-            badge: "Live Feed",
-        },
-        {
-            icon: Calculator,
-            title: "Comprehensive CRS Calculator",
-            description: "Assess your Comprehensive Ranking System score across Human Capital, Spouse, and Skill Transferability.",
-            action: "Calculator",
-            meta: "Accurate point rules",
-            badge: "Popular",
-        },
-        {
-            icon: Activity,
-            title: "Cutoff Trends & Score Analytics",
-            description: "Interactive historical trendlines, category cutoff distributions, and draw frequency metrics.",
-            action: "CRS Scores",
-            meta: "Historical depth",
-            badge: "Analytics",
-        },
-        {
-            icon: Newspaper,
-            title: "Immigration Pathways & News",
-            description: "Provincial allocations (PNP), category-based selection mandates, and official gazette dispatches.",
-            action: "News",
-            meta: "Policy updates",
-            badge: "Gazette",
-        },
-    ];
-
-    const secondaryTools = [
-        { icon: MapPin, label: "PR Pathways Directory", sub: "Federal & Provincial", action: "PR Pathways" },
-        { icon: GraduationCap, label: "Immigration FAQ & Guides", sub: "Legal framework", action: "What Is...?" },
-        { icon: Bell, label: "Priority Notifications", sub: "Instant draw alerts", action: "Early Access" },
-        { icon: Heart, label: "Support Open Intelligence", sub: "Community sponsored", action: "Support" },
-    ];
-
+    /* ---- Admissions table / chart ---- */
     const sortedData = useMemo(() => {
         return [...RAW_DATA].sort((a, b) => {
             const av = a[sortKey] ?? -1;
@@ -268,480 +268,544 @@ export default function Home({ onNavigateToTab }: HomeProps) {
     }, [sortKey, sortDir]);
 
     const handleSort = (key: SortKey) => {
-        if (sortKey === key) {
-            setSortDir(d => d === "asc" ? "desc" : "asc");
-        } else {
+        if (sortKey === key) setSortDir((d) => (d === "asc" ? "desc" : "asc"));
+        else {
             setSortKey(key);
             setSortDir("desc");
         }
     };
 
     const fmt = (n: number | null) =>
-        n == null ? <span className={styles.cellPending}>Pending</span> : n.toLocaleString();
+        n == null ? <span className={styles.cellPending}>—</span> : n.toLocaleString();
 
     const SortIcon = ({ col }: { col: SortKey }) => {
-        if (sortKey !== col) return <ChevronsUpDown size={13} style={{ opacity: 0.4 }} />;
-        return sortDir === "asc"
-            ? <ChevronUp size={13} style={{ color: "var(--primary)" }} />
-            : <ChevronDown size={13} style={{ color: "var(--primary)" }} />;
+        if (sortKey !== col) return <ChevronsUpDown size={12} style={{ opacity: 0.4 }} />;
+        return sortDir === "asc" ? <ChevronUp size={12} className={styles.sortOn} /> : <ChevronDown size={12} className={styles.sortOn} />;
     };
 
-    // Recharts Data Prep
-    const chartData = useMemo(() => {
-        return RAW_DATA.map(d => ({
-            year: d.year.toString(),
-            value: d[selectedMetric] || 0,
-            isProjected: d.notes.includes("Target"),
-        }));
-    }, [selectedMetric]);
+    const chartData = useMemo(
+        () =>
+            RAW_DATA.map((d) => ({
+                year: d.year.toString(),
+                value: d[selectedMetric] || 0,
+                isProjected: d.notes.includes("Target"),
+            })),
+        [selectedMetric]
+    );
 
     const metricLabels = {
-        pr: "Permanent Residents (Admissions)",
-        study: "Study Permit Holders",
-        work: "Work Permit Holders",
-        citizenship: "Citizenship Grants",
+        pr: "Permanent residents admitted",
+        study: "Study permit holders",
+        work: "Work permit holders",
+        citizenship: "Citizenship grants",
     };
+    const metricShort = { pr: "PR", study: "Study", work: "Work", citizenship: "Citizenship" } as const;
 
     const CELPIP_OPTIONS = ["12", "11", "10", "9", "8", "7", "6", "5", "4", "3", "M"];
     const IELTS_OPTIONS = ["9.0", "8.5", "8.0", "7.5", "7.0", "6.5", "6.0", "5.5", "5.0", "4.5", "4.0"];
 
+    const accent = isDark ? "#f0483c" : "#d3261b";
+    const axis = isDark ? "#8f95a1" : "#666b76";
+    const grid = isDark ? "rgba(255,255,255,0.07)" : "rgba(20,23,28,0.08)";
+
+    const DeltaIcon =
+        live?.delta == null ? Minus : live.delta > 0 ? ArrowUpRight : live.delta < 0 ? ArrowDownRight : Minus;
+    // For candidates a falling cut-off is good news
+    const deltaTone = live?.delta == null || live.delta === 0 ? "flat" : live.delta < 0 ? "good" : "bad";
+
     return (
         <div className={styles.container}>
-            {/* Hero Section */}
+            {/* ============================ HERO ============================ */}
             <section className={styles.hero}>
-                <div className={styles.heroContent}>
-                    <div className={styles.badge}>
-                        <span>Immigration Intelligence & Data Platform</span>
+                <TopoPattern className={styles.topo} />
+
+                <div className={styles.heroGrid}>
+                    <div className={styles.heroCopy}>
+                        <motion.p className={styles.eyebrow} variants={rise} initial="hidden" animate="show" custom={0}>
+                            <span className={styles.eyebrowRule} />
+                            Express Entry · CRS · PNP
+                        </motion.p>
+
+                        <motion.h1 className={styles.heroTitle} variants={rise} initial="hidden" animate="show" custom={1}>
+                            Canada&rsquo;s immigration numbers, made <em>readable.</em>
+                        </motion.h1>
+
+                        <motion.p className={styles.heroSubtitle} variants={rise} initial="hidden" animate="show" custom={2}>
+                            Every Express Entry draw, cut-off and provincial quota in one place &mdash; plus a free
+                            CRS calculator to see exactly where you stand.
+                        </motion.p>
+
+                        <motion.div className={styles.heroActions} variants={rise} initial="hidden" animate="show" custom={3}>
+                            <button className={styles.btnPrimary} onClick={() => handleNavigate("Calculator")}>
+                                <CalcIcon size={16} />
+                                Calculate my CRS score
+                            </button>
+                            <button className={styles.btnGhost} onClick={() => handleNavigate("Latest Draw")}>
+                                Browse latest draws
+                                <ArrowRight size={15} />
+                            </button>
+                        </motion.div>
+
+                        <motion.ul className={styles.assure} variants={rise} initial="hidden" animate="show" custom={4}>
+                            <li><CheckCircle2 size={14} /> Compiled from public IRCC data</li>
+                            <li><CheckCircle2 size={14} /> Updated after each draw</li>
+                            <li><CheckCircle2 size={14} /> Free &amp; independent</li>
+                        </motion.ul>
                     </div>
 
-                    <h1 className={styles.heroTitle}>
-                        Your Path to <span className={styles.gradient}>
-                            C<Image src="/journey/maple.png" alt="" width={64} height={64} className={styles.titleIcon} priority />NADA
-                        </span> <br />
-                        Starts Here
-                    </h1>
-
-                    <p className={styles.heroSubtitle}>
-                        Navigate your Canadian immigration journey with real-time data, accurate CRS calculations, and comprehensive pathway insights that empower your decisions every step of the way.
-                    </p>
-
-                    {/* Executive Live Intelligence Bar */}
-                    <div className={styles.intelligenceBar}>
-                        {/* 1. Latest Cutoff Score */}
-                        <div
-                            className={styles.intelligenceCard}
-                            onClick={() => handleNavigate("CRS Scores")}
-                            title="View CRS score analytics"
-                        >
-                            <div className={styles.intelligenceTop}>
-                                <div className={styles.intelligenceIconWrap}>
-                                    <TrendingUp size={18} />
-                                </div>
-                                <span className={styles.intelligenceBadge}>
-                                    {drawStats.delta}
-                                </span>
-                            </div>
-                            <div className={styles.intelligenceValue}>{drawStats.score}</div>
-                            <div className={styles.intelligenceLabel}>Latest CRS Cutoff</div>
-                            <div className={styles.intelligenceMeta}>{drawStats.program}</div>
+                    {/* ---- Live dispatch card ---- */}
+                    <motion.aside
+                        className={styles.dispatch}
+                        variants={rise}
+                        initial="hidden"
+                        animate="show"
+                        custom={2}
+                        aria-label="Latest Express Entry draw"
+                    >
+                        <div className={styles.dispatchHead}>
+                            <span className={styles.live}><i /> Latest draw</span>
+                            <span className={styles.dispatchDate}>
+                                {live ? dayjs(live.latest.draw_date).format("MMM D, YYYY") : "—"}
+                            </span>
                         </div>
 
-                        {/* 2. Invitations Issued */}
-                        <div
-                            className={styles.intelligenceCard}
-                            onClick={() => handleNavigate("Latest Draw")}
-                            title="View latest draw details"
-                        >
-                            <div className={styles.intelligenceTop}>
-                                <div className={styles.intelligenceIconWrap} style={{ color: "var(--secondary)", background: "rgba(2, 132, 199, 0.08)" }}>
-                                    <Users size={18} />
-                                </div>
-                                <span className={styles.intelligenceBadge} style={{ background: "rgba(2, 132, 199, 0.08)", color: "#0369a1", borderColor: "rgba(2, 132, 199, 0.2)" }}>
-                                    ITAs Issued
-                                </span>
-                            </div>
-                            <div className={styles.intelligenceValue}>{drawStats.invitations}</div>
-                            <div className={styles.intelligenceLabel}>Round Invitations</div>
-                            <div className={styles.intelligenceMeta}>Express Entry Round</div>
-                        </div>
+                        {live ? (
+                            <>
+                                <div className={styles.dispatchProgram}>{shortProgram(live.latest.program)}</div>
 
-                        {/* 3. Last Draw Date */}
-                        <div
-                            className={styles.intelligenceCard}
-                            onClick={() => handleNavigate("Latest Draw")}
-                            title="View draw history"
-                        >
-                            <div className={styles.intelligenceTop}>
-                                <div className={styles.intelligenceIconWrap} style={{ color: "#059669", background: "rgba(16, 185, 129, 0.08)" }}>
-                                    <Calendar size={18} />
+                                <div className={styles.dispatchScoreRow}>
+                                    <div className={styles.dispatchScore}>
+                                        <AnimatedCounter value={toNum(live.latest.crs_cutoff)} />
+                                    </div>
+                                    <div className={styles.dispatchScoreMeta}>
+                                        <span>CRS cut-off</span>
+                                        {live.delta != null && (
+                                            <span className={`${styles.delta} ${styles[`delta_${deltaTone}`]}`}>
+                                                <DeltaIcon size={13} />
+                                                {live.delta === 0 ? "No change" : `${Math.abs(live.delta)} ${Math.abs(live.delta) === 1 ? "pt" : "pts"}`}
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
-                                <span className={styles.intelligenceBadgeNeutral}>
-                                    Bi-Weekly
-                                </span>
-                            </div>
-                            <div className={styles.intelligenceValue} style={{ fontSize: "1.25rem", paddingTop: "0.25rem", paddingBottom: "0.15rem" }}>
-                                {drawStats.date}
-                            </div>
-                            <div className={styles.intelligenceLabel}>Last Draw Date</div>
-                            <div className={styles.intelligenceMeta}>IRCC Official Gazette</div>
-                        </div>
 
-                        {/* 4. Federal PR Target */}
-                        <div
-                            className={styles.intelligenceCard}
-                            onClick={() => {
-                                const targetSec = document.getElementById("historical-data-section");
-                                if (targetSec) targetSec.scrollIntoView({ behavior: "smooth" });
-                            }}
-                            title="View historical levels"
-                        >
-                            <div className={styles.intelligenceTop}>
-                                <div className={styles.intelligenceIconWrap} style={{ color: "#d97706", background: "rgba(245, 158, 11, 0.08)" }}>
-                                    <Target size={18} />
+                                <div className={styles.dispatchSpark}>
+                                    <Sparkline values={live.trend} />
+                                    <div className={styles.sparkCaption}>
+                                        Last {live.trend.length} {shortProgram(live.latest.program)} draws
+                                    </div>
                                 </div>
-                                <span className={styles.intelligenceBadgeNeutral}>
-                                    2026 Plan
-                                </span>
+
+                                <dl className={styles.dispatchFacts}>
+                                    <div>
+                                        <dt>Invitations</dt>
+                                        <dd>{toNum(live.latest.invitations).toLocaleString()}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Round</dt>
+                                        <dd>#{live.latest.round ?? "—"}</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Days ago</dt>
+                                        <dd>{live.daysSince}</dd>
+                                    </div>
+                                </dl>
+
+                                <button className={styles.dispatchLink} onClick={() => handleNavigate("Latest Draw")}>
+                                    Full draw history <ArrowRight size={14} />
+                                </button>
+                            </>
+                        ) : (
+                            <div className={styles.skeleton} aria-busy="true">
+                                <span /><span /><span /><span />
                             </div>
-                            <div className={styles.intelligenceValue}>380,000</div>
-                            <div className={styles.intelligenceLabel}>Annual PR Target</div>
-                            <div className={styles.intelligenceMeta}>Federal Immigration Levels</div>
-                        </div>
-                    </div>
+                        )}
+                    </motion.aside>
                 </div>
             </section>
 
-            {/* Provincial PNP Real-time Ticker */}
             <ProvinceTicker />
 
-            {/* Core Operations Command Deck */}
-            <section className={styles.hubSection}>
-                <div className={styles.sectionHeader}>
-                    <div className={styles.sectionHeading}>
-                        <h2 className={styles.sectionTitle}>Operations & Tool Suite</h2>
-                        <p className={styles.sectionSubtitle}>
-                            Verified utilities for Express Entry candidates and permanent residency applicants.
-                        </p>
+            {/* ======================== YEAR AT A GLANCE ======================== */}
+            {live && (
+                <motion.section className={styles.glance} {...inView} variants={rise}>
+                    <div className={styles.glanceHead}>
+                        <span className={styles.kicker}>{live.year} so far</span>
+                        <h2 className={styles.h2}>The year at a glance</h2>
                     </div>
-                </div>
-
-                <div className={styles.hubGrid}>
-                    {operationsCards.map((card, idx) => {
-                        const Icon = card.icon;
-                        return (
-                            <div
-                                key={idx}
-                                className={styles.hubCard}
-                                onClick={() => handleNavigate(card.action)}
-                            >
-                                <div className={styles.hubIconBox}>
-                                    <Icon size={22} />
-                                </div>
-
-                                <div className={styles.hubContent}>
-                                    <div className={styles.hubTop}>
-                                        <h3 className={styles.hubCardTitle}>{card.title}</h3>
-                                        <span className={styles.hubCardBadge}>{card.badge}</span>
-                                    </div>
-                                    <p className={styles.hubDescription}>{card.description}</p>
-                                    <div className={styles.hubFooter}>
-                                        <span className={styles.hubActionText}>
-                                            Launch Module <ArrowRight size={13} />
-                                        </span>
-                                        <span className={styles.hubMetadata}>{card.meta}</span>
-                                    </div>
-                                </div>
+                    <div className={styles.glanceGrid}>
+                        <div className={styles.glanceItem}>
+                            <div className={styles.glanceNum}><AnimatedCounter value={live.ytdDraws} /></div>
+                            <div className={styles.glanceLabel}>Express Entry draws</div>
+                        </div>
+                        <div className={styles.glanceItem}>
+                            <div className={styles.glanceNum}><AnimatedCounter value={live.invitations} /></div>
+                            <div className={styles.glanceLabel}>Invitations issued</div>
+                        </div>
+                        <div className={styles.glanceItem}>
+                            <div className={styles.glanceNum}>
+                                {live.lowest ? <AnimatedCounter value={toNum(live.lowest.crs_cutoff)} /> : "—"}
                             </div>
-                        );
-                    })}
-                </div>
-            </section>
-
-            {/* Secondary Tools Strip */}
-            <section className={styles.secondarySection}>
-                <div className={styles.secondaryGrid}>
-                    {secondaryTools.map((tool, idx) => {
-                        const Icon = tool.icon;
-                        return (
-                            <button
-                                key={idx}
-                                className={styles.secondaryCard}
-                                onClick={() => handleNavigate(tool.action)}
-                            >
-                                <div className={styles.secondaryIconWrap}>
-                                    <Icon size={18} />
-                                </div>
-                                <div>
-                                    <div className={styles.secondaryLabel}>{tool.label}</div>
-                                    <div className={styles.secondarySub}>{tool.sub}</div>
-                                </div>
-                            </button>
-                        );
-                    })}
-                </div>
-            </section>
-
-            {/* Precision CLB Language Benchmark Tool */}
-            <section className={styles.toolsSection}>
-                <div className={styles.clbCard}>
-                    <div className={styles.clbHeader}>
-                        <div className={styles.clbTitleArea}>
-                            <div className={styles.clbIconBox}>
-                                <Award size={22} />
-                            </div>
-                            <div>
-                                <h3 className={styles.clbMainTitle}>Canadian Language Benchmark (CLB) Estimator</h3>
-                                <p className={styles.clbMainSubtitle}>
-                                    Translate standard language test results into official IRCC CLB benchmarks.
-                                </p>
+                            <div className={styles.glanceLabel}>
+                                Lowest cut-off
+                                {live.lowest && <span className={styles.glanceSub} title={live.lowest.program}>{shortProgram(live.lowest.program)}</span>}
                             </div>
                         </div>
+                        <div className={styles.glanceItem}>
+                            <div className={styles.glanceNum}><AnimatedCounter value={live.daysSince} /></div>
+                            <div className={styles.glanceLabel}>Days since last draw</div>
+                        </div>
+                    </div>
+                </motion.section>
+            )}
 
-                        <button
-                            className={styles.clbDetailedBtn}
-                            onClick={() => setIsConverterOpen(true)}
-                        >
-                            Open Detailed Converter <ArrowRight size={14} />
+            {/* ========================= RECENT DRAWS ========================= */}
+            {live && (
+                <motion.section className={styles.section} {...inView} variants={rise}>
+                    <div className={styles.sectionHead}>
+                        <div>
+                            <span className={styles.kicker}>01 · Draw log</span>
+                            <h2 className={styles.h2}>Recent invitation rounds</h2>
+                        </div>
+                        <button className={styles.textLink} onClick={() => handleNavigate("Latest Draw")}>
+                            View all draws <ArrowRight size={14} />
                         </button>
                     </div>
 
-                    <div className={styles.clbLayout}>
-                        <div className={styles.clbControls}>
-                            {/* Segmented Test Switcher */}
-                            <div className={styles.clbTestTabs}>
-                                {(["IELTS", "CELPIP", "PTE"] as TestType[]).map((t) => (
-                                    <button
-                                        key={t}
-                                        onClick={() => handleQuickCLBDefault(t)}
-                                        className={`${styles.clbTabBtn} ${clbTest === t ? styles.clbTabBtnActive : ""}`}
-                                    >
-                                        {t === "IELTS" ? "IELTS General" : t === "CELPIP" ? "CELPIP-General" : "PTE Core"}
-                                    </button>
-                                ))}
+                    <div className={styles.logCard}>
+                        <div className={styles.logHeader} role="row">
+                            <span>Date</span>
+                            <span>Program</span>
+                            <span className={styles.right}>Invitations</span>
+                            <span className={styles.right}>CRS</span>
+                        </div>
+                        {live.recent.map((d) => (
+                            <div className={styles.logRow} key={d.id} role="row">
+                                <span className={styles.logDate}>
+                                    <b>{dayjs(d.draw_date).format("MMM D")}</b>
+                                    <i>{dayjs(d.draw_date).format("YYYY")}</i>
+                                </span>
+                                <span className={styles.logProgram}>
+                                    {shortProgram(d.program)}
+                                    <em>Round #{d.round ?? "—"}</em>
+                                </span>
+                                <span className={`${styles.right} ${styles.mono}`}>{toNum(d.invitations).toLocaleString()}</span>
+                                <span className={`${styles.right} ${styles.logScore}`}>{toNum(d.crs_cutoff)}</span>
                             </div>
+                        ))}
+                    </div>
+                </motion.section>
+            )}
 
-                            {/* 4 Skill Inputs Grid */}
-                            <div className={styles.clbInputsGrid}>
-                                {(["Reading", "Writing", "Listening", "Speaking"] as const).map((skill) => {
-                                    const keys = { Reading: "r", Writing: "w", Listening: "l", Speaking: "s" } as const;
-                                    const field = keys[skill];
-                                    const val = clbScores[field];
-                                    const singleCLB = getClb(field);
+            {/* =========================== TOOLS BENTO =========================== */}
+            <motion.section className={styles.section} {...inView} variants={rise}>
+                <div className={styles.sectionHead}>
+                    <div>
+                        <span className={styles.kicker}>02 · Toolkit</span>
+                        <h2 className={styles.h2}>Everything for your PR plan</h2>
+                    </div>
+                </div>
 
-                                    return (
-                                        <div key={skill} className={styles.clbInputGroup}>
-                                            <label className={styles.clbInputLabel}>{skill}</label>
-                                            {clbTest === "PTE" ? (
-                                                <input
-                                                    type="number"
-                                                    value={val}
-                                                    onChange={(e) => setClbScores({ ...clbScores, [field]: e.target.value })}
-                                                    className={styles.clbNumInput}
-                                                    placeholder="0-90"
-                                                    min="0"
-                                                    max="90"
-                                                />
-                                            ) : (
-                                                <div className={styles.clbSelectWrapper}>
-                                                    <select
-                                                        value={val}
-                                                        onChange={(e) => setClbScores({ ...clbScores, [field]: e.target.value })}
-                                                        className={styles.clbSelect}
-                                                    >
-                                                        {(clbTest === "CELPIP" ? CELPIP_OPTIONS : IELTS_OPTIONS).map((o) => (
-                                                            <option key={o} value={o}>{o}</option>
-                                                        ))}
-                                                    </select>
-                                                    <ChevronDown className={styles.clbArrowIcon} size={14} />
-                                                </div>
-                                            )}
+                <div className={styles.bento}>
+                    <button className={`${styles.tile} ${styles.tileCalc}`} onClick={() => handleNavigate("Calculator")}>
+                        <span className={styles.tileTag}>Most used</span>
+                        <div className={styles.tileBody}>
+                            <h3>CRS score calculator</h3>
+                            <p>Core factors, spouse, skill transferability and bonus points &mdash; scored on IRCC&rsquo;s official tables.</p>
+                        </div>
+                        <div className={styles.gauge} aria-hidden="true">
+                            <svg viewBox="0 0 120 70">
+                                <path d="M10 62a50 50 0 0 1 100 0" className={styles.gaugeTrack} pathLength={100} />
+                                <path d="M10 62a50 50 0 0 1 100 0" className={styles.gaugeFill} pathLength={100} />
+                            </svg>
+                            <span>487<small>/1200</small></span>
+                        </div>
+                        <span className={styles.tileGo}>Open calculator <ArrowRight size={14} /></span>
+                    </button>
 
-                                            <span className={`${styles.clbBandPill} ${singleCLB >= 9 ? styles.clbBandPillGold : ""}`}>
-                                                CLB {singleCLB}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
-                            </div>
+                    <button className={`${styles.tile} ${styles.tileDraws}`} onClick={() => handleNavigate("Latest Draw")}>
+                        <LineChart size={20} className={styles.tileIcon} />
+                        <h3>Draw tracker</h3>
+                        <p>Every round, filterable by program and province.</p>
+                        <span className={styles.tileGo}>Open <ArrowRight size={14} /></span>
+                    </button>
+
+                    <button className={`${styles.tile} ${styles.tileScores}`} onClick={() => handleNavigate("CRS Scores")}>
+                        <Target size={20} className={styles.tileIcon} />
+                        <h3>Score analytics</h3>
+                        <p>Cut-off trends, distributions and monthly volume.</p>
+                        <span className={styles.tileGo}>Open <ArrowRight size={14} /></span>
+                    </button>
+
+                    <button className={`${styles.tile} ${styles.tilePath}`} onClick={() => handleNavigate("PR Pathways")}>
+                        <MapPin size={20} className={styles.tileIcon} />
+                        <h3>PR pathways &amp; PNP</h3>
+                        <p>Federal programs and provincial nominee streams with live quotas.</p>
+                        <span className={styles.tileGo}>Explore <ArrowRight size={14} /></span>
+                    </button>
+
+                    <button className={`${styles.tile} ${styles.tileJourney}`} onClick={() => handleNavigate("My Journey")}>
+                        <Compass size={20} className={styles.tileIcon} />
+                        <h3>My journey</h3>
+                        <p>Map your own path from arrival to citizenship, step by step.</p>
+                        <span className={styles.tileGo}>Plan <ArrowRight size={14} /></span>
+                    </button>
+
+                    <button className={`${styles.tile} ${styles.tileNews}`} onClick={() => handleNavigate("News")}>
+                        <Newspaper size={20} className={styles.tileIcon} />
+                        <h3>Policy news</h3>
+                        <p>Category changes, levels plans and IRCC announcements.</p>
+                        <span className={styles.tileGo}>Read <ArrowRight size={14} /></span>
+                    </button>
+
+                    <button className={`${styles.tile} ${styles.tileFaq}`} onClick={() => handleNavigate("What Is...?")}>
+                        <BookOpen size={20} className={styles.tileIcon} />
+                        <h3>Plain-English guides</h3>
+                        <p>CRS, ITA, PNP, LMIA &mdash; the jargon, explained.</p>
+                        <span className={styles.tileGo}>Learn <ArrowRight size={14} /></span>
+                    </button>
+                </div>
+            </motion.section>
+
+            {/* ========================= HOW IT WORKS ========================= */}
+            <motion.section className={styles.section} {...inView} variants={rise}>
+                <div className={styles.sectionHead}>
+                    <div>
+                        <span className={styles.kicker}>03 · The process</span>
+                        <h2 className={styles.h2}>How Express Entry works</h2>
+                    </div>
+                </div>
+
+                <ol className={styles.steps}>
+                    {PROCESS.map((step, i) => {
+                        const Icon = step.icon;
+                        return (
+                            <motion.li
+                                key={step.title}
+                                className={styles.step}
+                                variants={rise}
+                                custom={i}
+                                {...inView}
+                            >
+                                <span className={styles.stepNum}>{String(i + 1).padStart(2, "0")}</span>
+                                <span className={styles.stepIcon}><Icon size={20} /></span>
+                                <h3>{step.title}</h3>
+                                <p>{step.body}</p>
+                            </motion.li>
+                        );
+                    })}
+                </ol>
+            </motion.section>
+
+            {/* =========================== CLB ESTIMATOR =========================== */}
+            <motion.section className={styles.section} {...inView} variants={rise}>
+                <div className={styles.sectionHead}>
+                    <div>
+                        <span className={styles.kicker}>04 · Language</span>
+                        <h2 className={styles.h2}>CLB quick converter</h2>
+                    </div>
+                    <button className={styles.textLink} onClick={() => setIsConverterOpen(true)}>
+                        Full score charts <ArrowRight size={14} />
+                    </button>
+                </div>
+
+                <div className={styles.clbCard}>
+                    <div className={styles.clbControls}>
+                        <div className={styles.segment} role="tablist" aria-label="Language test">
+                            {(["IELTS", "CELPIP", "PTE"] as TestType[]).map((t) => (
+                                <button
+                                    key={t}
+                                    role="tab"
+                                    aria-selected={clbTest === t}
+                                    onClick={() => handleQuickCLBDefault(t)}
+                                    className={`${styles.segBtn} ${clbTest === t ? styles.segBtnOn : ""}`}
+                                >
+                                    {t === "IELTS" ? "IELTS General" : t === "CELPIP" ? "CELPIP-General" : "PTE Core"}
+                                </button>
+                            ))}
                         </div>
 
-                        {/* Executive Score & Bonus Display */}
-                        <div className={styles.clbResultBox}>
-                            <div>
-                                <div className={styles.clbResultHeader}>
-                                    <span className={styles.clbResultTag}>Overall Benchmark Result</span>
-                                    {inlineCLBLevels.min >= 9 && (
-                                        <span className={styles.hubCardBadge}>
-                                            <Sparkles size={11} style={{ display: "inline", marginRight: 3 }} />
-                                            Golden CLB 9+
-                                        </span>
-                                    )}
-                                </div>
-
-                                <div className={styles.clbScoreRow}>
-                                    <span className={styles.clbMainScore}>CLB {inlineCLBLevels.min}</span>
-                                    <span className={styles.clbScaleNote}>Minimum Skill Level</span>
-                                </div>
-
-                                <p style={{ fontSize: "0.825rem", color: "#64748b", margin: "0 0 0.5rem" }}>
-                                    Band breakdown: R: {inlineCLBLevels.r} · W: {inlineCLBLevels.w} · L: {inlineCLBLevels.l} · S: {inlineCLBLevels.s}
-                                </p>
-                            </div>
-
-                            <div className={styles.clbStatusCallout}>
-                                {inlineCLBLevels.min >= 9 ? (
-                                    <>
-                                        <div className={styles.clbCalloutTitle}>
-                                            <CheckCircle2 size={15} /> Maximum CRS Skill Transferability
+                        <div className={styles.clbInputs}>
+                            {(["Reading", "Writing", "Listening", "Speaking"] as const).map((skill) => {
+                                const keys = { Reading: "r", Writing: "w", Listening: "l", Speaking: "s" } as const;
+                                const field = keys[skill];
+                                const val = clbScores[field];
+                                const single = getClb(field);
+                                const id = `clb-${field}`;
+                                return (
+                                    <div key={skill} className={styles.clbField}>
+                                        <label htmlFor={id}>{skill}</label>
+                                        {clbTest === "PTE" ? (
+                                            <input
+                                                id={id}
+                                                type="number"
+                                                inputMode="numeric"
+                                                value={val}
+                                                onChange={(e) => setClbScores({ ...clbScores, [field]: e.target.value })}
+                                                className={styles.control}
+                                                placeholder="0–90"
+                                                min="0"
+                                                max="90"
+                                            />
+                                        ) : (
+                                            <div className={styles.selectWrap}>
+                                                <select
+                                                    id={id}
+                                                    value={val}
+                                                    onChange={(e) => setClbScores({ ...clbScores, [field]: e.target.value })}
+                                                    className={styles.control}
+                                                >
+                                                    {(clbTest === "CELPIP" ? CELPIP_OPTIONS : IELTS_OPTIONS).map((o) => (
+                                                        <option key={o} value={o}>{o}</option>
+                                                    ))}
+                                                </select>
+                                                <ChevronDown size={14} />
+                                            </div>
+                                        )}
+                                        <div className={styles.clbMeter} aria-hidden="true">
+                                            <i style={{ width: `${Math.min(100, (single / 10) * 100)}%` }} />
                                         </div>
-                                        <span>
-                                            With all bands at CLB 9 or higher, you qualify for up to <strong>136 bonus points</strong> under CRS skill transferability combinations.
-                                        </span>
-                                    </>
-                                ) : (
-                                    <>
-                                        <div className={styles.clbCalloutTitle}>
-                                            <Target size={15} /> Target CLB 9 for 136 Bonus Points
-                                        </div>
-                                        <span>
-                                            Reaching CLB 9 in all four abilities unlocks maximum CRS skill transferability points for post-secondary education and foreign work experience.
-                                        </span>
-                                    </>
-                                )}
-                            </div>
+                                        <span className={`${styles.clbPill} ${single >= 9 ? styles.clbPillHigh : ""}`}>CLB {single}</span>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    <div className={styles.clbResult}>
+                        <span className={styles.kicker}>Your overall level</span>
+                        <div className={styles.clbBig}>
+                            <span>CLB</span>
+                            {inlineCLBLevels.min}
+                        </div>
+                        <p className={styles.clbBreak}>
+                            R {inlineCLBLevels.r} · W {inlineCLBLevels.w} · L {inlineCLBLevels.l} · S {inlineCLBLevels.s}
+                        </p>
+                        <div className={`${styles.callout} ${inlineCLBLevels.min >= 9 ? styles.calloutGood : ""}`}>
+                            {inlineCLBLevels.min >= 9 ? (
+                                <>
+                                    <b><Sparkles size={14} /> CLB 9+ unlocked</b>
+                                    <span>Every ability is at CLB 9 or higher, which unlocks the strongest skill-transferability bonuses.</span>
+                                </>
+                            ) : (
+                                <>
+                                    <b><Target size={14} /> Aim for CLB 9</b>
+                                    <span>Reaching CLB 9 in all four abilities earns far more skill-transferability points with education and work experience.</span>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
-            </section>
+            </motion.section>
 
             <CLBConverter isOpen={isConverterOpen} onClose={() => setIsConverterOpen(false)} isDark={isDark} />
 
-            {/* Historical Admissions & Targets (2010–2026) */}
-            <section id="historical-data-section" className={styles.dataSection}>
-                <div className={styles.sectionHeader}>
-                    <div className={styles.sectionHeading}>
-                        <h2 className={styles.sectionTitle}>Canadian Immigration Admissions & Targets</h2>
-                        <p className={styles.sectionSubtitle}>
-                            Historical federal admissions (2010–2024) and government quota levels (2025–2026).
-                        </p>
+            {/* ============================ ADMISSIONS ============================ */}
+            <motion.section id="historical-data-section" className={styles.section} {...inView} variants={rise}>
+                <div className={styles.sectionHead}>
+                    <div>
+                        <span className={styles.kicker}>05 · Long view</span>
+                        <h2 className={styles.h2}>Admissions &amp; targets, 2010&ndash;2026</h2>
                     </div>
                 </div>
 
-                {/* Trend Chart Component */}
                 <div className={styles.chartCard}>
                     <div className={styles.chartHeader}>
-                        <div className={styles.chartTitleWrap}>
-                            <h3 className={styles.chartMainTitle}>{metricLabels[selectedMetric]}</h3>
-                            <p className={styles.chartSubtitle}>Historical annual counts and parliamentary levels plan</p>
+                        <div>
+                            <h3 className={styles.chartTitle}>{metricLabels[selectedMetric]}</h3>
+                            <p className={styles.chartSub}>Annual counts; 2025&ndash;26 are government targets.</p>
                         </div>
-
-                        <div className={styles.metricTabs}>
+                        <div className={styles.segment} role="tablist" aria-label="Metric">
                             {(["pr", "study", "work", "citizenship"] as MetricType[]).map((metric) => (
                                 <button
                                     key={metric}
+                                    role="tab"
+                                    aria-selected={selectedMetric === metric}
                                     onClick={() => setSelectedMetric(metric)}
-                                    className={`${styles.metricTabBtn} ${selectedMetric === metric ? styles.metricTabBtnActive : ""}`}
+                                    className={`${styles.segBtn} ${selectedMetric === metric ? styles.segBtnOn : ""}`}
                                 >
-                                    {metric === "pr" ? "Permanent Residents" : metric === "study" ? "Study Permits" : metric === "work" ? "Work Permits" : "Citizenship"}
+                                    {metricShort[metric]}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    <div className={styles.chartWrapper}>
-                        <ResponsiveContainer width="100%" height={280} minWidth={0}>
-                            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                    <div className={styles.chartWrap}>
+                        <ResponsiveContainer width="100%" height={300} minWidth={0}>
+                            <AreaChart data={chartData} margin={{ top: 10, right: 8, left: -8, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorMetric" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor={isDark ? "#ef4444" : "#c52222"} stopOpacity={0.25} />
-                                        <stop offset="95%" stopColor={isDark ? "#ef4444" : "#c52222"} stopOpacity={0} />
+                                        <stop offset="0%" stopColor={accent} stopOpacity={0.22} />
+                                        <stop offset="100%" stopColor={accent} stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    vertical={false}
-                                    stroke={isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)"}
-                                />
-                                <XAxis
-                                    dataKey="year"
-                                    stroke={isDark ? "#94a3b8" : "#64748b"}
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                />
+                                <CartesianGrid strokeDasharray="2 4" vertical={false} stroke={grid} />
+                                <XAxis dataKey="year" stroke={axis} fontSize={11} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={18} />
                                 <YAxis
-                                    stroke={isDark ? "#94a3b8" : "#64748b"}
-                                    fontSize={12}
+                                    stroke={axis}
+                                    fontSize={11}
                                     tickLine={false}
                                     axisLine={false}
-                                    tickFormatter={(v) => v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}
-                                    width={45}
+                                    tickFormatter={(v) => (v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v)}
+                                    width={48}
                                 />
                                 <ChartTooltip
+                                    cursor={{ stroke: axis, strokeDasharray: "3 3" }}
                                     contentStyle={{
-                                        backgroundColor: isDark ? "#0f172a" : "#ffffff",
-                                        borderColor: isDark ? "#1e293b" : "#e2e8f0",
-                                        borderRadius: "8px",
-                                        color: isDark ? "#f8fafc" : "#0f172a",
-                                        boxShadow: "0 4px 20px rgba(0,0,0,0.12)",
-                                        fontSize: "12px",
-                                        fontWeight: "600",
+                                        backgroundColor: isDark ? "#141820" : "#fbfaf6",
+                                        border: `1px solid ${isDark ? "#262b35" : "#ddd8cb"}`,
+                                        borderRadius: 10,
+                                        color: isDark ? "#ecebe5" : "#14171c",
+                                        boxShadow: "0 10px 30px -12px rgba(0,0,0,0.35)",
+                                        fontSize: 12,
                                     }}
-                                    formatter={(value: any) => [Number(value).toLocaleString(), metricLabels[selectedMetric]]}
+                                    formatter={(value: any) => [Number(value).toLocaleString(), metricShort[selectedMetric]]}
                                 />
                                 <Area
                                     type="monotone"
                                     dataKey="value"
-                                    stroke={isDark ? "#ef4444" : "#c52222"}
-                                    strokeWidth={2.5}
-                                    fillOpacity={1}
+                                    stroke={accent}
+                                    strokeWidth={2.25}
                                     fill="url(#colorMetric)"
+                                    activeDot={{ r: 5, strokeWidth: 2, stroke: isDark ? "#141820" : "#fbfaf6" }}
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </div>
 
-                {/* Data Table */}
                 <div className={styles.tableCard}>
-                    <div className={styles.tableScrollArea}>
-                        <table className={styles.dataTable}>
+                    <div className={styles.tableScroll}>
+                        <table className={styles.table}>
                             <thead>
                                 <tr>
-                                    <th className={styles.th} onClick={() => handleSort("year")}>
-                                        <span className={styles.thInner}>Year <SortIcon col="year" /></span>
-                                    </th>
-                                    <th className={styles.th} onClick={() => handleSort("pr")}>
-                                        <span className={styles.thInner}>Permanent Residents <SortIcon col="pr" /></span>
-                                    </th>
-                                    <th className={styles.th} onClick={() => handleSort("study")}>
-                                        <span className={styles.thInner}>Study Permits <SortIcon col="study" /></span>
-                                    </th>
-                                    <th className={styles.th} onClick={() => handleSort("work")}>
-                                        <span className={styles.thInner}>Work Permits <SortIcon col="work" /></span>
-                                    </th>
-                                    <th className={styles.th} onClick={() => handleSort("citizenship")}>
-                                        <span className={styles.thInner}>Citizenship Grants <SortIcon col="citizenship" /></span>
-                                    </th>
-                                    <th className={`${styles.th} ${styles.thNote}`}>
-                                        <span>Status / Classification</span>
-                                    </th>
+                                    {([
+                                        ["year", "Year"],
+                                        ["pr", "Permanent residents"],
+                                        ["study", "Study permits"],
+                                        ["work", "Work permits"],
+                                        ["citizenship", "Citizenship"],
+                                    ] as [SortKey, string][]).map(([key, label]) => (
+                                        <th key={key} aria-sort={sortKey === key ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
+                                            <button onClick={() => handleSort(key)}>
+                                                {label} <SortIcon col={key} />
+                                            </button>
+                                        </th>
+                                    ))}
+                                    <th><span>Note</span></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {sortedData.map((row) => (
-                                    <tr key={row.year} className={styles.tr}>
-                                        <td className={`${styles.td} ${styles.tdYear}`}>{row.year}</td>
-                                        <td className={styles.td}>{fmt(row.pr)}</td>
-                                        <td className={styles.td}>{fmt(row.study)}</td>
-                                        <td className={styles.td}>{fmt(row.work)}</td>
-                                        <td className={styles.td}>{fmt(row.citizenship)}</td>
-                                        <td className={`${styles.td} ${styles.tdNote}`}>
-                                            {row.notes === "COVID impact" && (
-                                                <span className={styles.pillCovid}>COVID Impact</span>
-                                            )}
+                                    <tr key={row.year}>
+                                        <th scope="row" className={styles.tdYear}>{row.year}</th>
+                                        <td>{fmt(row.pr)}</td>
+                                        <td>{fmt(row.study)}</td>
+                                        <td>{fmt(row.work)}</td>
+                                        <td>{fmt(row.citizenship)}</td>
+                                        <td>
+                                            {row.notes === "COVID impact" && <span className={styles.pillCovid}>COVID</span>}
                                             {(row.notes === "Target / Cap" || row.notes === "Target") && (
-                                                <span className={styles.pillTarget}>Federal Target</span>
+                                                <span className={styles.pillTarget}>Target</span>
                                             )}
                                         </td>
                                     </tr>
@@ -751,53 +815,27 @@ export default function Home({ onNavigateToTab }: HomeProps) {
                     </div>
                 </div>
 
-                <p className={styles.dataFootnote}>
-                    Sources: Immigration, Refugees and Citizenship Canada (IRCC) Annual Reports to Parliament & Statistics Canada Gazette. Approximate figures (~) indicated where rounded in official releases. 2025–2026 figures represent parliamentary target quotas.
+                <p className={styles.footnote}>
+                    Sources: IRCC annual reports to Parliament and Statistics Canada. Some figures are rounded in official releases.
+                    2025&ndash;2026 values are parliamentary targets, not outcomes.
                 </p>
-            </section>
+            </motion.section>
 
-            {/* High-Trust Dispatch & Notification Suite */}
-            <section className={styles.ctaSection}>
-                <div className={styles.ctaCard}>
-                    <div className={styles.ctaContent}>
-                        <div className={styles.ctaBadge}>
-                            <Bell size={13} />
-                            <span>Official Draw Dispatch</span>
-                        </div>
-
-                        <h2 className={styles.ctaHeading}>
-                            Never Miss an Express Entry Cutoff Update
-                        </h2>
-
-                        <p className={styles.ctaDescription}>
-                            Join candidates receiving instant notifications the moment IRCC releases new draw cutoffs, category selections, and Provincial Nominee rounds.
-                        </p>
-
-                        <button
-                            className={styles.ctaActionBtn}
-                            onClick={() => handleNavigate("Early Access")}
-                        >
-                            Join Priority Notifications Free
-                            <ArrowRight size={16} />
+            {/* ============================== ALERTS CTA ============================== */}
+            <motion.section className={styles.cta} {...inView} variants={rise}>
+                <TopoPattern className={styles.ctaTopo} />
+                <div className={styles.ctaInner}>
+                    <span className={styles.ctaKicker}><Bell size={13} /> Draw alerts</span>
+                    <h2 className={styles.ctaTitle}>Hear about the next draw <em>first.</em></h2>
+                    <p>Get a note when IRCC publishes new Express Entry cut-offs, category rounds and provincial nominee draws.</p>
+                    <div className={styles.ctaRow}>
+                        <button className={styles.btnLight} onClick={() => handleNavigate("Early Access")}>
+                            Join the free alert list <ArrowRight size={16} />
                         </button>
-
-                        <div className={styles.ctaTrustRow}>
-                            <div className={styles.trustItem}>
-                                <ShieldCheck size={14} style={{ color: "var(--primary)" }} />
-                                <span>Zero Spam Guarantee</span>
-                            </div>
-                            <div className={styles.trustItem}>
-                                <CheckCircle2 size={14} style={{ color: "#10b981" }} />
-                                <span>Official Gazette Feed</span>
-                            </div>
-                            <div className={styles.trustItem}>
-                                <Sparkles size={14} style={{ color: "var(--secondary)" }} />
-                                <span>100% Free For Applicants</span>
-                            </div>
-                        </div>
+                        <span className={styles.ctaTrust}><ShieldCheck size={14} /> No spam. Unsubscribe anytime.</span>
                     </div>
                 </div>
-            </section>
+            </motion.section>
         </div>
     );
 }

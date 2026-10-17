@@ -21,13 +21,13 @@
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    color: #4b5563;
+    color: var(--ink-2);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 :global(.dark) .sectionTitle {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .itemsGrid {
@@ -39,8 +39,8 @@
 .itemCard {
     background: white;
     padding: 1rem;
-    border-radius: 1rem;
-    border: 1px solid #e5e7eb;
+    border-radius: var(--r-lg);
+    border: 1px solid var(--line);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -53,7 +53,7 @@
 @media (min-width: 640px) {
     .itemCard {
         padding: 1.25rem;
-        border-radius: 1.25rem;
+        border-radius: var(--r-lg);
         gap: 1.25rem;
     }
 }
@@ -65,8 +65,8 @@
 
 .itemCard:hover {
     transform: translateX(8px);
-    border-color: #3b82f6;
-    background: #f9fafb;
+    border-color: var(--lake);
+    background: var(--paper);
 }
 
 :global(.dark) .itemCard:hover {
@@ -77,7 +77,7 @@
     width: 48px;
     height: 48px;
     background: #eff6ff;
-    color: #2563eb;
+    color: var(--lake);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -87,7 +87,7 @@
 
 :global(.dark) .iconWrapper {
     background: rgba(37, 99, 235, 0.15);
-    color: #60a5fa;
+    color: var(--lake);
 }
 
 .content {
@@ -99,7 +99,7 @@
 .label {
     font-size: 1.125rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--ink);
 }
 
 :global(.dark) .label {
@@ -108,11 +108,11 @@
 
 .description {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: var(--muted);
 }
 
 :global(.dark) .description {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 .arrow {
@@ -122,5 +122,5 @@
 
 .itemCard:hover .arrow {
     transform: translateX(4px);
-    color: #3b82f6;
+    color: var(--lake);
 }

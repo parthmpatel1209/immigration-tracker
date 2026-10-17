@@ -19,6 +19,7 @@ import {
     X
 } from "lucide-react";
 import styles from "./MobileBottomNav.module.css";
+import { useTheme } from "@/lib/useTheme";
 
 interface TabItem {
     label: string;
@@ -39,25 +40,20 @@ export default function MobileBottomNav({
 }: MobileBottomNavProps) {
     const [isMoreOpen, setIsMoreOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
-    const [isDark, setIsDark] = useState(false);
+    const { isDark, toggle: toggleTheme } = useTheme();
     const [isVisible, setIsVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
 
     // Detect mobile viewport and dark mode
     useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth <= 768);
-        const checkDark = () => setIsDark(document.documentElement.classList.contains("dark"));
+        const checkMobile = () => setIsMobile(window.innerWidth <= 960);
 
         checkMobile();
-        checkDark();
 
         window.addEventListener("resize", checkMobile);
-        const observer = new MutationObserver(checkDark);
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 
         return () => {
             window.removeEventListener("resize", checkMobile);
-            observer.disconnect();
         };
     }, []);
 
@@ -94,24 +90,13 @@ export default function MobileBottomNav({
         }
     };
 
-    const toggleTheme = () => {
-        const html = document.documentElement;
-        if (html.classList.contains("dark")) {
-            html.classList.remove("dark");
-            setIsDark(false);
-        } else {
-            html.classList.add("dark");
-            setIsDark(true);
-        }
-    };
-
     // Primary items displayed directly in the icon-only dock
     const primaryDockTabs = [
-        { index: 0, label: "Home", icon: <Home size={21} strokeWidth={2.2} /> },
-        { index: 1, label: "Draws", icon: <TrendingUp size={21} strokeWidth={2.2} /> },
-        { index: 2, label: "CRS Scores", icon: <BarChart3 size={21} strokeWidth={2.2} /> },
-        { index: 3, label: "Calculator", icon: <Calculator size={21} strokeWidth={2.2} />, hasBadge: true },
-        { index: 4, label: "News", icon: <Newspaper size={21} strokeWidth={2.2} /> },
+        { index: 0, label: "Home", icon: <Home size={20} strokeWidth={1.9} /> },
+        { index: 1, label: "Draws", icon: <TrendingUp size={20} strokeWidth={1.9} /> },
+        { index: 2, label: "Scores", icon: <BarChart3 size={20} strokeWidth={1.9} /> },
+        { index: 3, label: "Calculator", icon: <Calculator size={20} strokeWidth={1.9} />, hasBadge: true },
+        { index: 4, label: "News", icon: <Newspaper size={20} strokeWidth={1.9} /> },
     ];
 
     // Secondary items accessible via the expanding Liquid Glass drawer
@@ -152,20 +137,12 @@ export default function MobileBottomNav({
                     aria-hidden={!isMoreOpen}
                 >
                     <div className={styles.drawerHeader}>
-                        <span className={styles.drawerTitle}>More Destinations</span>
+                        <span className={styles.drawerTitle}>More</span>
                         <button
                             type="button"
                             onClick={() => setIsMoreOpen(false)}
                             aria-label="Close menu"
-                            style={{
-                                background: 'transparent',
-                                border: 'none',
-                                color: isDark ? '#94a3b8' : '#64748b',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                                padding: '4px'
-                            }}
+                            className={styles.drawerClose}
                         >
                             <X size={18} />
                         </button>
@@ -223,6 +200,7 @@ export default function MobileBottomNav({
                                 aria-current={isActive ? "page" : undefined}
                             >
                                 {tab.icon}
+                                <span className={styles.label}>{tab.label}</span>
                                 {tab.hasBadge && (
                                     <span
                                         className={styles.jewelBadge}
@@ -251,8 +229,9 @@ export default function MobileBottomNav({
                                 justifyContent: 'center'
                             }}
                         >
-                            <MoreHorizontal size={22} strokeWidth={2.2} />
+                            <MoreHorizontal size={20} strokeWidth={1.9} />
                         </div>
+                        <span className={styles.label}>More</span>
                     </button>
                 </div>
             </div>

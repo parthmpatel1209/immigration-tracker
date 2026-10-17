@@ -16,6 +16,7 @@ import styles from "./DrawCardsGrid.module.css";
 import CanadaPNPMap from "./CanadaPNPMap";
 import ChatBot from "@/components/ChatBot";
 import AdSenseAd from "@/components/AdSenseAd";
+import Sparkline from "./home/Sparkline";
 
 dayjs.extend(relativeTime);
 
@@ -78,7 +79,7 @@ const computeDeltas = (rawDraws: Draw[]): Draw[] => {
     (a, b) => dayjs(a.draw_date).valueOf() - dayjs(b.draw_date).valueOf()
   );
 
-  const lastCrsByCategory: Record<string, number> = {};
+  const lastCrsByProgram: Record<string, number> = {};
 
   const drawsWithDelta = chronDraws.map((d) => {
     const category = getProgramCategory(d.program);
@@ -86,11 +87,11 @@ const computeDeltas = (rawDraws: Draw[]): Draw[] => {
     let delta = 0;
 
     if (!isNaN(currentCrs) && d.crs_cutoff != null) {
-      const lastCrs = lastCrsByCategory[category];
+      const lastCrs = lastCrsByProgram[d.program];
       if (lastCrs !== undefined) {
         delta = currentCrs - lastCrs;
       }
-      lastCrsByCategory[category] = currentCrs;
+      lastCrsByProgram[d.program] = currentCrs;
     }
 
     return {
@@ -143,10 +144,37 @@ export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
     fetchDraws();
   }, []);
 
-  // Get overall latest draw
+  // Federal Express Entry draws only (provincial rounds use a different score scale)
+  const federalDraws = useMemo(
+    () => allDraws.filter((d) => /^express entry/i.test(d.program) && Number(d.crs_cutoff) > 0),
+    [allDraws]
+  );
+
+  // Latest federal draw; falls back to any draw if none are federal
   const latestDraw = useMemo(() => {
-    return allDraws[0] || null;
-  }, [allDraws]);
+    return federalDraws[0] || allDraws[0] || null;
+  }, [federalDraws, allDraws]);
+
+  // Latest round for each federal program, with a short score history
+  const programCards = useMemo(() => {
+    const byProgram = new Map<string, Draw[]>();
+    for (const d of federalDraws) {
+      const list = byProgram.get(d.program) ?? [];
+      list.push(d);
+      byProgram.set(d.program, list);
+    }
+    return [...byProgram.values()]
+      .map((list) => ({
+        latest: list[0],
+        history: list.slice(0, 10).reverse().map((d) => Number(d.crs_cutoff)),
+        count: list.length,
+      }))
+      .sort((a, b) => dayjs(b.latest.draw_date).valueOf() - dayjs(a.latest.draw_date).valueOf())
+      .slice(0, 8);
+  }, [federalDraws]);
+
+  const programLabel = (p: string) =>
+    p.replace(/^Express Entry\s*[-–—:]\s*/i, "").replace(/\(.*?\)/g, "").trim();
 
   return (
     <div className={styles.pageWrapper}>
@@ -200,8 +228,10 @@ export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
               <div className={styles.cardGlowBorder} />
               <div className={styles.heroCardHeader}>
                 <div className={styles.heroBadgeRow}>
-                  <span className={styles.heroCardBadge}>Latest Draw</span>
-                  <span className={styles.heroDrawNumber}>Draw #{NA(latestDraw.round)}</span>
+                  <span className={styles.heroCardBadge}>Latest federal draw</span>
+                  {latestDraw.round && String(latestDraw.round).trim() !== "" && (
+                    <span className={styles.heroDrawNumber}>Round #{latestDraw.round}</span>
+                  )}
                 </div>
                 <span className={styles.heroDrawDate}>
                   {dayjs(latestDraw.draw_date).format("MMMM D, YYYY")}
@@ -265,7 +295,7 @@ export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
 
               <div className={styles.heroCardFooter}>
                 <div className={styles.heroCardProgram}>
-                  <strong>Program:</strong> {latestDraw.program}
+                  <strong>Program:</strong> {programLabel(latestDraw.program)}
                   {latestDraw.draw_province && (
                     <span className={styles.heroProvinceTag}>
                       <MapPin size={12} />
@@ -296,6 +326,53 @@ export default function DrawCardsGrid({ onNavigateToTab }: DrawCardsGridProps) {
           )}
         </div>
       </div>
+
+      {/* Latest round per program */}
+      {programCards.length > 0 && (
+        <section className={styles.programSection}>
+          <div className={styles.programHead}>
+            <span className={styles.sectionLabel}>By program</span>
+            <h2 className={styles.programTitle}>Latest round in each stream</h2>
+          </div>
+          <div className={styles.programGrid}>
+            {programCards.map(({ latest, history, count }, i) => {
+              const delta = latest.delta ?? 0;
+              return (
+                <motion.article
+                  key={latest.program}
+                  className={styles.programCard}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ delay: (i % 4) * 0.06, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <header>
+                    <h3 title={latest.program}>{programLabel(latest.program)}</h3>
+                    <time dateTime={latest.draw_date}>{dayjs(latest.draw_date).format("MMM D, YYYY")}</time>
+                  </header>
+                  <div className={styles.programScoreRow}>
+                    <span className={styles.programScore}>{NA(latest.crs_cutoff)}</span>
+                    {delta !== 0 && (
+                      <span className={`${styles.programDelta} ${delta < 0 ? styles.deltaDown : styles.deltaUp}`}>
+                        {delta > 0 ? "▲" : "▼"} {Math.abs(delta)}
+                      </span>
+                    )}
+                  </div>
+                  <div className={styles.programSpark}>
+                    <Sparkline values={history} height={44} />
+                  </div>
+                  <footer>
+                    <span>
+                      <b>{latest.invitations != null ? Number(latest.invitations).toLocaleString() : "N/A"}</b> invitations
+                    </span>
+                    <span>{count} {count === 1 ? "round" : "rounds"}</span>
+                  </footer>
+                </motion.article>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Canada PNP Map */}
       <AdSenseAd adSlot="8160396935" style={{ margin: "1.5rem auto", maxWidth: "900px" }} />

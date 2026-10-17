@@ -7,7 +7,7 @@
 .iconButton {
     background: transparent;
     border: none;
-    color: #6b7280;
+    color: var(--muted);
     cursor: pointer;
     padding: 0.25rem;
     display: flex;
@@ -18,16 +18,16 @@
 }
 
 .iconButton:hover {
-    color: #2563eb;
+    color: var(--lake);
     background: rgba(37, 99, 235, 0.1);
 }
 
 :global(html.dark) .iconButton {
-    color: #9ca3af;
+    color: var(--muted);
 }
 
 :global(html.dark) .iconButton:hover {
-    color: #60a5fa;
+    color: var(--lake);
     background: rgba(59, 130, 246, 0.15);
 }
 
@@ -50,7 +50,7 @@
     bottom: calc(100% + 0.5rem);
     transform: translateX(-50%);
     background: white;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--line);
     border-radius: 0.75rem;
     padding: 1rem;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
@@ -79,18 +79,18 @@
     left: 50%;
     transform: translateX(-50%);
     border: 7px solid transparent;
-    border-top-color: #e5e7eb;
+    border-top-color: var(--line);
     margin-top: 1px;
 }
 
 :global(html.dark) .tooltip {
-    background: #1e293b;
+    background: var(--paper-2);
     border-color: rgba(59, 130, 246, 0.3);
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
 }
 
 :global(html.dark) .tooltip::after {
-    border-top-color: #1e293b;
+    border-top-color: var(--line);
 }
 
 :global(html.dark) .tooltip::before {
@@ -112,22 +112,22 @@
 .tooltipTitle {
     font-size: 0.875rem;
     font-weight: 600;
-    color: #111827;
+    color: var(--ink);
     margin-bottom: 0.5rem;
 }
 
 :global(html.dark) .tooltipTitle {
-    color: #f3f4f6;
+    color: var(--ink);
 }
 
 .tooltipContent {
     font-size: 0.8125rem;
     line-height: 1.5;
-    color: #4b5563;
+    color: var(--ink-2);
 }
 
 :global(html.dark) .tooltipContent {
-    color: #cbd5e1;
+    color: var(--ink-2);
 }
 
 .tooltipContent p {
@@ -152,16 +152,16 @@
 }
 
 .tooltipContent a {
-    color: #2563eb;
+    color: var(--lake);
     text-decoration: underline;
 }
 
 .tooltipContent a:hover {
-    color: #1d4ed8;
+    color: var(--lake);
 }
 
 :global(html.dark) .tooltipContent a {
-    color: #60a5fa;
+    color: var(--lake);
 }
 
 :global(html.dark) .tooltipContent a:hover {
@@ -173,7 +173,7 @@
     width: 100%;
     margin-top: 0.75rem;
     padding: 0.625rem;
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: var(--lake);
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -184,15 +184,15 @@
 }
 
 .closeButton:hover {
-    background: linear-gradient(135deg, #1d4ed8, #1e40af);
+    background: var(--lake);
 }
 
 :global(html.dark) .closeButton {
-    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    background: var(--lake);
 }
 
 :global(html.dark) .closeButton:hover {
-    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    background: var(--lake);
 }
 
 /* Mobile adjustments */

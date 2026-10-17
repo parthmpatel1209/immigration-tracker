@@ -1,0 +1,226 @@
+/* Sticky site header — solid paper, hairline rule, no glass */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  -webkit-backdrop-filter: saturate(1.4) blur(10px);
+  backdrop-filter: saturate(1.4) blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.scrolled {
+  border-bottom-color: var(--line);
+  box-shadow: 0 8px 24px -18px rgba(20, 23, 28, 0.35);
+}
+
+.inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  height: 64px;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+/* ---------- Brand ---------- */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: var(--ink);
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.brandMark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--maple);
+  color: #fff;
+  transition: transform 0.35s var(--ease-out);
+}
+
+.brand:hover .brandMark {
+  transform: rotate(-8deg) scale(1.05);
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brandName {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: -0.01em;
+}
+
+.brandTag {
+  margin-top: 2px;
+  font-family: var(--font-data);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---------- Nav ---------- */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+  height: 100%;
+}
+
+.link {
+  position: relative;
+  height: 100%;
+  padding: 0 0.85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  font: 500 0.875rem/1 var(--font-body);
+  color: var(--muted);
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.link:hover {
+  color: var(--ink);
+}
+
+.linkActive {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.underline {
+  position: absolute;
+  left: 0.85rem;
+  right: 0.85rem;
+  bottom: -1px;
+  height: 2px;
+  background: var(--maple);
+  border-radius: 2px 2px 0 0;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--maple);
+  box-shadow: 0 0 0 3px var(--maple-tint);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    box-shadow: 0 0 0 6px transparent;
+  }
+}
+
+/* ---------- Actions ---------- */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: border-color 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.iconBtn:hover {
+  border-color: var(--line-strong);
+}
+
+.iconBtn:active {
+  transform: scale(0.94);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 36px;
+  padding: 0 0.95rem;
+  border-radius: var(--r-md);
+  border: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 0.8rem/1 var(--font-body);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s var(--ease-out);
+}
+
+.cta:hover {
+  background: var(--maple);
+  color: #fff;
+}
+
+.cta:active {
+  transform: scale(0.97);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .brandTag {
+    display: none;
+  }
+  .inner {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 960px) {
+  .nav {
+    display: none; /* phones & small tablets use the bottom dock */
+  }
+  .actions {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .inner {
+    height: 56px;
+    padding: 0 1rem;
+  }
+  .brandName {
+    font-size: 1.15rem;
+  }
+  .cta span {
+    display: none;
+  }
+  .cta {
+    width: 36px;
+    padding: 0;
+    justify-content: center;
+  }
+}

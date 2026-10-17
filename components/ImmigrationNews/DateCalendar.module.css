@@ -5,11 +5,10 @@
 .calendar {
     position: fixed;
     z-index: 10000;
-    background: #ffffff;
-    border-radius: 1rem;
+    background: var(--surface);
+    border-radius: var(--r-lg);
     padding: 1.25rem;
-    box-shadow:
-        0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
         0 10px 10px -5px rgba(0, 0, 0, 0.04),
         0 0 0 1px rgba(239, 68, 68, 0.1);
     min-width: 320px;
@@ -19,9 +18,8 @@
 }
 
 :global(html.dark) .calendar {
-    background: #1e293b;
-    box-shadow:
-        0 20px 25px -5px rgba(0, 0, 0, 0.4),
+    background: var(--paper-2);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4),
         0 10px 10px -5px rgba(0, 0, 0, 0.2),
         0 0 0 1px rgba(239, 68, 68, 0.2);
 }
@@ -55,18 +53,18 @@
 .monthYear {
     font-size: 1.125rem;
     font-weight: 700;
-    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    background: none;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: currentColor;
     background-clip: text;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.02em; color: var(--ink);
 }
 
 :global(html.dark) .monthYear {
-    background: linear-gradient(135deg, #fca5a5, #ef4444);
+    background: none;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    -webkit-text-fill-color: currentColor;
+    background-clip: text; color: var(--ink);
 }
 
 .navButton {
@@ -76,7 +74,7 @@
     align-items: center;
     justify-content: center;
     background: rgba(239, 68, 68, 0.08);
-    color: #ef4444;
+    color: var(--maple);
     border: none;
     border-radius: 0.5rem;
     cursor: pointer;
@@ -113,14 +111,14 @@
 .weekdays>div {
     font-size: 0.75rem;
     font-weight: 600;
-    color: #6b7280;
+    color: var(--muted);
     padding: 0.5rem 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 :global(html.dark) .weekdays>div {
-    color: #94a3b8;
+    color: var(--muted);
 }
 
 /* Days Grid */
@@ -141,7 +139,7 @@
     align-items: center;
     justify-content: center;
     background: transparent;
-    color: #374151;
+    color: var(--ink-2);
     border: none;
     border-radius: 0.5rem;
     font-size: 0.875rem;
@@ -153,7 +151,7 @@
 
 .day:hover:not(.disabled) {
     background: rgba(239, 68, 68, 0.1);
-    color: #ef4444;
+    color: var(--maple);
     transform: scale(1.05);
 }
 
@@ -162,7 +160,7 @@
 }
 
 :global(html.dark) .day {
-    color: #cbd5e1;
+    color: var(--ink-2);
 }
 
 :global(html.dark) .day:hover:not(.disabled) {
@@ -172,25 +170,25 @@
 
 /* Today */
 .day.today {
-    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    background: var(--maple);
     color: white;
     font-weight: 700;
     box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .day.today:hover {
-    background: linear-gradient(135deg, #dc2626, #991b1b);
+    background: var(--maple);
     color: white;
     transform: scale(1.08);
     box-shadow: 0 6px 16px rgba(239, 68, 68, 0.4);
 }
 
 :global(html.dark) .day.today {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: var(--maple);
 }
 
 :global(html.dark) .day.today:hover {
-    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    background: var(--maple);
 }
 
 /* Disabled (future dates) */
@@ -206,7 +204,7 @@
 }
 
 :global(html.dark) .day.disabled {
-    color: #475569;
+    color: var(--ink-2);
 }
 
 /* Footer */
@@ -223,7 +221,7 @@
 
 .todayButton {
     padding: 0.5rem 1.5rem;
-    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    background: var(--maple);
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -244,7 +242,7 @@
 }
 
 :global(html.dark) .todayButton {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: var(--maple);
 }
 
 /* Mobile adjustments */

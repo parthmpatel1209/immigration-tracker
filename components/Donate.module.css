@@ -12,7 +12,7 @@
 
 /* THIS IS THE KEY: :global(.dark) */
 :global(.dark) .container {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%);
+  background: var(--paper-2);
 }
 
 /* Card */
@@ -20,16 +20,16 @@
   max-width: 50rem;
   width: 100%;
   background: white;
-  border-radius: 1.5rem;
+  border-radius: var(--r-lg);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--line);
   transition: all 0.3s ease;
 }
 
 :global(.dark) .card {
-  background: #1f2937;
-  border-color: #374151;
+  background: var(--paper-2);
+  border-color: var(--line);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 20px 25px -5px rgba(0, 0, 0, 0.4);
 }
 
@@ -67,7 +67,7 @@
   font-size: 1.5rem;
   font-weight: 800;
   text-align: center;
-  color: #111827;
+  color: var(--ink);
   margin-bottom: 0.75rem;
   letter-spacing: -0.02em;
 }
@@ -83,14 +83,14 @@
 }
 
 .description {
-  color: #374151;
+  color: var(--ink-2);
   text-align: center;
   line-height: 1.6;
   margin-bottom: 2rem;
 }
 
 :global(.dark) .description {
-  color: #cbd5e1;
+  color: var(--ink-2);
 }
 
 /* Buttons */
@@ -119,42 +119,42 @@
 }
 
 .paypalBtn {
-  background: linear-gradient(to right, #1e40af, #1d4ed8);
+  background: var(--paper-2);
   color: #fff;
   box-shadow: 0 4px 6px -1px rgba(30, 64, 178, 0.3);
 }
 
 .paypalBtn:hover {
-  background: linear-gradient(to right, #1e3a8a, #1e40af);
+  background: var(--paper-2);
   transform: translateY(-2px);
 }
 
 .coffeeBtn {
-  background: linear-gradient(to right, #fbbf24, #f59e0b);
-  color: #1f2937;
+  background: var(--ochre);
+  color: var(--ink);
   font-weight: 600;
   box-shadow: 0 4px 6px -1px rgba(251, 191, 36, 0.3);
 }
 
 .coffeeBtn:hover {
-  background: linear-gradient(to right, #f59e0b, #d97706);
+  background: var(--ochre);
   transform: translateY(-2px);
 }
 
 .otherBtn {
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
-  color: #4b5563;
+  background: var(--paper-2);
+  border: 1px solid var(--line-strong);
+  color: var(--ink-2);
 }
 
 :global(.dark) .otherBtn {
   background: rgba(55, 65, 81, 0.5);
   border-color: #4b5563;
-  color: #e5e7eb;
+  color: var(--ink);
 }
 
 .otherBtn:hover {
-  background: #e5e7eb;
+  background: var(--paper-2);
 }
 
 :global(.dark) .otherBtn:hover {
@@ -162,7 +162,7 @@
 }
 
 .heartIcon {
-  color: #ef4444;
+  color: var(--maple);
   animation: heartbeat 1.5s ease-in-out infinite;
 }
 
@@ -181,13 +181,13 @@
 .thanks {
   margin-top: 2.5rem;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--muted);
   text-align: center;
   animation: fadeIn 1s ease-out 0.6s both;
 }
 
 :global(.dark) .thanks {
-  color: #94a3b8;
+  color: var(--muted);
 }
 
 @keyframes fadeIn {
