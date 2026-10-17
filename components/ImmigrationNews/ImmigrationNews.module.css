@@ -517,17 +517,18 @@
   }
 }
 
-/* 2 cards on small tablets */
+/* 3 cards on tablets */
 @media (min-width: 768px) and (max-width: 1023px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-/* 5 cards on desktop */
+/* 4 cards on desktop — posters are 9:16, so keep them wide enough to read */
 @media (min-width: 1024px) {
   .grid {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
   }
 }
 
@@ -536,7 +537,8 @@
 /* ------------------------------------------------- */
 .card {
   perspective: 1200px;
-  height: 480px;
+  aspect-ratio: 9 / 16; /* matches the 1080x1920 posters: no cropping */
+  height: auto;
   border-radius: var(--r-lg);
   border: none;
   overflow: hidden;
@@ -669,12 +671,6 @@
   object-position: center;
   display: block;
   border-radius: var(--r-lg);
-  transform: scale(1.05);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.card:hover .cardImage {
-  transform: scale(1.08);
 }
 
 /* Image placeholder -------------------------------------- */
@@ -839,7 +835,7 @@ cardBack .footer {
 
   .cardFront,
   .cardBack {
-    min-height: 300px;
+    min-height: 0;
   }
 }
 
@@ -847,7 +843,7 @@ cardBack .footer {
 
   .cardFront,
   .cardBack {
-    min-height: 320px;
+    min-height: 0;
   }
 }
 
@@ -855,7 +851,7 @@ cardBack .footer {
 
   .cardFront,
   .cardBack {
-    min-height: 360px;
+    min-height: 0;
   }
 }
 

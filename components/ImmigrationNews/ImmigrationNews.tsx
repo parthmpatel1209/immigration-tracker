@@ -232,7 +232,8 @@ export default function ImmigrationNews() {
       )}
 
       {/* Footer: Showing X of Y */}
-      {!isMobile && (
+      {(
+
         <NewsFooter
           total={totalCount}
           shown={displayNews.length}
